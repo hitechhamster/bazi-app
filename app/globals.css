@@ -1,26 +1,255 @@
 @import "tailwindcss";
 
+/* ============================================================
+   BAZI MASTER — Global Design Tokens & Base Styles
+   Source: DESIGN_TOKENS.md (V8.5 production-validated)
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* === 品牌主色 === */
+  --zen-bg: #F9F7F2;
+  --zen-ink: #2c2c2c;
+  --zen-red: #BC2D2D;
+  --zen-red-dark: #a02424;
+  --zen-gold: #B8860B;
+  --zen-gold-light: #D4AF37;
+  --zen-paper: #ffffff;
+  --zen-border: #dcd9d1;
+
+  /* === 五行色（严格不可改）=== */
+  --element-wood: #4A7C59;
+  --element-fire: #C74B4B;
+  --element-earth: #B8860B;
+  --element-metal: #8B8B8B;
+  --element-water: #4A6FA5;
+
+  /* === 文字辅助色 === */
+  --zen-text-muted: #888;
+  --zen-text-light: #999;
+  --zen-text-placeholder: #aaa;
+
+  /* === 字体 === */
+  --font-main: 'Playfair Display', 'Noto Serif SC', 'Noto Serif TC', serif;
+  --font-ui: 'DM Sans', 'Helvetica Neue', sans-serif;
+  --font-seal: 'Noto Serif SC', 'Noto Serif TC', serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ── Base ───────────────────────────────────────────────── */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--zen-bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23dcd9d1' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  color: var(--zen-ink);
+  font-family: var(--font-ui);
+  min-height: 100vh;
+}
+
+/* ── Brand: 红色印章 ─────────────────────────────────────── */
+
+.zen-seal {
+  width: 48px;
+  height: 48px;
+  background-color: var(--zen-red);
+  color: white;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border: 2px solid var(--zen-red-dark);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+  font-family: var(--font-seal);
+}
+
+/* ── 宣纸纹理背景 ────────────────────────────────────────── */
+
+.zen-paper-bg {
+  background-color: var(--zen-bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23dcd9d1' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ── 水墨圆印（装饰） ───────────────────────────────────── */
+
+.zen-circle-bg {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  border: 1px solid rgba(44, 44, 44, 0.05);
+  background-color: rgba(188, 45, 45, 0.02);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 800px) {
+  .zen-circle-bg { width: 300px; height: 300px; }
+}
+
+/* ── 下划线式输入框 ──────────────────────────────────────── */
+
+.zen-input {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 2px solid #e0e0e0;
+  background: transparent;
+  font-family: var(--font-main);
+  font-size: 18px;
+  color: var(--zen-ink);
+  border-radius: 0;
+  transition: all 0.3s ease;
+}
+
+.zen-input::placeholder {
+  color: var(--zen-text-placeholder);
+  font-family: var(--font-ui);
+  font-size: 15px;
+}
+
+.zen-input:focus {
+  outline: none;
+  border-bottom-color: var(--zen-ink);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.zen-input:disabled {
+  background-color: #f5f5f5;
+  color: var(--zen-text-placeholder);
+  border-bottom-style: dashed;
+  border-bottom-color: #ccc;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── 按钮 ────────────────────────────────────────────────── */
+
+.zen-btn {
+  background: transparent;
+  border: 2px solid var(--zen-ink);
+  padding: 14px 48px;
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  color: var(--zen-ink);
+  display: inline-block;
+}
+
+.zen-btn:hover {
+  background-color: var(--zen-ink);
+  color: var(--zen-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.zen-btn-primary {
+  background: linear-gradient(135deg, var(--zen-red) 0%, var(--zen-red-dark) 100%);
+  color: white;
+  border: none;
+  padding: 14px 48px;
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  display: inline-block;
+}
+
+.zen-btn-primary:hover {
+  opacity: 0.9;
+  box-shadow: 0 4px 16px rgba(188, 45, 45, 0.35);
+}
+
+/* ── 卡片 ────────────────────────────────────────────────── */
+
+.zen-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(44, 44, 44, 0.1);
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(44, 44, 44, 0.05);
+}
+
+.zen-result-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
+}
+
+/* ── 标题 ────────────────────────────────────────────────── */
+
+.zen-heading-sm {
+  font-family: var(--font-main);
+  font-size: 20px;
+  border-bottom: 2px solid var(--zen-gold);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  display: inline-block;
+  color: var(--zen-ink);
+}
+
+.zen-h1 {
+  font-family: var(--font-main);
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--zen-ink);
+}
+
+.zen-subtitle {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--zen-text-muted);
+  margin-top: 6px;
+}
+
+/* ── 八字四柱卡片 ────────────────────────────────────────── */
+
+.bazi-pillar-card {
+  background: linear-gradient(135deg, #fff 0%, #faf9f7 100%);
+  border: 1px solid rgba(188, 45, 45, 0.2);
+  border-radius: 8px;
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bazi-pillar-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.bazi-pillar-card.pillar-unknown {
+  background: #f5f5f5;
+  border-style: dashed;
+  opacity: 0.7;
+}
+
+.bazi-pillar-chars {
+  font-family: var(--font-seal);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--zen-red);
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+
+.bazi-pillar-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--zen-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
