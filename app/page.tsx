@@ -6,7 +6,7 @@ export default async function HomePage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-xl text-center">
         <h1 className="text-4xl font-bold mb-4">Bazi Master</h1>
         <p className="text-gray-600 mb-8">

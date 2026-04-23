@@ -21,7 +21,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="zen-paper-bg min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

@@ -30,8 +30,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="zen-card w-full max-w-md">
         <h1 className="text-2xl font-bold mb-2 text-center">Log in</h1>
         <p className="text-gray-500 text-sm mb-6 text-center">
           Enter your email to receive a magic link
