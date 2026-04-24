@@ -8,8 +8,6 @@ import TenGodsDistribution from './TenGodsDistribution'
 import SpecialPalacesStrip from './SpecialPalacesStrip'
 import LuckCycleTimeline from './LuckCycleTimeline'
 import CurrentLiuNianStrip from './CurrentLiuNianStrip'
-import ChartReadingPanel from './ChartReadingPanel'
-
 export default function DashboardGrid({ data }: { data: MockData }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', minWidth: 0 }}>
@@ -25,7 +23,6 @@ export default function DashboardGrid({ data }: { data: MockData }) {
       </div>
       <LuckCycleTimeline data={data} />
       <CurrentLiuNianStrip data={data} />
-      <ChartReadingPanel />
     </div>
   )
 }

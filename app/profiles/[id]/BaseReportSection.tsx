@@ -52,8 +52,6 @@ export default function BaseReportSection({
 
   return (
     <div className="zen-result-card">
-      <h2 className="zen-heading-sm">Your Destiny Reading</h2>
-
       {(status === 'pending' || status === 'generating') && (
         <div style={{ textAlign: 'center', padding: '48px 0' }}>
           <div className="reading-spinner" style={{ margin: '0 auto 20px' }} />
