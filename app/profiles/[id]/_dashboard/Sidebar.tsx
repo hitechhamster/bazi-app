@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { MockData, MockSubject } from './mock-data'
 
 export default function Sidebar({ data }: { data: MockData }) {
@@ -41,16 +42,22 @@ export default function Sidebar({ data }: { data: MockData }) {
 
 function SubjectCard({ subject: s }: { subject: MockSubject }) {
   return (
-    <div style={{
-      padding: '8px',
-      borderRadius: '0',
-      background: s.active ? 'var(--zen-gold-pale)' : 'var(--zen-paper)',
-      border: s.active ? '1px solid var(--zen-gold)' : '0.5px solid var(--zen-border)',
-      display: 'grid',
-      gridTemplateColumns: 'auto 1fr',
-      gap: '8px',
-      alignItems: 'center',
-    }}>
+    <Link
+      href={`/profiles/${s.id}`}
+      style={{
+        padding: '8px',
+        borderRadius: '0',
+        background: s.active ? 'var(--zen-gold-pale)' : 'var(--zen-paper)',
+        border: s.active ? '1px solid var(--zen-gold)' : '0.5px solid var(--zen-border)',
+        display: 'grid',
+        gridTemplateColumns: 'auto 1fr',
+        gap: '8px',
+        alignItems: 'center',
+        textDecoration: 'none',
+        color: 'inherit',
+        cursor: s.active ? 'default' : 'pointer',
+      }}
+    >
       <div style={{
         width: '30px',
         height: '30px',
@@ -88,7 +95,7 @@ function SubjectCard({ subject: s }: { subject: MockSubject }) {
           {s.age}岁 · {s.dayMasterType}
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 
