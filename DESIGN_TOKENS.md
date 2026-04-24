@@ -27,6 +27,8 @@
   --zen-gold: #B8860B;         /* 暗金色,装饰线/次级强调 */
   --zen-gold-light: #D4AF37;   /* 亮金色,高光渐变用 */
   --zen-paper: #ffffff;        /* 纯白卡片底(但要配宣纸边框) */
+  --zen-paper-deep: #EFEBE0;   /* 深宣纸，面板底色/分区背景 */
+  --zen-gold-pale: #FDF5E4;    /* 淡金，日主高亮/当前流年底色 */
   --zen-border: #dcd9d1;       /* 宣纸边框色,所有边框用这个 */
   
   /* === 五行色（严格不可改）=== */

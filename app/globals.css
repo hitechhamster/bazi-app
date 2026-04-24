@@ -14,6 +14,8 @@
   --zen-gold: #B8860B;
   --zen-gold-light: #D4AF37;
   --zen-paper: #ffffff;
+  --zen-paper-deep: #EFEBE0;   /* 深宣纸，面板底色/分区背景 */
+  --zen-gold-pale: #FDF5E4;    /* 淡金，日主高亮/当前流年底色 */
   --zen-border: #dcd9d1;
 
   /* === 五行色（严格不可改）=== */
