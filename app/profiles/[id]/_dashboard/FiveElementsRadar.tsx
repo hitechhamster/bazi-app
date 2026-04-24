@@ -25,18 +25,19 @@ export default function FiveElementsRadar({ data }: { data: MockData }) {
   const grids = [0.25, 0.5, 0.75].map(f => ELEMENTS.map(e => pt(e.angleDeg, R * f)))
 
   return (
-    <div className="zen-result-card" style={{ padding: '16px' }}>
+    <div className="zen-result-card" style={{ padding: '10px' }}>
       <div style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '11px',
-        color: 'var(--zen-text-muted)',
+        color: 'var(--zen-ink)',
+        fontWeight: 500,
         letterSpacing: '0.1em',
         textTransform: 'uppercase',
         marginBottom: '12px',
       }}>
         五行 · Five Elements
       </div>
-      <svg viewBox="0 0 240 240" style={{ width: '100%', maxWidth: '220px', display: 'block', margin: '0 auto' }}>
+      <svg viewBox="0 0 240 240" style={{ width: '100%', maxWidth: '170px', display: 'block', margin: '0 auto' }}>
         {grids.map((pts, i) => (
           <polygon key={i} points={poly(pts)} fill="none" stroke="var(--zen-border)" strokeWidth="0.5" />
         ))}
@@ -55,17 +56,26 @@ export default function FiveElementsRadar({ data }: { data: MockData }) {
             </text>
           )
         })}
-        {ELEMENTS.map((e) => {
-          const val = data.fiveElements[e.key]
-          const vp = pt(e.angleDeg, (val / MAX) * R + 11)
-          return (
-            <text key={e.key + 'v'} x={vp.x.toFixed(1)} y={vp.y.toFixed(1)}
-              textAnchor="middle" dominantBaseline="middle"
-              fontFamily="var(--font-ui)" fontSize="10" fill="var(--zen-red)">
-              {val}
-            </text>
-          )
-        })}
+        <text x="120" y="82" textAnchor="middle" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', fontWeight: 500 }} fill="var(--element-wood)">
+          {data.fiveElements.wood.toFixed(1)}
+        </text>
+        <text x="198" y="80" textAnchor="end" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', fontWeight: 500 }} fill="var(--element-fire)">
+          {data.fiveElements.fire.toFixed(1)}
+        </text>
+        <text x="144" y="167" textAnchor="middle" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', fontWeight: 500 }} fill="var(--element-earth)">
+          {data.fiveElements.earth.toFixed(1)}
+        </text>
+        <text x="97" y="165" textAnchor="middle" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', fontWeight: 500 }} fill="var(--element-metal)">
+          {data.fiveElements.metal.toFixed(1)}
+        </text>
+        <text x="78" y="92" textAnchor="start" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', fontWeight: 500 }} fill="var(--element-water)">
+          {data.fiveElements.water.toFixed(1)}
+        </text>
       </svg>
     </div>
   )

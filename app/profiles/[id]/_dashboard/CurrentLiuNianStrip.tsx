@@ -5,7 +5,7 @@ function NianCell({ n }: { n: MockLiuNianCell }) {
   return (
     <div style={{
       textAlign: 'center',
-      padding: '8px 4px',
+      padding: '4px 1px',
       borderRadius: '4px',
       background: isCurrent ? 'var(--zen-gold-pale)' : 'var(--zen-paper-deep)',
       border: isCurrent ? '1px solid var(--zen-gold)' : '1px solid transparent',
@@ -14,21 +14,21 @@ function NianCell({ n }: { n: MockLiuNianCell }) {
       <div style={{ fontFamily: 'var(--font-main)', fontSize: '14px', color: isCurrent ? 'var(--zen-red)' : 'var(--zen-ink)' }}>
         {n.ganZhi}
       </div>
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)', marginTop: '3px' }}>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-ink)', marginTop: '3px' }}>
         {n.year}
       </div>
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)' }}>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-ink)' }}>
         {n.age}岁
       </div>
       <div style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '10px',
-        color: 'var(--zen-text-muted)',
+        color: 'var(--zen-ink)',
         borderTop: '1px solid var(--zen-border)',
         marginTop: '4px',
         paddingTop: '4px',
       }}>
-        {n.xiaoYun}
+        小运 {n.xiaoYun}
       </div>
     </div>
   )
@@ -36,12 +36,13 @@ function NianCell({ n }: { n: MockLiuNianCell }) {
 
 export default function CurrentLiuNianStrip({ data }: { data: MockData }) {
   return (
-    <div className="zen-result-card" style={{ padding: '16px' }}>
+    <div className="zen-result-card" style={{ padding: '10px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px' }}>
         <div style={{
           fontFamily: 'var(--font-ui)',
           fontSize: '11px',
-          color: 'var(--zen-text-muted)',
+          color: 'var(--zen-ink)',
+          fontWeight: 500,
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
         }}>

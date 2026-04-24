@@ -14,7 +14,7 @@ function PillarCard({ p }: { p: MockPillar }) {
       background: p.isDay ? 'var(--zen-gold-pale)' : 'var(--zen-paper-deep)',
       border: p.isDay ? '1px solid var(--zen-gold)' : '1px solid var(--zen-border)',
       borderRadius: '4px',
-      padding: '12px 8px',
+      padding: '6px 2px',
       display: 'flex',
       flexDirection: 'column',
       gap: '5px',
@@ -26,21 +26,21 @@ function PillarCard({ p }: { p: MockPillar }) {
       <div style={{ fontFamily: 'var(--font-main)', fontSize: '26px', color: elementColor[p.ganElement], lineHeight: 1, marginTop: '4px' }}>
         {p.gan}
       </div>
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-ink)' }}>
         {p.ganShiShen}
       </div>
       <div style={{ borderTop: '1px solid var(--zen-border)', margin: '2px 0' }} />
       <div style={{ fontFamily: 'var(--font-main)', fontSize: '26px', color: elementColor[p.zhiElement], lineHeight: 1 }}>
         {p.zhi}
       </div>
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-ink)' }}>
         {p.zhiShiShen}
       </div>
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-ink)' }}>
         藏：{p.zhiHideGan}
       </div>
       <div style={{ borderTop: '1px solid var(--zen-border)', margin: '2px 0' }} />
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-ink)' }}>
         {p.naYin}
       </div>
       <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: elementColor[p.diShiElement] }}>
@@ -58,18 +58,19 @@ function PillarCard({ p }: { p: MockPillar }) {
 
 export default function FourPillarsPanel({ data }: { data: MockData }) {
   return (
-    <div className="zen-result-card" style={{ padding: '16px' }}>
+    <div className="zen-result-card" style={{ padding: '10px' }}>
       <div style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '11px',
-        color: 'var(--zen-text-muted)',
+        color: 'var(--zen-ink)',
+        fontWeight: 500,
         letterSpacing: '0.1em',
         textTransform: 'uppercase',
         marginBottom: '12px',
       }}>
         四柱 · Four Pillars
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px' }}>
         {data.pillars.map(p => <PillarCard key={p.label} p={p} />)}
       </div>
     </div>

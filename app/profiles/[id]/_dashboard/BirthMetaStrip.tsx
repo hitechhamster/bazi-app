@@ -6,7 +6,7 @@ export default function BirthMetaStrip({ data }: { data: MockData }) {
     <div style={{
       fontFamily: 'var(--font-ui)',
       fontSize: '12px',
-      color: 'var(--zen-text-muted)',
+      color: 'var(--zen-ink)',
       letterSpacing: '0.04em',
       display: 'flex',
       gap: '24px',

@@ -8,11 +8,12 @@ const PALACES = [
 
 export default function SpecialPalacesStrip({ data }: { data: MockData }) {
   return (
-    <div className="zen-result-card" style={{ padding: '16px' }}>
+    <div className="zen-result-card" style={{ padding: '8px 12px' }}>
       <div style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '11px',
-        color: 'var(--zen-text-muted)',
+        color: 'var(--zen-ink)',
+        fontWeight: 500,
         letterSpacing: '0.1em',
         textTransform: 'uppercase',
         marginBottom: '12px',
@@ -28,13 +29,13 @@ export default function SpecialPalacesStrip({ data }: { data: MockData }) {
             background: 'var(--zen-paper-deep)',
             borderRadius: '4px',
           }}>
-            <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', marginBottom: '6px' }}>
+            <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-ink)', marginBottom: '6px' }}>
               {p.label}
             </div>
             <div style={{ fontFamily: 'var(--font-main)', fontSize: '22px', color: 'var(--zen-ink)' }}>
               {data.specialPalaces[p.key]}
             </div>
-            <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', marginTop: '4px' }}>
+            <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-ink)', marginTop: '4px' }}>
               {p.labelEn}
             </div>
           </div>

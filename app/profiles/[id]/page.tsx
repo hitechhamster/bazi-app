@@ -27,7 +27,7 @@ export default async function ProfileDetailPage({
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <div className="zen-circle-bg" />
+      <div className="zen-circle-bg" style={{ top: '-200px', right: '-200px', left: 'auto' }} />
 
       <div style={{
         position: 'relative',

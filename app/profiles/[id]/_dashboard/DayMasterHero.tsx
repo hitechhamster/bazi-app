@@ -6,22 +6,22 @@ export default function DayMasterHero({ data }: { data: MockData }) {
       background: 'var(--zen-paper)',
       border: '0.5px solid rgba(188,45,45,0.12)',
       borderRadius: '12px',
-      padding: '16px',
+      padding: '12px 10px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: '200px',
+      minHeight: '180px',
     }}>
       <div style={labelStyle}>DAY MASTER</div>
 
       <div style={{
         fontFamily: 'var(--font-seal)',
-        fontSize: '70px',
+        fontSize: '64px',
         lineHeight: 1,
         color: 'var(--zen-red)',
         fontWeight: 500,
-        margin: '8px 0 6px',
+        margin: '6px 0 4px',
       }}>
         {data.dayMaster}
       </div>
@@ -48,7 +48,7 @@ export default function DayMasterHero({ data }: { data: MockData }) {
         width: '40px',
         height: '1px',
         background: 'var(--zen-border)',
-        margin: '10px 0',
+        margin: '8px 0',
       }} />
 
       <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
@@ -66,6 +66,7 @@ const labelStyle: React.CSSProperties = {
   fontFamily: 'var(--font-ui)',
   fontSize: '11px',
   letterSpacing: '0.2em',
-  color: 'var(--zen-text-muted)',
+  color: 'var(--zen-ink)',
+  fontWeight: 500,
   textTransform: 'uppercase',
 }

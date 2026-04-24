@@ -7,7 +7,7 @@ export default function Sidebar({ data }: { data: MockData }) {
       flexShrink: 0,
       display: 'flex',
       flexDirection: 'column',
-      gap: '14px',
+      gap: '10px',
     }}>
       <div style={labelStyle}>SUBJECTS</div>
 
@@ -82,7 +82,7 @@ function SubjectCard({ subject: s }: { subject: MockSubject }) {
         <div style={{
           fontFamily: 'var(--font-ui)',
           fontSize: '11px',
-          color: s.active ? '#854F0B' : 'var(--zen-text-muted)',
+          color: s.active ? '#854F0B' : 'var(--zen-ink)',
           marginTop: '1px',
         }}>
           {s.age}岁 · {s.dayMasterType}
@@ -129,10 +129,10 @@ function NavButton({ active, label, labelZh }: { active: boolean; label: string;
       padding: '9px 8px',
       cursor: 'default',
     }}>
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)' }}>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-ink)' }}>
         {label}
       </div>
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-light)' }}>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
         {labelZh}
       </div>
     </div>
@@ -143,6 +143,7 @@ const labelStyle: React.CSSProperties = {
   fontFamily: 'var(--font-ui)',
   fontSize: '11px',
   letterSpacing: '0.2em',
-  color: 'var(--zen-text-muted)',
+  color: 'var(--zen-ink)',
+  fontWeight: 500,
   textTransform: 'uppercase',
 }

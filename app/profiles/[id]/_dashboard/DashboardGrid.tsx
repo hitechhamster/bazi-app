@@ -11,20 +11,20 @@ import CurrentLiuNianStrip from './CurrentLiuNianStrip'
 
 export default function DashboardGrid({ data }: { data: MockData }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
       {/* Row 0: birth meta strip */}
       <BirthMetaStrip data={data} />
 
       {/* Row 1: DayMasterHero | FourPillarsPanel */}
-      <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: '16px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '6px', alignItems: 'start' }}>
         <DayMasterHero data={data} />
         <FourPillarsPanel data={data} />
       </div>
 
       {/* Row 2: FiveElementsRadar | ChartReadingPanel + TenGodsDistribution */}
-      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '16px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '170px 1fr', gap: '6px', alignItems: 'start' }}>
         <FiveElementsRadar data={data} />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <ChartReadingPanel data={data} />
           <TenGodsDistribution data={data} />
         </div>

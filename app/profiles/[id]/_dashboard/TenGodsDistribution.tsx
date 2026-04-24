@@ -37,7 +37,8 @@ export default function TenGodsDistribution({ data }: { data: MockData }) {
         marginTop: '6px',
         fontFamily: 'var(--font-ui)',
         fontSize: '11px',
-        color: 'var(--zen-text-muted)',
+        color: 'var(--zen-ink)',
+        fontWeight: 500,
       }}>
         {data.tenGods.map(g => (
           <span key={g.key}>{g.labelEn}</span>
@@ -51,13 +52,14 @@ const cardStyle: React.CSSProperties = {
   background: 'var(--zen-paper)',
   border: '0.5px solid rgba(188,45,45,0.12)',
   borderRadius: '12px',
-  padding: '14px',
+  padding: '10px',
 }
 
 const labelStyle: React.CSSProperties = {
   fontFamily: 'var(--font-ui)',
   fontSize: '11px',
   letterSpacing: '0.2em',
-  color: 'var(--zen-text-muted)',
+  color: 'var(--zen-ink)',
+  fontWeight: 500,
   textTransform: 'uppercase',
 }
