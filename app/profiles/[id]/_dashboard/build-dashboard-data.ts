@@ -117,6 +117,34 @@ export interface BaziPillarRaw {
 
 // ========== Helpers ==========
 
+/** 五行中文单字 → 英文单词，用于 chart reading 的英文列 */
+function wuXingZhToEn(ch: string): string {
+  const map: Record<string, string> = {
+    金: 'Metal',
+    木: 'Wood',
+    水: 'Water',
+    火: 'Fire',
+    土: 'Earth',
+  }
+  return map[ch] ?? ch
+}
+
+/**
+ * 月支（Month 地支） → 季节 + 当令五行。
+ * 春 (寅卯辰 wood 旺) / 夏 (巳午未 fire 旺) / 秋 (申酉戌 metal 旺) / 冬 (亥子丑 water 旺)
+ */
+function seasonFromMonthZhi(monthZhi: string): { zh: string; en: string } {
+  const spring = ['寅', '卯', '辰']
+  const summer = ['巳', '午', '未']
+  const autumn = ['申', '酉', '戌']
+  const winter = ['亥', '子', '丑']
+  if (spring.includes(monthZhi)) return { zh: '春木当令', en: 'Spring · Wood peaks' }
+  if (summer.includes(monthZhi)) return { zh: '夏火当令', en: 'Summer · Fire peaks' }
+  if (autumn.includes(monthZhi)) return { zh: '秋金当令', en: 'Autumn · Metal peaks' }
+  if (winter.includes(monthZhi)) return { zh: '冬水当令', en: 'Winter · Water peaks' }
+  return { zh: '—', en: '—' }
+}
+
 /** Map 天干 (e.g. "甲") to ElementKey lowercase ("wood"). */
 function ganToElementKey(gan: string): ElementKey {
   const en = ganToWuXingEn(gan)  // e.g. "Wood"
@@ -315,20 +343,46 @@ export function buildDashboardData(
 
   const approxAge = new Date().getFullYear() - new Date(profile.birth_date).getFullYear()
 
-  // Chart reading — from report_structured with defensive fallback
+  // Chart reading — from report_structured; explicit fallback when missing (legacy profiles, etc)
   const rs = profile.report_structured
-  const chartReading = {
-    strength: rs?.strength ?? '—',
-    strengthEn: rs?.strength ?? '—',
-    pattern: rs?.pattern ?? '—',
-    patternEn: rs?.pattern ?? '—',
-    favorable: rs?.favorable ?? [],
-    favorableEn: (rs?.favorable ?? []).join(', '),
-    unfavorable: rs?.unfavorable ?? [],
-    unfavorableEn: (rs?.unfavorable ?? []).join(', '),
-    season: '—',
-    seasonEn: '—',
+  const hasStructured = rs != null && (rs.strength || rs.pattern || (rs.favorable?.length ?? 0) > 0)
+
+  // Strength: Chinese → English mapping (AI returns Chinese, no English version stored)
+  const strengthEnMap: Record<string, string> = {
+    身强: 'Day Master strong',
+    身弱: 'Day Master weak',
+    中和: 'Balanced',
+    从强: 'Follower (strong)',
+    从弱: 'Follower (weak)',
   }
+
+  const season = seasonFromMonthZhi(report.pillars.month.zhi)
+
+  const chartReading = hasStructured
+    ? {
+        strength: rs!.strength ?? '—',
+        strengthEn: strengthEnMap[rs!.strength ?? ''] ?? rs!.strength ?? '—',
+        pattern: rs!.pattern ?? '—',
+        patternEn: rs!.pattern ?? '—',  // patterns are 格局 names, kept in Chinese for now
+        favorable: rs!.favorable ?? [],
+        favorableEn: (rs!.favorable ?? []).map(wuXingZhToEn).join(', '),
+        unfavorable: rs!.unfavorable ?? [],
+        unfavorableEn: (rs!.unfavorable ?? []).map(wuXingZhToEn).join(', '),
+        season: season.zh,
+        seasonEn: season.en,
+      }
+    : {
+        strength: '—',
+        strengthEn: 'Awaiting AI reading',
+        pattern: '—',
+        patternEn: 'Awaiting AI reading',
+        favorable: [],
+        favorableEn: '—',
+        unfavorable: [],
+        unfavorableEn: '—',
+        season: season.zh,
+        seasonEn: season.en,
+      }
 
   return {
     subjects: subjectCards,

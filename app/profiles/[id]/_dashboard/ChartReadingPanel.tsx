@@ -37,7 +37,12 @@ export default function ChartReadingPanel({ data }: { data: MockData }) {
         <Cell label="身强弱" labelEn="Strength" zh={r.strength} en={r.strengthEn} />
         <Cell label="格局" labelEn="Pattern" zh={r.pattern} en={r.patternEn} />
         <Cell label="喜用神" labelEn="Favorable" zh={r.favorable.join(' ')} en={r.favorableEn} accent />
-        <Cell label="忌神" labelEn="Unfavorable" zh={r.unfavorable.join(' ')} en={r.unfavorableEn} />
+        <Cell
+          label="忌神 · 月令"
+          labelEn="Unfavorable · Season"
+          zh={r.unfavorable.length > 0 ? `${r.unfavorable.join(' ')} · ${r.season}` : r.season}
+          en={r.unfavorableEn && r.unfavorableEn !== '—' ? `${r.unfavorableEn} · ${r.seasonEn}` : r.seasonEn}
+        />
       </div>
 
     </div>
