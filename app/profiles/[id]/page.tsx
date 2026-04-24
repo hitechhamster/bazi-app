@@ -11,6 +11,7 @@ import {
   type ProfileRow,
   type SubjectRow,
 } from './_dashboard/build-dashboard-data'
+import type { ReportStatus, ReportStructured } from './actions'
 
 export default async function ProfileDetailPage({
   params,
@@ -120,7 +121,12 @@ export default async function ProfileDetailPage({
 
           {/* Main column — dashboard + AI report stacked, same width */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
-            <DashboardGrid data={dashboardData} />
+            <DashboardGrid
+              data={dashboardData}
+              profileId={profile.id as string}
+              initialStatus={((profile.base_report_status as string) ?? 'pending') as ReportStatus}
+              initialStructured={(profile.report_structured as ReportStructured | null) ?? null}
+            />
 
             {/* AI Destiny Reading section */}
             <div style={{

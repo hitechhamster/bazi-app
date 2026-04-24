@@ -21,7 +21,12 @@ export default function BaseReportSection({
   const [retrying, setRetrying] = useState(false)
 
   useEffect(() => {
-    if (status !== 'pending' && status !== 'generating') return
+    const isPolling =
+      status === 'pending' ||
+      status === 'generating' ||
+      status === 'generating_structured' ||
+      status === 'generating_reading'
+    if (!isPolling) return
 
     const id = setInterval(async () => {
       try {
@@ -52,10 +57,12 @@ export default function BaseReportSection({
 
   return (
     <div className="zen-result-card">
-      {(status === 'pending' || status === 'generating') && (
+      {(status === 'pending' || status === 'generating' || status === 'generating_structured' || status === 'generating_reading') && (
         <div style={{ textAlign: 'center', padding: '48px 0' }}>
           <div className="reading-spinner" style={{ margin: '0 auto 20px' }} />
-          <p className="reading-loading-text">Generating your reading...</p>
+          <p className="reading-loading-text">
+            {status === 'generating_structured' ? 'Analyzing chart structure...' : 'Generating your reading...'}
+          </p>
           <p className="reading-loading-sub">
             This usually takes 30–60 seconds. You can leave this page; the reading will be saved to your profile.
           </p>

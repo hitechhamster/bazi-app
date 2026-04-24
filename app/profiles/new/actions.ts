@@ -104,7 +104,7 @@ export async function createProfile(
         zodiac: report.zodiac.year,
         base_report_language: language,
         luck_cycles,
-        base_report_status: 'generating',
+        base_report_status: 'generating_structured',
       })
       .select('id')
       .single()

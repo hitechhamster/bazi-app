@@ -8,23 +8,36 @@ import SpecialPalacesStrip from './SpecialPalacesStrip'
 import LuckCycleTimeline from './LuckCycleTimeline'
 import CurrentLiuNianStrip from './CurrentLiuNianStrip'
 
-export default function DashboardGrid({ data }: { data: MockData }) {
+import type { ReportStatus, ReportStructured } from '../actions'
+
+interface Props {
+  data: MockData
+  profileId: string
+  initialStatus: ReportStatus
+  initialStructured: ReportStructured | null
+}
+
+export default function DashboardGrid({ data, profileId, initialStatus, initialStructured }: Props) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
       {/* Row 1: DayMasterHero | FourPillarsPanel */}
-      <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '6px', alignItems: 'stretch' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '6px', alignItems: 'start' }}>
         <DayMasterHero data={data} />
         <FourPillarsPanel data={data} />
       </div>
 
-      {/* Row 2: FiveElementsRadar | ChartReadingPanel + TenGodsDistribution */}
-      <div style={{ display: 'grid', gridTemplateColumns: '170px 1fr', gap: '6px', alignItems: 'stretch' }}>
+      {/* Row 2: Radar + ChartReading side by side, equal height */}
+      <div style={{ display: 'grid', gridTemplateColumns: '170px 1fr', gap: '6px', alignItems: 'start' }}>
         <FiveElementsRadar data={data} />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-          <ChartReadingPanel data={data} />
-          <TenGodsDistribution data={data} />
-        </div>
+        <ChartReadingPanel
+          data={data}
+          profileId={profileId}
+          initialStatus={initialStatus}
+          initialStructured={initialStructured}
+        />
       </div>
+      {/* Row 2.5: TenGodsDistribution spans full width */}
+      <TenGodsDistribution data={data} />
 
       {/* Row 3: SpecialPalacesStrip */}
       <SpecialPalacesStrip data={data} />
