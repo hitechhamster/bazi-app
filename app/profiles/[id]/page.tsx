@@ -1,10 +1,16 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
-import { MOCK_DATA } from './_dashboard/mock-data'
+import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import Sidebar from './_dashboard/Sidebar'
 import DashboardGrid from './_dashboard/DashboardGrid'
 import BaseReportSection from './BaseReportSection'
+import {
+  buildDashboardData,
+  type BaziReportRaw,
+  type ProfileRow,
+  type SubjectRow,
+} from './_dashboard/build-dashboard-data'
 
 export default async function ProfileDetailPage({
   params,
@@ -17,6 +23,7 @@ export default async function ProfileDetailPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  // Fetch current profile
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
@@ -24,6 +31,48 @@ export default async function ProfileDetailPage({
     .single()
 
   if (!profile) notFound()
+
+  // Fetch sibling profiles (same user) for sidebar subjects switcher
+  const { data: siblings } = await supabase
+    .from('profiles')
+    .select('id, name, day_master, day_master_element, birth_date')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: true })
+
+  const subjects: SubjectRow[] = (siblings ?? []).map((s) => ({
+    id: s.id as string,
+    name: s.name as string,
+    day_master: s.day_master as string,
+    day_master_element: s.day_master_element as string,
+    birth_date: s.birth_date as string,
+  }))
+
+  // Reconstruct tst (true solar time) — prefer stored value for exact fidelity
+  let tst: Date
+  if (profile.true_solar_time) {
+    tst = new Date(profile.true_solar_time as string)
+  } else {
+    // Fallback: no longitude was captured, use UTC-constructed date
+    const birthDate = profile.birth_date as string
+    const birthTime = (profile.birth_time as string | null) ?? null
+    const isTimeUnknown = (profile.is_time_unknown as boolean) ?? false
+    const [yr, mo, dy] = birthDate.split('-').map(Number)
+    let hr = 12
+    let mn = 0
+    if (!isTimeUnknown && birthTime) {
+      const [h, m] = birthTime.split(':').map(Number)
+      hr = h
+      mn = m
+    }
+    tst = new Date(Date.UTC(yr, mo - 1, dy, hr, mn))
+  }
+
+  // Regenerate the full report (pure function, <10ms)
+  const gender = (profile.gender as string) ?? 'male'
+  const report = generateBaziReport(tst, gender) as unknown as BaziReportRaw
+
+  // Adapt (profile, subjects, report) → MockData-shaped object
+  const dashboardData = buildDashboardData(profile as unknown as ProfileRow, subjects, report)
 
   return (
     <div className="min-h-screen relative overflow-visible">
@@ -66,12 +115,12 @@ export default async function ProfileDetailPage({
             maxHeight: 'calc(100vh - 32px)',
             overflowY: 'auto',
           }}>
-            <Sidebar data={MOCK_DATA} />
+            <Sidebar data={dashboardData} />
           </div>
 
-          {/* Main content column — dashboard + AI report stacked, same width */}
+          {/* Main column — dashboard + AI report stacked, same width */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
-            <DashboardGrid data={MOCK_DATA} />
+            <DashboardGrid data={dashboardData} />
 
             {/* AI Destiny Reading section */}
             <div style={{
