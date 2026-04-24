@@ -25,7 +25,7 @@ export default function FiveElementsRadar({ data }: { data: MockData }) {
   const grids = [0.25, 0.5, 0.75].map(f => ELEMENTS.map(e => pt(e.angleDeg, R * f)))
 
   return (
-    <div className="zen-result-card" style={{ padding: '10px', alignSelf: 'stretch', display: 'flex', flexDirection: 'column', borderRadius: '0' }}>
+    <div className="zen-result-card" style={{ padding: '10px', height: '245px', display: 'flex', flexDirection: 'column', borderRadius: '0' }}>
       <div style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '11px',

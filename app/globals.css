@@ -463,19 +463,28 @@ body {
 .ai-content-box {
   font-family: var(--font-main);
   color: var(--zen-ink);
-  line-height: 1.85;
-  font-size: 1rem;
+  line-height: 1.75;
+  font-size: 14px;
+  background: var(--zen-paper);
+  border: 0.5px solid var(--zen-border);
+  padding: 28px 36px;
+  max-width: none;
 }
 
 .ai-content-box h2.ai-section-title {
   font-family: var(--font-main);
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 500;
   color: var(--zen-ink);
-  margin: 2.5rem 0 1rem 0;
+  line-height: 1.4;
+  margin: 28px 0 14px 0;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--zen-border);
   letter-spacing: 0.02em;
+}
+
+.ai-content-box h2.ai-section-title:first-child {
+  margin-top: 0;
 }
 
 .ai-content-box h2.ai-section-title .title-number {
@@ -486,45 +495,47 @@ body {
 
 .ai-content-box h3.ai-subsection-title {
   font-family: var(--font-main);
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--zen-gold);
-  margin: 1.75rem 0 0.75rem 0;
+  margin: 18px 0 8px 0;
   letter-spacing: 0.02em;
 }
 
 .ai-content-box p {
-  margin: 0.75rem 0;
-  font-size: 1rem;
-  line-height: 1.85;
+  font-size: 14px;
+  line-height: 1.75;
+  margin: 0 0 14px 0;
+  color: var(--zen-ink);
 }
 
 .ai-content-box ul.ai-bullet-list {
-  margin: 0.75rem 0;
-  padding-left: 1.25rem;
+  margin: 0 0 14px 16px;
+  padding-left: 18px;
   list-style: disc;
 }
 
 .ai-content-box ul.ai-bullet-list li {
-  margin: 0.4rem 0;
-  line-height: 1.75;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 6px;
 }
 
 .pro-term {
-  color: var(--zen-red);
-  font-weight: 600;
+  color: var(--zen-gold);
+  font-weight: 500;
   cursor: help;
   border-bottom: 1px dotted transparent;
   transition: border-color 0.15s ease;
 }
 
 .pro-term:hover {
-  border-bottom-color: var(--zen-red);
+  border-bottom-color: var(--zen-gold);
 }
 
 .ai-keyword {
-  color: var(--zen-gold);
-  font-weight: 600;
+  color: var(--zen-red);
+  font-weight: 500;
 }
 
 /* Loading states for report generation */

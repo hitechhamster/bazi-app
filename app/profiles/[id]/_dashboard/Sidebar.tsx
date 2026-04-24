@@ -10,7 +10,7 @@ export default function Sidebar({ data }: { data: MockData }) {
       flexDirection: 'column',
       gap: '10px',
     }}>
-      <div style={labelStyle}>SUBJECTS</div>
+      <div style={{ ...labelStyle, marginTop: '-26px' }}>SUBJECTS</div>
 
       {data.subjects.map(s => (
         <SubjectCard key={s.id} subject={s} />

@@ -10,8 +10,8 @@ export default function DayMasterHero({ data }: { data: MockData }) {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
-      alignSelf: 'stretch',
+      justifyContent: 'space-between',
+      height: '323.5px',
       textAlign: 'center',
       gap: '12px',
     }}>

@@ -51,7 +51,6 @@ export default function TenGodsDistribution({ data }: { data: MockData }) {
 const cardStyle: React.CSSProperties = {
   background: 'var(--zen-paper)',
   border: '0.5px solid rgba(188,45,45,0.12)',
-  borderTop: 'none',
   borderRadius: '0',
   padding: '10px',
 }

@@ -1,4 +1,8 @@
+'use client'
+
+import { useState, useTransition } from 'react'
 import Link from 'next/link'
+import { deleteProfile } from '../actions'
 
 export interface ProfileListCardData {
   id: string
@@ -40,163 +44,248 @@ const STATUS_CONFIG: Record<string, { dot: string; label: string }> = {
 const STATUS_FALLBACK = { dot: 'var(--zen-border)', label: 'Pending' }
 
 export default function ProfileListCard({ data: p }: { data: ProfileListCardData }) {
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+
   const yinYang = '甲丙戊庚壬'.includes(p.day_master) ? 'Yang' : 'Yin'
   const currentDayun = getCurrentDayun(p.luck_cycles)
   const status = STATUS_CONFIG[p.base_report_status ?? ''] ?? STATUS_FALLBACK
-
   const pillars = [p.pillar_year, p.pillar_month, p.pillar_day, p.pillar_hour ?? '—'].join(' ')
-
   const cityStr = p.birth_city ? ` · ${p.birth_city}` : ''
   const metaLine = `${yinYang} ${p.day_master_element} · ${p.birth_date}${cityStr}`
 
+  function handleDelete() {
+    startTransition(async () => {
+      const result = await deleteProfile(p.id)
+      if (!result.ok) {
+        setDeleteError(result.error ?? 'Delete failed')
+        setConfirmDelete(false)
+      }
+      // success: revalidatePath('/dashboard') in action triggers RSC refresh
+    })
+  }
+
   return (
-    <Link
-      href={`/profiles/${p.id}`}
-      style={{
-        background: 'var(--zen-paper)',
-        border: '0.5px solid var(--zen-border)',
-        borderRadius: '0',
-        padding: '14px',
-        display: 'grid',
-        gridTemplateColumns: 'auto 1fr',
-        gap: '12px',
-        alignItems: 'center',
-        textDecoration: 'none',
-        color: 'inherit',
-        cursor: 'pointer',
-      }}
-    >
-      {/* Left: day master avatar */}
-      <div style={{
-        width: '40px',
-        height: '40px',
-        borderRadius: '50%',
-        background: 'var(--zen-red)',
-        color: 'white',
-        fontFamily: 'var(--font-seal)',
-        fontSize: '18px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-      }}>
-        {p.day_master}
-      </div>
+    <div className="profile-card-wrapper" style={{ position: 'relative' }}>
 
-      {/* Right: content column */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
-
-        {/* Row 1: name + relation */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0' }}>
-          <span style={{
+      {!confirmDelete && (
+        <button
+          className="delete-btn"
+          onClick={() => { setConfirmDelete(true); setDeleteError(null) }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--zen-red)' }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--zen-text-muted)' }}
+          style={{
+            position: 'absolute',
+            top: '6px',
+            right: '8px',
             fontFamily: 'var(--font-ui)',
-            fontSize: '16px',
-            fontWeight: 500,
-            color: 'var(--zen-ink)',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            minWidth: 0,
-            flex: '0 1 auto',
-          }}>
-            {p.name}
-          </span>
-          <span style={{
-            fontFamily: 'var(--font-ui)',
-            fontSize: '11px',
+            fontSize: '18px',
             color: 'var(--zen-text-muted)',
-            marginLeft: '8px',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '2px 6px',
+            lineHeight: 1,
+            transition: 'color 0.15s ease',
+            zIndex: 2,
+          }}
+        >
+          ×
+        </button>
+      )}
+
+      {confirmDelete ? (
+        /* ── Confirm state: red-tinted card, no Link ── */
+        <div style={{
+          background: 'rgba(188,45,45,0.06)',
+          border: '0.5px solid var(--zen-red)',
+          borderRadius: '0',
+          padding: '14px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '12px',
+          minHeight: '110px',
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-ui)',
+            fontSize: '13px',
+            color: 'var(--zen-ink)',
+            textAlign: 'center',
+            margin: 0,
+          }}>
+            Delete this profile? 确定要删除吗？
+          </p>
+          {deleteError && (
+            <p style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '11px',
+              color: 'var(--zen-red)',
+              margin: 0,
+            }}>
+              {deleteError}
+            </p>
+          )}
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={handleDelete}
+              disabled={isPending}
+              style={{
+                border: '1px solid var(--zen-red)',
+                color: 'var(--zen-red)',
+                padding: '4px 12px',
+                background: 'transparent',
+                borderRadius: '0',
+                fontSize: '12px',
+                fontFamily: 'var(--font-ui)',
+                cursor: isPending ? 'wait' : 'pointer',
+                opacity: isPending ? 0.5 : 1,
+              }}
+            >
+              {isPending ? 'Deleting...' : 'Delete'}
+            </button>
+            <button
+              onClick={() => { setConfirmDelete(false); setDeleteError(null) }}
+              disabled={isPending}
+              style={{
+                border: '0.5px solid var(--zen-border)',
+                color: 'var(--zen-text-muted)',
+                padding: '4px 12px',
+                background: 'transparent',
+                borderRadius: '0',
+                fontSize: '12px',
+                fontFamily: 'var(--font-ui)',
+                cursor: 'pointer',
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+      ) : (
+        /* ── Idle state: original Link card ── */
+        <Link
+          href={`/profiles/${p.id}`}
+          style={{
+            background: 'var(--zen-paper)',
+            border: '0.5px solid var(--zen-border)',
+            borderRadius: '0',
+            padding: '14px',
+            display: 'grid',
+            gridTemplateColumns: 'auto 1fr',
+            gap: '12px',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: 'inherit',
+            cursor: 'pointer',
+          }}
+        >
+          {/* Left: day master avatar */}
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            background: 'var(--zen-red)',
+            color: 'white',
+            fontFamily: 'var(--font-seal)',
+            fontSize: '18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             flexShrink: 0,
           }}>
-            {p.relation}
-          </span>
-        </div>
+            {p.day_master}
+          </div>
 
-        {/* Row 2: four pillars */}
-        <div style={{
-          fontFamily: 'var(--font-seal)',
-          fontSize: '14px',
-          color: 'var(--zen-ink)',
-          letterSpacing: '0.3em',
-        }}>
-          {pillars}
-        </div>
-
-        {/* Row 3: day master description + birth meta */}
-        <div style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '11px',
-          color: 'var(--zen-text-muted)',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}>
-          {metaLine}
-        </div>
-
-        {/* Row 4: current dayun + report status */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Current dayun */}
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-            {currentDayun ? (
-              <>
-                <span style={{
-                  fontFamily: 'var(--font-ui)',
-                  fontSize: '11px',
-                  color: 'var(--zen-text-muted)',
-                }}>
-                  当前
-                </span>
-                <span style={{
-                  fontFamily: 'var(--font-seal)',
-                  fontSize: '12px',
-                  color: 'var(--zen-red)',
-                  fontWeight: 500,
-                }}>
-                  {currentDayun.ganZhi}
-                </span>
-                <span style={{
-                  fontFamily: 'var(--font-ui)',
-                  fontSize: '11px',
-                  color: 'var(--zen-text-muted)',
-                }}>
-                  age {currentDayun.startAge}–{currentDayun.endAge}
-                </span>
-              </>
-            ) : (
+          {/* Right: content column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
+            {/* Row 1: name + relation */}
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0' }}>
+              <span style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: '16px',
+                fontWeight: 500,
+                color: 'var(--zen-ink)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                minWidth: 0,
+                flex: '0 1 auto',
+              }}>
+                {p.name}
+              </span>
               <span style={{
                 fontFamily: 'var(--font-ui)',
                 fontSize: '11px',
                 color: 'var(--zen-text-muted)',
+                marginLeft: '8px',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                flexShrink: 0,
               }}>
-                尚未起运
+                {p.relation}
               </span>
-            )}
-          </div>
+            </div>
 
-          {/* Report status dot */}
-          <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+            {/* Row 2: four pillars */}
             <div style={{
-              width: '6px',
-              height: '6px',
-              borderRadius: '50%',
-              background: status.dot,
-              marginRight: '4px',
-              flexShrink: 0,
-            }} />
-            <span style={{
+              fontFamily: 'var(--font-seal)',
+              fontSize: '14px',
+              color: 'var(--zen-ink)',
+              letterSpacing: '0.3em',
+            }}>
+              {pillars}
+            </div>
+
+            {/* Row 3: day master description + birth meta */}
+            <div style={{
               fontFamily: 'var(--font-ui)',
               fontSize: '11px',
               color: 'var(--zen-text-muted)',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}>
-              {status.label}
-            </span>
-          </div>
-        </div>
+              {metaLine}
+            </div>
 
-      </div>
-    </Link>
+            {/* Row 4: current dayun + report status */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                {currentDayun ? (
+                  <>
+                    <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+                      当前
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-seal)', fontSize: '12px', color: 'var(--zen-red)', fontWeight: 500 }}>
+                      {currentDayun.ganZhi}
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+                      age {currentDayun.startAge}–{currentDayun.endAge}
+                    </span>
+                  </>
+                ) : (
+                  <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+                    尚未起运
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+                <div style={{
+                  width: '6px', height: '6px', borderRadius: '50%',
+                  background: status.dot, marginRight: '4px', flexShrink: 0,
+                }} />
+                <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+                  {status.label}
+                </span>
+              </div>
+            </div>
+          </div>
+        </Link>
+      )}
+    </div>
   )
 }
