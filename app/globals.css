@@ -346,3 +346,211 @@ body {
 .city-dropdown-item:hover {
   background: var(--zen-bg);
 }
+
+/* ── Wizard: step entrance animations ───────────────────── */
+
+@keyframes stepSlideInRight {
+  from { opacity: 0; transform: translateX(36px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes stepSlideInLeft {
+  from { opacity: 0; transform: translateX(-36px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.step-anim-forward {
+  animation: stepSlideInRight 0.3s ease-out both;
+}
+.step-anim-back {
+  animation: stepSlideInLeft 0.3s ease-out both;
+}
+
+/* ── Wizard: option cards ───────────────────────────────── */
+
+.wizard-card {
+  background: transparent;
+  border: 1px solid var(--zen-border);
+  padding: 28px 20px;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 110px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.wizard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  border-color: var(--zen-text-muted);
+}
+
+.wizard-card-selected {
+  border-color: var(--zen-red) !important;
+  background: rgba(188, 45, 45, 0.04);
+}
+
+.wizard-card-title {
+  font-family: var(--font-main);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--zen-ink);
+  letter-spacing: 0.02em;
+}
+
+.wizard-card-sub {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--zen-text-muted);
+  letter-spacing: 0.03em;
+}
+
+.wizard-gender-card {
+  min-width: 150px;
+}
+
+/* ── Wizard: large name input ───────────────────────────── */
+
+.wizard-name-input {
+  font-size: 1.7rem !important;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* ── Wizard: loading spinner ────────────────────────────── */
+
+@keyframes wizardSpin {
+  to { transform: rotate(360deg); }
+}
+
+.wizard-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: wizardSpin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ── Dashboard: profile cards ───────────────────────────── */
+
+.dashboard-profile-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  text-decoration: none !important;
+  display: block;
+  color: inherit;
+}
+
+.dashboard-profile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.09);
+}
+
+/* ── AI Report rendering ──────────────────────────────── */
+
+.ai-content-box {
+  font-family: var(--font-main);
+  color: var(--zen-ink);
+  line-height: 1.85;
+  font-size: 1rem;
+}
+
+.ai-content-box h2.ai-section-title {
+  font-family: var(--font-main);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--zen-ink);
+  margin: 2.5rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--zen-border);
+  letter-spacing: 0.02em;
+}
+
+.ai-content-box h2.ai-section-title .title-number {
+  color: var(--zen-red);
+  font-family: var(--font-main);
+  margin-right: 0.3em;
+}
+
+.ai-content-box h3.ai-subsection-title {
+  font-family: var(--font-main);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--zen-gold);
+  margin: 1.75rem 0 0.75rem 0;
+  letter-spacing: 0.02em;
+}
+
+.ai-content-box p {
+  margin: 0.75rem 0;
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+.ai-content-box ul.ai-bullet-list {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.ai-content-box ul.ai-bullet-list li {
+  margin: 0.4rem 0;
+  line-height: 1.75;
+}
+
+.pro-term {
+  color: var(--zen-red);
+  font-weight: 600;
+  cursor: help;
+  border-bottom: 1px dotted transparent;
+  transition: border-color 0.15s ease;
+}
+
+.pro-term:hover {
+  border-bottom-color: var(--zen-red);
+}
+
+.ai-keyword {
+  color: var(--zen-gold);
+  font-weight: 600;
+}
+
+/* Loading states for report generation */
+@keyframes readingPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+.reading-spinner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--zen-border);
+  border-top-color: var(--zen-red);
+  border-radius: 50%;
+  animation: wizardSpin 0.8s linear infinite;
+}
+
+.reading-loading-text {
+  font-family: var(--font-main);
+  color: var(--zen-ink);
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+.reading-loading-sub {
+  font-family: var(--font-ui);
+  color: var(--zen-text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}

@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import type { FiveElements } from '@/lib/bazi/bazi-calculator-logic'
+import BaseReportSection from './BaseReportSection'
 
 const ZODIAC_EN: Record<string, string> = {
   '鼠': 'Rat', '牛': 'Ox', '虎': 'Tiger', '兔': 'Rabbit', '龙': 'Dragon',
@@ -206,13 +207,14 @@ export default async function ProfileDetailPage({
           </div>
         )}
 
-        {/* ── Section 5: AI Report Placeholder ── */}
-        <div className="zen-result-card">
-          <h2 className="zen-heading-sm">AI Destiny Reading</h2>
-          <p style={{ fontFamily: 'var(--font-ui)', color: 'var(--zen-text-light)', fontSize: '15px', textAlign: 'center', padding: '40px 0' }}>
-            Your personalised AI reading is coming soon...
-          </p>
-        </div>
+        {/* ── Section 5: AI Report ── */}
+        <BaseReportSection
+          profileId={profile.id as string}
+          initialStatus={(profile.base_report_status as string) ?? 'pending'}
+          initialReport={profile.base_report as string | null}
+          initialError={profile.base_report_error as string | null}
+        />
+
       </div>
     </div>
   )

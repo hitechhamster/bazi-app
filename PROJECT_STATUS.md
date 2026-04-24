@@ -1,142 +1,144 @@
-# Bazi Master Web App - Project Status
+# Bazi Master App - 项目状态
 
-## Project Overview
+最后更新：2026-04-24
+当前阶段：Stage 1 ✅ 完成，准备进入 Stage 2
 
-A standalone Bazi (Chinese astrology) web application targeting overseas English-speaking market. Separate from the existing Shopify site `bazi-master.com`, this will be deployed to `app.bazi-master.com`.
+---
 
-**Owner**: Non-programmer, works with AI assistants. Please provide clear explanations when asking for decisions.
+## 技术栈
 
-## Business Goals
+Next.js 16 App Router + TypeScript + Tailwind CSS + Turbopack · Supabase (Auth + DB) · @google/genai 1.50.1 (Gemini) · undici (代理) · OpenCage Geocoding API · Vercel（目标，尚未部署）
 
-- MVP with: email login, profile creation, Bazi chart display, AI-generated base report, Q&A feature
-- Commercial model: Free tier uses Gemini 2.5 Flash-Lite; Paid tier uses Gemini 2.5 Pro
-- Target revenue: $100K-300K/year as solo operation
+---
 
-## Tech Stack
+## 环境变量（.env.local）
 
-- **Framework**: Next.js 16 App Router + TypeScript + Tailwind CSS + Turbopack
-- **Database + Auth**: Supabase (using new publishable/secret API keys)
-- **AI**: Gemini API (key pending)
-- **Bazi calculation**: Reusing proven lunar.js + custom business logic from V8.5 Shopify version
-- **Deployment target**: Vercel (not yet deployed)
-
-## Current Progress
-
-### ✅ Completed
-
-1. **Supabase project configured**
-   - Project ID: `cadedntyqimpqabgkrtg`
-   - Email Magic Link auth enabled (email confirmation disabled)
-   - URL Config: Site URL = `http://localhost:3000`, Redirect = `http://localhost:3000/**`
-   - Google OAuth intentionally deferred
-
-2. **Next.js project initialized**
-   - Location: `D:\bazi-master\bazi-app`
-   - App directory in project root (NOT in src/)
-   - tsconfig paths: `"@/*": ["./*"]`
-   - Middleware uses old `middleware.ts` convention — needs migration to `proxy.ts` per Next.js 16:
- npx @next/codemod@canary middleware-to-proxy .
-
-3. **Auth system working end-to-end**
-   - `/login` - Magic Link email form
-   - `/auth/callback` - exchanges code for session
-   - `/dashboard` - protected route with user info and "Create Profile" button
-   - Tested with real email, login/logout confirmed working
-
-4. **Database schema created** (see Supabase SQL Editor history)
-   - `profiles` table: stores profile info + Bazi results (in Chinese) + AI base_report
-   - `questions` table: stores Q&A history
-   - RLS policies: 4 per table (SELECT/INSERT/UPDATE/DELETE), all `auth.uid() = user_id`
-   - Indexes on user_id, profile_id
-   - Trigger: auto-update `updated_at` on profiles
-
-5. **Bazi calculation logic ported**
-   - `lib/bazi/lunar.js` - UMD library (unchanged, works in Node via require)
-   - `lib/bazi/bazi-calculator-logic.js` - v4.3-nextjs
-     - Exports `generateBaziReport(tst, gender)` via module.exports
-     - Debug logs toggleable via `DEBUG_BAZI=1` env var
-     - Preserves critical business logic:
-       - True solar time uses UTC methods on a Date object (caller must pre-calibrate with equation of time + longitude offset)
-       - Cang gan (hidden stems) weights: 本气 1.0, 中气 0.5, 余气 0.3
-       - 3-pillar mode when time unknown (hour pillar contributions excluded)
-       - lunar.js handles lunar calendar conversion
-
-6. **Start of profile creation UI**
-   - `/profiles/new` page created with complete form (name, relation, gender, date, time, city)
-   - Form currently only console.logs data — no API integration yet
-   - City field is plain text input — no autocomplete
-
-### 🚧 Next Steps (MVP to-do)
-
-1. **Migrate middleware to proxy** (Next.js 16 deprecation warning)
-2. **City search API** - proxy to OpenCage Geocoding API
-   - Existing Shopify API key: `e02ba1c8f7b246628133d374d1b568fe`
-   - Backup: `bae025dc64ac45e78886db5d45327972`
-   - Should return {name, latitude, longitude, timezone_offset_sec}
-3. **Profile submission server action**
-   - Apply true solar time calibration (equation of time formula + longitude difference)
-   - Call `generateBaziReport(tst, gender)`
-   - Save to Supabase `profiles` table
-4. **Profile detail page** `/profiles/[id]` — display Bazi chart, 5 elements, AI report
-5. **AI base report generation** via Gemini API
-   - Reuse proven prompt from V8.5 Shopify version (stored in `central-ai-server.onrender.com` — owner has copies)
-   - ~1500-2000 English words, saved to `profiles.base_report`
-6. **Q&A feature** - free-form user question → AI answer, save to `questions` table
-7. **Profiles list on dashboard** - show user's existing profiles
-
-### ⚠️ Known Issues
-
-- Middleware deprecation warning in dev (not yet migrated to proxy.ts)
-- No error handling in auth callback beyond redirect to `/login?error=auth`
-- No loading states on most pages
-- No mobile responsive testing done yet
-
-## Environment Variables (.env.local)
+```
 NEXT_PUBLIC_SUPABASE_URL=https://cadedntyqimpqabgkrtg.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 SUPABASE_SECRET_KEY=sb_secret_...
 OPENCAGE_API_KEY=e02ba1c8f7b246628133d374d1b568fe
+GEMINI_API_KEY=...
+HTTPS_PROXY=http://127.0.0.1:10808   # 本地开发用，生产不设
+```
 
-Gemini API key still needs to be added.
+---
 
-## Critical Business Rules — DO NOT REWRITE
+## 关键文件结构
 
-The Bazi calculation logic in `lib/bazi/` represents years of refinement. When working on features that touch Bazi calculation:
-
-- **DO NOT** rewrite `lunar.js` or substitute with another library
-- **DO NOT** rewrite cang gan weight logic — 1.0 / 0.5 / 0.3 is correct
-- **DO** preserve 3-pillar mode for unknown-time cases
-- **DO** apply true solar time calibration before calling `generateBaziReport()`
-- The Bazi data is stored in Chinese (庚午, 甲, 木, etc.) — English translation happens in the UI layer
-
-## File Structure
+```
 D:\bazi-master\bazi-app
+├── instrumentation.ts              # undici ProxyAgent 全局代理注入
+├── proxy.ts                        # Next.js 16 session 刷新（替代 middleware.ts）
 ├── app/
-│   ├── page.tsx                    # Landing page
 │   ├── layout.tsx
-│   ├── login/page.tsx              # Magic Link login
-│   ├── auth/callback/route.ts      # OAuth callback
-│   ├── dashboard/
-│   │   ├── page.tsx                # User dashboard
-│   │   └── logout-button.tsx
-│   └── profiles/
-│       └── new/page.tsx            # Create profile form (form only, no submission yet)
+│   ├── globals.css                 # 设计 token、AI 报告样式、向导样式
+│   ├── login/                      # Magic Link 登录页
+│   ├── auth/callback/              # Supabase 回调
+│   ├── dashboard/                  # 档案列表 + 状态角标
+│   ├── profiles/
+│   │   ├── new/                    # 6 步建档向导（ProfileForm + Step1-6）
+│   │   └── [id]/                   # 详情页 + BaseReportSection + actions.ts
+│   └── api/geocode/                # OpenCage 城市搜索代理
 ├── lib/
 │   ├── supabase/
-│   │   ├── client.ts               # Browser client
-│   │   └── server.ts               # Server client with cookies
-│   └── bazi/
-│       ├── lunar.js                # UMD lunar library
-│       └── bazi-calculator-logic.js  # Business logic, exports generateBaziReport
-├── middleware.ts                   # Session refresh (needs migration to proxy.ts)
-├── .env.local
-├── next.config.ts
-├── tsconfig.json
-└── package.json
+│   │   ├── client.ts               # 浏览器客户端
+│   │   └── server.ts               # 服务端客户端 + createAdminClient()
+│   ├── bazi/
+│   │   ├── lunar.js                # 🔴 红线：禁止修改
+│   │   ├── bazi-calculator-logic.js # 🔴 红线：禁止修改
+│   │   └── chart-helpers.ts        # 干支/五行/太岁工具函数
+│   ├── ai/
+│   │   ├── gemini-client.ts        # GoogleGenAI 单例
+│   │   ├── bazi-prompt.ts          # 8 语言 prompt 构建
+│   │   └── generate-report.ts      # 异步生成管线（after() 触发）
+│   └── markdown/
+│       └── renderer.ts             # 零依赖 markdown → HTML 渲染器
+└── DESIGN_TOKENS.md                # 视觉圣经，所有 UI 以此为准
+```
 
-## Owner Preferences
+---
 
-- Explanations in Chinese preferred, but code/UI/errors in English
-- Small steps, verify each works before the next
-- Don't rewrite proven business logic — integrate it
-- Prefer pragmatic solutions over architectural perfection for MVP
+## 数据库 Schema
+
+### `profiles` 表（Stage 1 完整状态）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | uuid PK | |
+| user_id | uuid | → auth.users |
+| name | text | |
+| relation | text | self / family / friend / other |
+| gender | text | male / female |
+| birth_date | date | |
+| birth_time | time | nullable（时辰不明时为 null） |
+| is_time_unknown | boolean | default false |
+| birth_city | text | nullable |
+| longitude | float8 | nullable |
+| timezone_offset_sec | int4 | nullable |
+| pillar_year | text | 年柱干支 |
+| pillar_month | text | 月柱干支 |
+| pillar_day | text | 日柱干支 |
+| pillar_hour | text | 时柱干支，nullable |
+| day_master | text | 日主天干 |
+| day_master_element | text | 日主五行（英文） |
+| five_elements | jsonb | {wood, fire, earth, metal, water: number} |
+| lunar_date | text | 农历日期字符串 |
+| true_solar_time | timestamptz | nullable，经真太阳时校准后的时间 |
+| zodiac | text | 生肖（中文，如"狗"） |
+| luck_cycles | jsonb | StoredLuckCycle[] |
+| base_report | text | AI 生成的完整报告（markdown） |
+| base_report_language | text | default 'en'，8 种语言 |
+| base_report_status | text | default 'pending'；值：pending / generating / done / failed |
+| base_report_error | text | nullable，失败时写入错误信息 |
+| base_report_generated_at | timestamptz | nullable |
+| created_at | timestamptz | default now() |
+| updated_at | timestamptz | auto-updated by trigger |
+
+### `questions` 表（Stage 2 待激活）
+
+用于"一事一问"功能：profile_id、user_id、question (text)、answer (text)、created_at。RLS 策略与 profiles 表一致。
+
+---
+
+## Stage 1 已完成
+
+- Magic Link 登录 + 会话管理
+- 6 步建档向导（relation → name → gender → birth → city → language），self/other 文案自动切换
+- 真太阳时校准（经度偏差 + 均时差方程）
+- 四柱八字计算 + 五行分布 + 大运/流年（lib/bazi/，不可动）
+- Gemini 3.1 Flash-Lite 异步 AI 报告生成，`after()` 后台触发，状态写回 DB
+- Dashboard 档案列表，status badge（pending/generating/done/failed）
+- 详情页：四柱 / 五行 / 大运 / AI 报告，3 秒轮询 + 失败重试
+- 零依赖 markdown 渲染器（[[术语]] 红色 / **关键词** 金色 / ## 标题层级）
+
+---
+
+## Stage 2 待做（按优先级）
+
+1. **详情页布局重构**：左侧栏 + 右侧动态主视图，替换当前竖向卡片堆叠
+2. **今日黄历**：基于档案日主 + 当天流日给今日建议
+3. **一事一问**：自由提问 + AI 回答 + 存 questions 表
+4. **Gemini Pro 付费升级路径**
+5. **RLS 重开 + 精确策略**（目前 RLS 已关，写操作靠 admin key）
+6. **Vercel 部署 + 接 app.bazi-master.com 域名**
+
+---
+
+## 产品红线
+
+- 没有邮箱 gate / teaser / upsell，登录即得完整报告
+- 商业化走 SaaS 订阅 + Pro 模型升级，不走 B2C 漏斗
+- UI 英文，8 种报告语言可选
+- 禅意品牌，`DESIGN_TOKENS.md` 为视觉圣经，色值/字体/组件不得擅改
+
+---
+
+## 开新对话 / 新 Claude Code session 的冷启动
+
+必读顺序：
+1. `PROJECT_STATUS.md`（本文件）——当前状态 + 下一步
+2. `CLAUDE.md`——Stage 1 踩坑清单 + 协作硬规则（含 AGENTS.md 的 Next.js 16 警告）
+3. `DESIGN_TOKENS.md`——所有 UI 改动的视觉基准
+
+任何代码改动必须走：**Phase 0（只读 + 计划）→ 用户 review → Phase 1（改动）→ tsc 验证** 流程。
