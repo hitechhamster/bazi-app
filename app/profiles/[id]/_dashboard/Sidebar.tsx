@@ -1,12 +1,4 @@
-// Dashboard 模块：left identity sidebar with decorative nav — Stage 2 Batch 2A (mock data)
-import type { MockData } from './mock-data'
-
-const NAV_ITEMS = [
-  { label: '命盘总览', zh: '命' },
-  { label: '大运流年', zh: '运' },
-  { label: '十神分布', zh: '神' },
-  { label: 'AI 解读', zh: '读' },
-]
+import type { MockData, MockSubject } from './mock-data'
 
 export default function Sidebar({ data }: { data: MockData }) {
   return (
@@ -15,164 +7,142 @@ export default function Sidebar({ data }: { data: MockData }) {
       flexShrink: 0,
       display: 'flex',
       flexDirection: 'column',
-      gap: '16px',
+      gap: '14px',
     }}>
-      {/* Identity card */}
+      <div style={labelStyle}>SUBJECTS</div>
+
+      {data.subjects.map(s => (
+        <SubjectCard key={s.id} subject={s} />
+      ))}
+
       <div style={{
-        background: 'var(--zen-gold-pale)',
-        border: '1px solid var(--zen-border)',
-        padding: '24px 20px',
+        border: '1px dashed var(--zen-border)',
+        borderRadius: '8px',
+        padding: '10px',
         textAlign: 'center',
+        fontFamily: 'var(--font-ui)',
+        fontSize: '12px',
+        color: 'var(--zen-text-muted)',
+        cursor: 'default',
       }}>
-        {/* Zodiac character */}
-        <div style={{
-          fontFamily: 'var(--font-seal)',
-          fontSize: '3.2rem',
-          color: 'var(--zen-red)',
-          lineHeight: 1,
-          marginBottom: '8px',
-          letterSpacing: '2px',
-        }}>
-          {data.zodiac}
-        </div>
-        <div style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '11px',
-          color: 'var(--zen-text-muted)',
-          letterSpacing: '0.15em',
-          textTransform: 'uppercase',
-          marginBottom: '16px',
-        }}>
-          Year of the {data.zodiacEn}
-        </div>
-
-        {/* Name */}
-        <div style={{
-          fontFamily: 'var(--font-seal)',
-          fontSize: '1.7rem',
-          fontWeight: 700,
-          color: 'var(--zen-ink)',
-          letterSpacing: '6px',
-          marginBottom: '12px',
-        }}>
-          {data.name}
-        </div>
-
-        {/* Badges */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={badgeStyle}>{data.relation}</span>
-          <span style={badgeStyle}>{data.gender}</span>
-        </div>
+        + Add subject
       </div>
 
-      {/* Quick stats */}
-      <div style={{
-        background: 'var(--zen-paper)',
-        border: '1px solid var(--zen-border)',
-        padding: '16px 20px',
-      }}>
-        <StatRow label="Age" value={`~${data.approxAge}`} />
-        <StatRow label="Birth City" value={data.birthCity} />
-        <StatRow label="Day Master" value={`${data.dayMaster} · ${data.dayMasterElement}`} valueColor="var(--zen-red)" />
-        <StatRow label="Strength" value={data.strength} />
-        <StatRow label="Pattern" value={data.pattern} />
-        <StatRow label="Tai Sui" value={data.taiSuiStatus} small />
-      </div>
+      <hr style={{ border: 'none', borderTop: '1px solid var(--zen-border)', margin: 0 }} />
 
-      {/* Decorative VIEW nav */}
-      <div style={{
-        background: 'var(--zen-paper)',
-        border: '1px solid var(--zen-border)',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '10px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.15em',
-          color: 'var(--zen-text-muted)',
-          padding: '10px 20px 6px',
-        }}>
-          Sections
-        </div>
-        {NAV_ITEMS.map((item) => (
-          <div
-            key={item.label}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '10px 20px',
-              borderTop: '1px solid var(--zen-border)',
-              cursor: 'default',
-            }}
-          >
-            <span style={{
-              fontFamily: 'var(--font-seal)',
-              fontSize: '1rem',
-              color: 'var(--zen-red)',
-              width: '20px',
-              textAlign: 'center',
-              flexShrink: 0,
-            }}>
-              {item.zh}
-            </span>
-            <span style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: '12px',
-              color: 'var(--zen-ink)',
-              letterSpacing: '0.05em',
-            }}>
-              {item.label}
-            </span>
-          </div>
-        ))}
-      </div>
+      <div style={labelStyle}>VIEW</div>
+
+      <NavButton active label="Basic Report" labelZh="基础报告" />
+      <NavButton active={false} label="Today's Almanac" labelZh="今日黄历" />
+      <NavButton active={false} label="Ask a Question" labelZh="一事一问" />
     </aside>
   )
 }
 
-function StatRow({
-  label,
-  value,
-  valueColor,
-  small,
-}: {
-  label: string
-  value: string
-  valueColor?: string
-  small?: boolean
-}) {
+function SubjectCard({ subject: s }: { subject: MockSubject }) {
   return (
-    <div style={{ marginBottom: '10px' }}>
+    <div style={{
+      padding: '8px',
+      borderRadius: '8px',
+      background: s.active ? 'var(--zen-gold-pale)' : 'var(--zen-paper)',
+      border: s.active ? '1px solid var(--zen-gold)' : '0.5px solid var(--zen-border)',
+      display: 'grid',
+      gridTemplateColumns: 'auto 1fr',
+      gap: '8px',
+      alignItems: 'center',
+    }}>
       <div style={{
-        fontFamily: 'var(--font-ui)',
-        fontSize: '10px',
-        textTransform: 'uppercase',
-        letterSpacing: '0.1em',
-        color: 'var(--zen-text-muted)',
-        marginBottom: '2px',
+        width: '30px',
+        height: '30px',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+        background: s.active ? 'var(--zen-red)' : 'transparent',
+        border: s.active ? 'none' : '0.5px solid var(--zen-text-muted)',
+        fontFamily: 'var(--font-seal)',
+        fontSize: '14px',
+        color: s.active ? 'white' : 'var(--zen-text-muted)',
       }}>
-        {label}
+        {s.dayMaster}
       </div>
-      <div style={{
-        fontFamily: small ? 'var(--font-ui)' : 'var(--font-main)',
-        fontSize: small ? '11px' : '13px',
-        color: valueColor ?? 'var(--zen-ink)',
-        fontWeight: valueColor ? 700 : 400,
-      }}>
-        {value}
+      <div style={{ minWidth: 0 }}>
+        <div style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: '12px',
+          fontWeight: 500,
+          color: 'var(--zen-ink)',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}>
+          {s.name}
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: '11px',
+          color: s.active ? '#854F0B' : 'var(--zen-text-muted)',
+          marginTop: '1px',
+        }}>
+          {s.age}岁 · {s.dayMasterType}
+        </div>
       </div>
     </div>
   )
 }
 
-const badgeStyle: React.CSSProperties = {
+function NavButton({ active, label, labelZh }: { active: boolean; label: string; labelZh: string }) {
+  if (active) {
+    return (
+      <div style={{
+        background: 'var(--zen-gold-pale)',
+        padding: '9px 8px',
+        borderRadius: '8px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        cursor: 'default',
+      }}>
+        <div style={{
+          width: '3px',
+          height: '20px',
+          background: 'var(--zen-gold)',
+          borderRadius: '2px',
+          flexShrink: 0,
+        }} />
+        <div>
+          <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', fontWeight: 500, color: '#854F0B' }}>
+            {label}
+          </div>
+          <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: '#854F0B', opacity: 0.7 }}>
+            {labelZh}
+          </div>
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div style={{
+      border: '0.5px dashed var(--zen-border)',
+      borderRadius: '8px',
+      padding: '9px 8px',
+      cursor: 'default',
+    }}>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)' }}>
+        {label}
+      </div>
+      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-light)' }}>
+        {labelZh}
+      </div>
+    </div>
+  )
+}
+
+const labelStyle: React.CSSProperties = {
   fontFamily: 'var(--font-ui)',
-  fontSize: '10px',
-  textTransform: 'uppercase',
-  letterSpacing: '0.12em',
+  fontSize: '11px',
+  letterSpacing: '0.2em',
   color: 'var(--zen-text-muted)',
-  border: '1px solid var(--zen-border)',
-  padding: '2px 8px',
+  textTransform: 'uppercase',
 }

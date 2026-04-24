@@ -1,27 +1,42 @@
-// Dashboard 模块：main content grid — Stage 2 Batch 2A (mock data)
 import type { MockData } from './mock-data'
 import BirthMetaStrip from './BirthMetaStrip'
 import DayMasterHero from './DayMasterHero'
 import FourPillarsPanel from './FourPillarsPanel'
 import FiveElementsRadar from './FiveElementsRadar'
 import TenGodsDistribution from './TenGodsDistribution'
+import ChartReadingPanel from './ChartReadingPanel'
 import SpecialPalacesStrip from './SpecialPalacesStrip'
 import LuckCycleTimeline from './LuckCycleTimeline'
 import CurrentLiuNianStrip from './CurrentLiuNianStrip'
+
 export default function DashboardGrid({ data }: { data: MockData }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', minWidth: 0 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+      {/* Row 0: birth meta strip */}
       <BirthMetaStrip data={data} />
-      <DayMasterHero data={data} />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+
+      {/* Row 1: DayMasterHero | FourPillarsPanel */}
+      <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: '16px', alignItems: 'start' }}>
+        <DayMasterHero data={data} />
         <FourPillarsPanel data={data} />
+      </div>
+
+      {/* Row 2: FiveElementsRadar | ChartReadingPanel + TenGodsDistribution */}
+      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '16px', alignItems: 'start' }}>
         <FiveElementsRadar data={data} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <ChartReadingPanel data={data} />
+          <TenGodsDistribution data={data} />
+        </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-        <TenGodsDistribution data={data} />
-        <SpecialPalacesStrip data={data} />
-      </div>
+
+      {/* Row 3: SpecialPalacesStrip */}
+      <SpecialPalacesStrip data={data} />
+
+      {/* Row 4: LuckCycleTimeline */}
       <LuckCycleTimeline data={data} />
+
+      {/* Row 5: CurrentLiuNianStrip */}
       <CurrentLiuNianStrip data={data} />
     </div>
   )
