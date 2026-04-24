@@ -1,5 +1,4 @@
 import type { MockData } from './mock-data'
-import BirthMetaStrip from './BirthMetaStrip'
 import DayMasterHero from './DayMasterHero'
 import FourPillarsPanel from './FourPillarsPanel'
 import FiveElementsRadar from './FiveElementsRadar'
@@ -12,19 +11,16 @@ import CurrentLiuNianStrip from './CurrentLiuNianStrip'
 export default function DashboardGrid({ data }: { data: MockData }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
-      {/* Row 0: birth meta strip */}
-      <BirthMetaStrip data={data} />
-
       {/* Row 1: DayMasterHero | FourPillarsPanel */}
-      <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '6px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '6px', alignItems: 'stretch' }}>
         <DayMasterHero data={data} />
         <FourPillarsPanel data={data} />
       </div>
 
       {/* Row 2: FiveElementsRadar | ChartReadingPanel + TenGodsDistribution */}
-      <div style={{ display: 'grid', gridTemplateColumns: '170px 1fr', gap: '6px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '170px 1fr', gap: '6px', alignItems: 'stretch' }}>
         <FiveElementsRadar data={data} />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
           <ChartReadingPanel data={data} />
           <TenGodsDistribution data={data} />
         </div>

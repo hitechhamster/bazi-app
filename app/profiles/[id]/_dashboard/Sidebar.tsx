@@ -17,7 +17,7 @@ export default function Sidebar({ data }: { data: MockData }) {
 
       <div style={{
         border: '1px dashed var(--zen-border)',
-        borderRadius: '8px',
+        borderRadius: '0',
         padding: '10px',
         textAlign: 'center',
         fontFamily: 'var(--font-ui)',
@@ -43,7 +43,7 @@ function SubjectCard({ subject: s }: { subject: MockSubject }) {
   return (
     <div style={{
       padding: '8px',
-      borderRadius: '8px',
+      borderRadius: '0',
       background: s.active ? 'var(--zen-gold-pale)' : 'var(--zen-paper)',
       border: s.active ? '1px solid var(--zen-gold)' : '0.5px solid var(--zen-border)',
       display: 'grid',
@@ -98,7 +98,7 @@ function NavButton({ active, label, labelZh }: { active: boolean; label: string;
       <div style={{
         background: 'var(--zen-gold-pale)',
         padding: '9px 8px',
-        borderRadius: '8px',
+        borderRadius: '0',
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
@@ -108,7 +108,7 @@ function NavButton({ active, label, labelZh }: { active: boolean; label: string;
           width: '3px',
           height: '20px',
           background: 'var(--zen-gold)',
-          borderRadius: '2px',
+          borderRadius: '0',
           flexShrink: 0,
         }} />
         <div>
@@ -125,7 +125,7 @@ function NavButton({ active, label, labelZh }: { active: boolean; label: string;
   return (
     <div style={{
       border: '0.5px dashed var(--zen-border)',
-      borderRadius: '8px',
+      borderRadius: '0',
       padding: '9px 8px',
       cursor: 'default',
     }}>

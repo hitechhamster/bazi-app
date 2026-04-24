@@ -6,7 +6,7 @@ function NianCell({ n }: { n: MockLiuNianCell }) {
     <div style={{
       textAlign: 'center',
       padding: '4px 1px',
-      borderRadius: '4px',
+      borderRadius: '0',
       background: isCurrent ? 'var(--zen-gold-pale)' : 'var(--zen-paper-deep)',
       border: isCurrent ? '1px solid var(--zen-gold)' : '1px solid transparent',
       opacity: n.state === 'past' ? 0.55 : 1,
@@ -36,7 +36,7 @@ function NianCell({ n }: { n: MockLiuNianCell }) {
 
 export default function CurrentLiuNianStrip({ data }: { data: MockData }) {
   return (
-    <div className="zen-result-card" style={{ padding: '10px' }}>
+    <div className="zen-result-card" style={{ padding: '10px', borderRadius: '0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px' }}>
         <div style={{
           fontFamily: 'var(--font-ui)',

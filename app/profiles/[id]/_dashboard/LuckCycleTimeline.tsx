@@ -7,7 +7,7 @@ function CycleCell({ c }: { c: MockLuckCycle }) {
     <div style={{
       textAlign: 'center',
       padding: '6px 4px',
-      borderRadius: '4px',
+      borderRadius: '0',
       background: isCurrent ? 'var(--zen-gold-pale)' : 'var(--zen-paper-deep)',
       border: isCurrent ? '1px solid var(--zen-gold)' : '1px solid transparent',
       opacity: c.state === 'past' && !isCurrent ? 0.55 : 1,
@@ -33,7 +33,7 @@ function CycleCell({ c }: { c: MockLuckCycle }) {
 
 export default function LuckCycleTimeline({ data }: { data: MockData }) {
   return (
-    <div className="zen-result-card" style={{ padding: '10px' }}>
+    <div className="zen-result-card" style={{ padding: '10px', borderRadius: '0' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px' }}>
         <div style={{
           fontFamily: 'var(--font-ui)',

@@ -25,7 +25,7 @@ export default function FiveElementsRadar({ data }: { data: MockData }) {
   const grids = [0.25, 0.5, 0.75].map(f => ELEMENTS.map(e => pt(e.angleDeg, R * f)))
 
   return (
-    <div className="zen-result-card" style={{ padding: '10px' }}>
+    <div className="zen-result-card" style={{ padding: '10px', alignSelf: 'stretch', display: 'flex', flexDirection: 'column', borderRadius: '0' }}>
       <div style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '11px',
@@ -37,7 +37,7 @@ export default function FiveElementsRadar({ data }: { data: MockData }) {
       }}>
         五行 · Five Elements
       </div>
-      <svg viewBox="0 0 240 240" style={{ width: '100%', maxWidth: '170px', display: 'block', margin: '0 auto' }}>
+      <svg viewBox="0 0 240 240" style={{ width: '100%', height: '100%', display: 'block', margin: 'auto' }}>
         {grids.map((pts, i) => (
           <polygon key={i} points={poly(pts)} fill="none" stroke="var(--zen-border)" strokeWidth="0.5" />
         ))}

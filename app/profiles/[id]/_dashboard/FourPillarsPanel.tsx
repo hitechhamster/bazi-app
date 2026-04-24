@@ -13,7 +13,7 @@ function PillarCard({ p }: { p: MockPillar }) {
     <div style={{
       background: p.isDay ? 'var(--zen-gold-pale)' : 'var(--zen-paper-deep)',
       border: p.isDay ? '1px solid var(--zen-gold)' : '1px solid var(--zen-border)',
-      borderRadius: '4px',
+      borderRadius: '0',
       padding: '6px 2px',
       display: 'flex',
       flexDirection: 'column',
@@ -58,7 +58,7 @@ function PillarCard({ p }: { p: MockPillar }) {
 
 export default function FourPillarsPanel({ data }: { data: MockData }) {
   return (
-    <div className="zen-result-card" style={{ padding: '10px' }}>
+    <div className="zen-result-card" style={{ padding: '10px', borderRadius: '0' }}>
       <div style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '11px',

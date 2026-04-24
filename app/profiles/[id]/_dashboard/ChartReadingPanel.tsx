@@ -21,7 +21,7 @@ function Cell({ label, labelEn, zh, en, accent }: {
 export default function ChartReadingPanel({ data }: { data: MockData }) {
   const r = data.chartReading
   return (
-    <div className="zen-result-card" style={{ padding: '10px' }}>
+    <div className="zen-result-card" style={{ padding: '10px', borderRadius: '0' }}>
       <div style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '11px',

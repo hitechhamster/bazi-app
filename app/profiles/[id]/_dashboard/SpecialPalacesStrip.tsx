@@ -8,7 +8,7 @@ const PALACES = [
 
 export default function SpecialPalacesStrip({ data }: { data: MockData }) {
   return (
-    <div className="zen-result-card" style={{ padding: '8px 12px' }}>
+    <div className="zen-result-card" style={{ padding: '8px 12px', borderRadius: '0' }}>
       <div style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '11px',

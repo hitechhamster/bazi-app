@@ -5,58 +5,69 @@ export default function DayMasterHero({ data }: { data: MockData }) {
     <div style={{
       background: 'var(--zen-paper)',
       border: '0.5px solid rgba(188,45,45,0.12)',
-      borderRadius: '12px',
-      padding: '12px 10px',
+      borderRadius: '0',
+      padding: '14px 10px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: '180px',
+      alignSelf: 'stretch',
+      textAlign: 'center',
+      gap: '12px',
     }}>
-      <div style={labelStyle}>DAY MASTER</div>
-
-      <div style={{
-        fontFamily: 'var(--font-seal)',
-        fontSize: '64px',
-        lineHeight: 1,
-        color: 'var(--zen-red)',
-        fontWeight: 500,
-        margin: '6px 0 4px',
-      }}>
-        {data.dayMaster}
+      {/* Group 1: label + DM identity */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+        <div style={labelStyle}>DAY MASTER</div>
+        <div style={{
+          fontFamily: 'var(--font-seal)',
+          fontSize: '64px',
+          lineHeight: 1,
+          color: 'var(--zen-red)',
+          fontWeight: 500,
+          margin: '4px 0 2px',
+        }}>
+          {data.dayMaster}
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-seal)',
+          fontSize: '14px',
+          color: 'var(--zen-ink)',
+          fontWeight: 500,
+        }}>
+          {data.dayMasterTypeFull}
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-seal)',
+          fontSize: '11px',
+          color: 'var(--zen-ink)',
+        }}>
+          {data.dayMasterMeaning}
+        </div>
       </div>
 
-      <div style={{
-        fontFamily: 'var(--font-seal)',
-        fontSize: '14px',
-        color: 'var(--zen-ink)',
-        fontWeight: 500,
-      }}>
-        {data.dayMasterTypeFull}
+      {/* Group 2: cycle start info */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+        <div style={{ width: '32px', height: '1px', background: 'var(--zen-border)', marginBottom: '6px' }} />
+        <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-ink)' }}>
+          {data.yunDirection} {data.yunDirectionEn}
+        </div>
+        <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-ink)' }}>
+          起运 age {data.startAge}
+        </div>
       </div>
 
-      <div style={{
-        fontFamily: 'var(--font-seal)',
-        fontSize: '11px',
-        color: 'var(--zen-text-muted)',
-        marginTop: '2px',
-      }}>
-        {data.dayMasterMeaning}
-      </div>
-
-      <div style={{
-        width: '40px',
-        height: '1px',
-        background: 'var(--zen-border)',
-        margin: '8px 0',
-      }} />
-
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
-        {data.yunDirection} {data.yunDirectionEn}
-      </div>
-
-      <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', marginTop: '2px' }}>
-        起运 age {data.startAge}
+      {/* Group 3: birth metadata (compact) */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', lineHeight: 1.4 }}>
+        <div style={{ width: '32px', height: '1px', background: 'var(--zen-border)', marginBottom: '6px' }} />
+        <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-ink)' }}>
+          {data.birthMeta.solarDate} · {data.birthMeta.city.replace(/ \d+\.\d+°E/, '')}
+        </div>
+        <div style={{ fontFamily: 'var(--font-seal)', fontSize: '11px', color: 'var(--zen-ink)' }}>
+          {data.birthMeta.lunarDate}
+        </div>
+        <div style={{ fontFamily: 'var(--font-seal)', fontSize: '11px', color: 'var(--zen-ink)' }}>
+          {data.birthMeta.zodiacsCombined}
+        </div>
       </div>
     </div>
   )
@@ -67,6 +78,6 @@ const labelStyle: React.CSSProperties = {
   fontSize: '11px',
   letterSpacing: '0.2em',
   color: 'var(--zen-ink)',
-  fontWeight: 500,
   textTransform: 'uppercase',
+  fontWeight: 500,
 }

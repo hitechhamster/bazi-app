@@ -10,7 +10,7 @@ export default function TenGodsDistribution({ data }: { data: MockData }) {
         display: 'flex',
         width: '100%',
         height: '22px',
-        borderRadius: '4px',
+        borderRadius: '0',
         overflow: 'hidden',
       }}>
         {data.tenGods.map(g => (
@@ -51,7 +51,8 @@ export default function TenGodsDistribution({ data }: { data: MockData }) {
 const cardStyle: React.CSSProperties = {
   background: 'var(--zen-paper)',
   border: '0.5px solid rgba(188,45,45,0.12)',
-  borderRadius: '12px',
+  borderTop: 'none',
+  borderRadius: '0',
   padding: '10px',
 }
 
