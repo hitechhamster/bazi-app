@@ -69,13 +69,10 @@ export default async function DashboardPage() {
     <div className="min-h-screen relative overflow-hidden">
       <div className="zen-circle-bg" style={{ top: '-200px', right: '-200px', left: 'auto' }} />
 
-      <div style={{
-        position: 'relative',
-        zIndex: 10,
-        maxWidth: '1320px',
-        margin: '0 auto',
-        padding: '24px 20px',
-      }}>
+      <div
+        className="max-w-[1320px] mx-auto px-4 lg:px-5 py-6"
+        style={{ position: 'relative', zIndex: 10 }}
+      >
 
         {/* Top bar */}
         <header style={{
@@ -125,11 +122,10 @@ export default async function DashboardPage() {
             <div style={{ ...labelStyle, marginBottom: '12px' }}>
               {list.length} PROFILE{list.length !== 1 ? 'S' : ''} · 共 {list.length} 位
             </div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
-              gap: '12px',
-            }}>
+            <div
+              className="grid grid-cols-1 lg:grid-cols-[repeat(auto-fill,minmax(360px,1fr))]"
+              style={{ gap: '12px' }}
+            >
               {list.map(p => (
                 <ProfileListCard key={p.id} data={p} />
               ))}
