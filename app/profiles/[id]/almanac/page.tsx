@@ -4,6 +4,7 @@ import { after } from 'next/server'
 import Link from 'next/link'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import Sidebar from '../_dashboard/Sidebar'
+import MobileTopNav from '../_dashboard/MobileTopNav'
 import AlmanacSection from './_components/AlmanacSection'
 import {
   buildDashboardData,
@@ -102,14 +103,12 @@ export default async function AlmanacPage({
     <div className="min-h-screen relative overflow-visible">
       <div className="zen-circle-bg" style={{ top: '-200px', right: '-200px', left: 'auto' }} />
 
-      <div style={{
-        position: 'relative',
-        zIndex: 10,
-        maxWidth: '1320px',
-        margin: '0 auto',
-        padding: '24px 20px',
-      }}>
-        <div style={{ marginBottom: '16px' }}>
+      <div
+        className="max-w-[1320px] mx-auto px-4 lg:px-5 py-6"
+        style={{ position: 'relative', zIndex: 10 }}
+      >
+        {/* Back link — desktop only; mobile uses MobileTopNav */}
+        <div className="hidden lg:block" style={{ marginBottom: '16px' }}>
           <Link
             href="/dashboard"
             style={{
@@ -124,22 +123,23 @@ export default async function AlmanacPage({
           </Link>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '220px 1fr',
-          gap: '16px',
-          alignItems: 'start',
-        }}>
-          <div style={{
-            position: 'sticky',
-            top: '16px',
-            maxHeight: 'calc(100vh - 32px)',
-            overflowY: 'auto',
-          }}>
+        <div
+          className="grid grid-cols-1 lg:grid-cols-[220px_1fr]"
+          style={{ gap: '16px', alignItems: 'start' }}
+        >
+          {/* Sticky sidebar — desktop only */}
+          <div
+            className="hidden lg:block"
+            style={{ position: 'sticky', top: '16px', maxHeight: 'calc(100vh - 32px)', overflowY: 'auto' }}
+          >
             <Sidebar data={dashboardData} />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
+            {/* Mobile nav — hidden on desktop */}
+            <div className="lg:hidden">
+              <MobileTopNav profileId={id} />
+            </div>
             <AlmanacSection
               profileId={id}
               initialStatus={initialStatus}

@@ -96,9 +96,8 @@ export default function AlmanacSection({
               marginBottom: '24px',
             }}>
               {reading.poem.map((line, i) => (
-                <div key={i} style={{
+                <div key={i} className="text-[17px] lg:text-[20px]" style={{
                   fontFamily: 'var(--font-seal)',
-                  fontSize: '20px',
                   color: '#854F0B',
                   lineHeight: 2.4,
                   letterSpacing: '0.3em',
