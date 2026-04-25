@@ -1,5 +1,6 @@
 'use server'
 
+import { after } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { getUserLocale } from './preferences'
 
@@ -166,4 +167,122 @@ export async function deleteConversation(
 
   if (error) return { error: error.message }
   return { ok: true }
+}
+
+// ── Message actions ───────────────────────────────────────────────────────────
+
+export async function submitChatMessage(
+  conversationId: string,
+  text: string
+): Promise<{ assistantMessageId: string } | { error: string }> {
+  const trimmed = text.trim()
+  if (!trimmed) return { error: 'Message cannot be empty' }
+  if (trimmed.length > 2000) return { error: 'Message too long (max 2000 chars)' }
+
+  // Auth + conversation ownership check via user-scoped client
+  const userClient = await createClient()
+  const { data: { user } } = await userClient.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { data: convo } = await userClient
+    .from('conversations')
+    .select('id, profile_id')
+    .eq('id', conversationId)
+    .single()
+  if (!convo) return { error: 'Conversation not found' }
+
+  const adminClient = createAdminClient()
+
+  // Compute next turn_number — max existing + 1, or 1 if no messages yet
+  const { data: lastMsg } = await adminClient
+    .from('messages')
+    .select('turn_number')
+    .eq('conversation_id', conversationId)
+    .order('turn_number', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  const nextTurn = (lastMsg?.turn_number ?? 0) + 1
+
+  // Insert user message (immediately done)
+  const { error: userErr } = await adminClient
+    .from('messages')
+    .insert({
+      conversation_id: conversationId,
+      role: 'user',
+      content: trimmed,
+      status: 'done',
+      turn_number: nextTurn,
+    })
+  if (userErr) return { error: userErr.message }
+
+  // Insert assistant placeholder (pending until generation completes)
+  const { data: assistantRow, error: aErr } = await adminClient
+    .from('messages')
+    .insert({
+      conversation_id: conversationId,
+      role: 'assistant',
+      content: '',
+      status: 'pending',
+      turn_number: nextTurn,
+    })
+    .select('id')
+    .single()
+  if (aErr || !assistantRow) return { error: aErr?.message ?? 'Insert failed' }
+
+  // Bump conversation updated_at so it sorts to top of list
+  await adminClient
+    .from('conversations')
+    .update({ updated_at: new Date().toISOString() })
+    .eq('id', conversationId)
+
+  // C2 PLACEHOLDER — replaced by real Gemini call in C4
+  after(() => {
+    generatePlaceholderReply(assistantRow.id)
+  })
+
+  return { assistantMessageId: assistantRow.id }
+}
+
+// Temporary placeholder. C4 will replace with real generate-chat-reply.ts.
+// Not exported — only called via after() in submitChatMessage.
+async function generatePlaceholderReply(assistantMessageId: string): Promise<void> {
+  const adminClient = createAdminClient()
+  try {
+    await adminClient
+      .from('messages')
+      .update({ status: 'generating' })
+      .eq('id', assistantMessageId)
+
+    // Simulate AI thinking
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+
+    await adminClient
+      .from('messages')
+      .update({
+        status: 'done',
+        content: '[Placeholder reply — C4 will wire actual Gemini generation.]',
+      })
+      .eq('id', assistantMessageId)
+  } catch (err) {
+    await adminClient
+      .from('messages')
+      .update({
+        status: 'failed',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+      .eq('id', assistantMessageId)
+  }
+}
+
+export async function getMessageStatus(
+  messageId: string
+): Promise<{ message: Message } | { error: string }> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('id', messageId)
+    .single()
+  if (error || !data) return { error: error?.message ?? 'Message not found' }
+  return { message: data as Message }
 }
