@@ -1,15 +1,18 @@
 'use client'
 
-import type { Conversation, Message } from '@/lib/actions/conversations'
+import type { Conversation, ConversationListItem, Message } from '@/lib/actions/conversations'
+import ChatHeader from './ChatHeader'
 import MessageList from './MessageList'
 import ChatInput from './ChatInput'
 
 export default function ChatSection({
   conversation,
+  allConversations,
   messages,
-  profileId: _profileId,
+  profileId,
 }: {
   conversation: Conversation
+  allConversations: ConversationListItem[]
   messages: Message[]
   profileId: string
 }) {
@@ -40,22 +43,13 @@ export default function ChatSection({
       </div>
 
       <div className="zen-result-card">
-        {/* Conversation title strip — C3 will add history toggle + new button */}
-        <div style={{
-          marginBottom: '20px',
-          paddingBottom: '12px',
-          borderBottom: '1px solid var(--zen-gold-pale)',
-        }}>
-          <span style={{
-            fontFamily: 'var(--font-ui)',
-            fontSize: '11px',
-            letterSpacing: '0.08em',
-            color: 'var(--zen-text-muted)',
-            textTransform: 'uppercase',
-          }}>
-            {conversation.title}
-          </span>
-        </div>
+        {/* Header strip: title + New + History toggle */}
+        <ChatHeader
+          currentConversationId={conversation.id}
+          currentTitle={conversation.title}
+          allConversations={allConversations}
+          profileId={profileId}
+        />
 
         {/* Message thread */}
         <MessageList messages={messages} />

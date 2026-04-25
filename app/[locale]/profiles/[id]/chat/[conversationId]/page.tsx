@@ -12,7 +12,7 @@ import {
   type ProfileRow,
   type SubjectRow,
 } from '../../_dashboard/build-dashboard-data'
-import { getConversation } from '@/lib/actions/conversations'
+import { getConversation, getConversationsForProfile } from '@/lib/actions/conversations'
 
 export default async function ChatConversationPage({
   params,
@@ -73,8 +73,12 @@ export default async function ChatConversationPage({
   const report = generateBaziReport(tst, gender) as unknown as BaziReportRaw
   const dashboardData = buildDashboardData(profile as unknown as ProfileRow, subjects, report)
 
-  // Fetch conversation + messages
-  const convoResult = await getConversation(conversationId)
+  // Fetch conversation + messages + sibling conversation list (for history panel)
+  const [convoResult, listResult] = await Promise.all([
+    getConversation(conversationId),
+    getConversationsForProfile(id),
+  ])
+  const allConversations = 'conversations' in listResult ? listResult.conversations : []
 
   const t = await getTranslations('profileReport')
 
@@ -148,6 +152,7 @@ export default async function ChatConversationPage({
 
             <ChatSection
               conversation={conversation}
+              allConversations={allConversations}
               messages={messages}
               profileId={id}
             />
