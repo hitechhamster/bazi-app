@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { submitQuestion } from '@/lib/actions/submit-question'
 import type { QuestionRow } from '@/lib/actions/get-questions'
 import QuestionInput from './QuestionInput'
@@ -16,6 +17,7 @@ export default function AskSection({
   profileId: string
   initialQuestions: QuestionRow[]
 }) {
+  const t = useTranslations('ask')
   const router = useRouter()
   const [text, setText] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -51,7 +53,7 @@ export default function AskSection({
         router.refresh()
       }
     } catch {
-      setError('Something went wrong. Please try again.')
+      setError(t('error.generic'))
     } finally {
       setSubmitting(false)
     }
@@ -69,7 +71,7 @@ export default function AskSection({
           letterSpacing: '0.05em',
           margin: 0,
         }}>
-          Ask a Question · 问命
+          {t('title')}
         </h2>
         <p style={{
           fontFamily: 'var(--font-ui)',
@@ -78,7 +80,7 @@ export default function AskSection({
           marginTop: '6px',
           marginBottom: 0,
         }}>
-          Pose a question about your destiny chart.
+          {t('subtitle')}
         </p>
       </div>
 
@@ -95,7 +97,7 @@ export default function AskSection({
 
         {/* Preset buttons */}
         <div style={{ marginTop: '12px' }}>
-          <PresetButtons onPick={(t) => setText(t)} />
+          <PresetButtons onPick={(v) => setText(v)} />
         </div>
 
         {/* Divider */}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { renderBaziMarkdown } from '@/lib/markdown/renderer'
 import { getDailyReadingStatus, triggerDailyReading, type DailyReading, type DailyStatus } from '../../actions'
 
@@ -13,6 +14,8 @@ export default function AlmanacSection({
   initialStatus: DailyStatus
   initialReading: DailyReading | null
 }) {
+  const t = useTranslations('almanac')
+
   const [status, setStatus] = useState<DailyStatus>(initialStatus)
   const [reading, setReading] = useState<DailyReading | null>(initialReading)
   const [error, setError] = useState<string | null>(null)
@@ -62,7 +65,7 @@ export default function AlmanacSection({
           letterSpacing: '0.05em',
           margin: 0,
         }}>
-          Today&apos;s Almanac · 今日黄历
+          {t('title')}
         </h2>
         <p style={{
           fontFamily: 'var(--font-ui)',
@@ -71,7 +74,7 @@ export default function AlmanacSection({
           marginTop: '6px',
           marginBottom: 0,
         }}>
-          Personalized daily reading based on your Four Pillars
+          {t('subtitle')}
         </p>
       </div>
 
@@ -79,10 +82,8 @@ export default function AlmanacSection({
         {(status === 'pending' || status === 'generating') && (
           <div style={{ textAlign: 'center', padding: '48px 0' }}>
             <div className="reading-spinner" style={{ margin: '0 auto 20px' }} />
-            <p className="reading-loading-text">Consulting the almanac...</p>
-            <p className="reading-loading-sub">
-              Generating your personalized daily reading. This takes about 15–30 seconds.
-            </p>
+            <p className="reading-loading-text">{t('loading.consulting')}</p>
+            <p className="reading-loading-sub">{t('loading.hint')}</p>
           </div>
         )}
 
@@ -123,7 +124,7 @@ export default function AlmanacSection({
               color: 'var(--zen-ink)',
               marginBottom: '8px',
             }}>
-              Could not generate today&apos;s reading.
+              {t('error.failed')}
             </p>
             {error && (
               <p style={{
@@ -150,7 +151,7 @@ export default function AlmanacSection({
                 opacity: retrying ? 0.6 : 1,
               }}
             >
-              {retrying ? 'Retrying...' : 'Try Again'}
+              {retrying ? t('error.retrying') : t('error.tryAgain')}
             </button>
           </div>
         )}

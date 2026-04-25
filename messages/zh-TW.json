@@ -114,6 +114,47 @@
       "retrying": "重試中..."
     }
   },
+  "almanac": {
+    "title": "今日黃曆 · Today's Almanac",
+    "subtitle": "基於四柱的個人每日運勢解讀",
+    "loading": {
+      "consulting": "正在查閱黃曆...",
+      "hint": "正在生成您的每日個人解讀，大約需要 15–30 秒。"
+    },
+    "error": {
+      "failed": "今日解讀生成失敗。",
+      "retrying": "重試中...",
+      "tryAgain": "重試"
+    }
+  },
+  "ask": {
+    "title": "一事一問 · Ask a Question",
+    "subtitle": "就您的命盤提出問題。",
+    "emptyState": "還沒有提問。在上方提出您的第一個問題吧。",
+    "presets": [
+      "今年的運勢如何？",
+      "事業方面有什麼需要注意的？",
+      "感情和婚姻何時會有進展？",
+      "哪個大運對我最有利？"
+    ],
+    "input": {
+      "placeholder": "就您的命盤提問...",
+      "submit": "提問",
+      "submitting": "提交中..."
+    },
+    "item": {
+      "questionLabel": "問",
+      "answerLabel": "答",
+      "generatingAnswer": "正在生成您的回答...",
+      "generationFailed": "生成失敗。",
+      "pleaseRetry": "請重試。",
+      "retry": "重試",
+      "retrying": "重試中..."
+    },
+    "error": {
+      "generic": "出問題了，請重試。"
+    }
+  },
   "errors": {
     "generic": "出問題了。",
     "network": "網路錯誤,請重試。",

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import Sidebar from '../_dashboard/Sidebar'
 import MobileTopNav from '../_dashboard/MobileTopNav'
@@ -71,6 +72,8 @@ export default async function AskPage({
 
   const { questions } = await getQuestionsForProfile(id)
 
+  const t = await getTranslations('profileReport')
+
   return (
     <div className="min-h-screen relative overflow-visible">
       <div className="zen-circle-bg" style={{ top: '-200px', right: '-200px', left: 'auto' }} />
@@ -91,7 +94,7 @@ export default async function AskPage({
               letterSpacing: '0.08em',
             }}
           >
-            ← Dashboard
+            {t('backToDashboard')}
           </Link>
         </div>
 

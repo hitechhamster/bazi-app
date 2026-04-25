@@ -114,6 +114,47 @@
       "retrying": "Retrying..."
     }
   },
+  "almanac": {
+    "title": "Today's Almanac · 今日黄历",
+    "subtitle": "Personalized daily reading based on your Four Pillars",
+    "loading": {
+      "consulting": "Consulting the almanac...",
+      "hint": "Generating your personalized daily reading. This takes about 15–30 seconds."
+    },
+    "error": {
+      "failed": "Could not generate today's reading.",
+      "retrying": "Retrying...",
+      "tryAgain": "Try Again"
+    }
+  },
+  "ask": {
+    "title": "Ask a Question · 问命",
+    "subtitle": "Pose a question about your destiny chart.",
+    "emptyState": "No questions yet. Pose your first one above.",
+    "presets": [
+      "How is my fortune this year?",
+      "What should I watch out for in my career?",
+      "When will love and marriage progress?",
+      "Which Luck Pillar is most favorable for me?"
+    ],
+    "input": {
+      "placeholder": "Ask anything about your destiny chart...",
+      "submit": "Ask",
+      "submitting": "Submitting..."
+    },
+    "item": {
+      "questionLabel": "Question",
+      "answerLabel": "Answer",
+      "generatingAnswer": "Generating your answer...",
+      "generationFailed": "Generation failed.",
+      "pleaseRetry": "Please try again.",
+      "retry": "Retry",
+      "retrying": "Retrying..."
+    },
+    "error": {
+      "generic": "Something went wrong. Please try again."
+    }
+  },
   "errors": {
     "generic": "Something went wrong.",
     "network": "Network error. Please try again.",

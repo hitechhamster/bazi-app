@@ -1,4 +1,9 @@
+'use client'
+
+import { useTranslations } from 'next-intl'
+
 export default function EmptyState() {
+  const t = useTranslations('ask')
   return (
     <div style={{
       textAlign: 'center',
@@ -9,7 +14,7 @@ export default function EmptyState() {
       color: '#888',
       letterSpacing: '0.05em',
     }}>
-      No questions yet. Pose your first one above.
+      {t('emptyState')}
     </div>
   )
 }

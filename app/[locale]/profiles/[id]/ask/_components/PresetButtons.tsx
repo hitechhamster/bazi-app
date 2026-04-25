@@ -1,20 +1,18 @@
 'use client'
 
-const PRESETS = [
-  'How is my fortune this year?',
-  'What should I watch out for in my career?',
-  'When will love and marriage progress?',
-  'Which Luck Pillar is most favorable for me?',
-]
+import { useTranslations } from 'next-intl'
 
 export default function PresetButtons({
   onPick,
 }: {
   onPick: (text: string) => void
 }) {
+  const t = useTranslations('ask')
+  const presets = t.raw('presets') as string[]
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: '8px' }}>
-      {PRESETS.map((preset) => (
+      {presets.map((preset) => (
         <button
           key={preset}
           onClick={() => onPick(preset)}

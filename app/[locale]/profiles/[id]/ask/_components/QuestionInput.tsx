@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+
 const MAX_LENGTH = 500
 
 export default function QuestionInput({
@@ -17,6 +19,7 @@ export default function QuestionInput({
   error: string | null
   onSubmit: () => void
 }) {
+  const t = useTranslations('ask.input')
   const disabled = submitting || text.trim().length === 0
 
   return (
@@ -24,7 +27,7 @@ export default function QuestionInput({
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Ask anything about your destiny chart..."
+        placeholder={t('placeholder')}
         rows={4}
         maxLength={MAX_LENGTH}
         style={{
@@ -82,7 +85,7 @@ export default function QuestionInput({
             if (!disabled) e.currentTarget.style.background = '#854F0B'
           }}
         >
-          {submitting ? 'Submitting...' : 'Ask'}
+          {submitting ? t('submitting') : t('submit')}
         </button>
       </div>
 

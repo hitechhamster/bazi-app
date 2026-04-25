@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import { after } from 'next/server'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import Sidebar from '../_dashboard/Sidebar'
 import MobileTopNav from '../_dashboard/MobileTopNav'
@@ -102,6 +103,8 @@ export default async function AlmanacPage({
   const initialStatus = ((profile.daily_reading_status as string) ?? 'pending') as DailyStatus
   const initialReading = alreadyDone ? (profile.daily_reading as DailyReading) : null
 
+  const t = await getTranslations('profileReport')
+
   return (
     <div className="min-h-screen relative overflow-visible">
       <div className="zen-circle-bg" style={{ top: '-200px', right: '-200px', left: 'auto' }} />
@@ -122,7 +125,7 @@ export default async function AlmanacPage({
               letterSpacing: '0.08em',
             }}
           >
-            ← Dashboard
+            {t('backToDashboard')}
           </Link>
         </div>
 

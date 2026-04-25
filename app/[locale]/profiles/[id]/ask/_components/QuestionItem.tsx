@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { renderBaziMarkdown } from '@/lib/markdown/renderer'
 import { getQuestionStatus } from '@/lib/actions/get-questions'
 import { retryQuestion } from '@/lib/actions/submit-question'
@@ -15,12 +16,13 @@ const labelStyle: React.CSSProperties = {
   marginBottom: '6px',
 }
 
-function formatTimestamp(isoString: string): string {
+function formatTimestamp(isoString: string, locale: string): string {
   const d = new Date(isoString)
-  const date = new Intl.DateTimeFormat('en-US', {
+  const intlLocale = locale === 'zh-CN' ? 'zh-Hans-CN' : locale === 'zh-TW' ? 'zh-Hant-TW' : 'en-US'
+  const date = new Intl.DateTimeFormat(intlLocale, {
     month: 'short', day: 'numeric', year: 'numeric',
   }).format(d)
-  const time = new Intl.DateTimeFormat('en-US', {
+  const time = new Intl.DateTimeFormat(intlLocale, {
     hour: '2-digit', minute: '2-digit', hour12: false,
   }).format(d)
   return `${date} · ${time}`
@@ -33,6 +35,9 @@ export default function QuestionItem({
   question: QuestionRow
   isFirst: boolean
 }) {
+  const t = useTranslations('ask.item')
+  const locale = useLocale()
+
   const [status, setStatus] = useState(q.status)
   const [answer, setAnswer] = useState<string | null>(q.answer)
   const [itemError, setItemError] = useState<string | null>(q.error)
@@ -84,14 +89,14 @@ export default function QuestionItem({
     }}>
       {/* Question label + timestamp */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '6px' }}>
-        <span style={labelStyle}>Question</span>
+        <span style={labelStyle}>{t('questionLabel')}</span>
         <span style={{
           fontFamily: 'var(--font-ui)',
           fontSize: '11px',
           color: 'var(--zen-text-muted)',
           letterSpacing: '0.02em',
         }}>
-          {formatTimestamp(q.created_at)}
+          {formatTimestamp(q.created_at, locale)}
         </span>
       </div>
 
@@ -107,13 +112,13 @@ export default function QuestionItem({
       </div>
 
       {/* Answer label */}
-      <div style={{ ...labelStyle, marginBottom: '8px' }}>Answer</div>
+      <div style={{ ...labelStyle, marginBottom: '8px' }}>{t('answerLabel')}</div>
 
       {/* Answer body — mirrors BaseReportSection's generating UI */}
       {(status === 'pending' || status === 'generating') && (
         <div style={{ textAlign: 'center', padding: '16px 0' }}>
           <div className="reading-spinner" style={{ margin: '0 auto 12px' }} />
-          <p className="reading-loading-text">Generating your answer...</p>
+          <p className="reading-loading-text">{t('generatingAnswer')}</p>
         </div>
       )}
 
@@ -132,7 +137,7 @@ export default function QuestionItem({
             color: 'var(--zen-red)',
             margin: 0,
           }}>
-            Generation failed. {itemError ?? 'Please try again.'}
+            {t('generationFailed')} {itemError ?? t('pleaseRetry')}
           </p>
           <button
             onClick={handleRetry}
@@ -149,7 +154,7 @@ export default function QuestionItem({
               flexShrink: 0,
             }}
           >
-            {retrying ? 'Retrying...' : 'Retry'}
+            {retrying ? t('retrying') : t('retry')}
           </button>
         </div>
       )}
