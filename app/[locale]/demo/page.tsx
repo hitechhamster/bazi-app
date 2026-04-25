@@ -20,11 +20,22 @@ import DemoBanner from './_components/DemoBanner'
 import LockedSection from './_components/LockedSection'
 
 // Demo chart is public — no auth required, served via admin client
-export default async function DemoPage() {
+export default async function DemoPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
   const t = await getTranslations('demo')
   const tHome = await getTranslations('home')
 
-  const demoId = process.env.DEMO_PROFILE_ID
+  const demoIdByLocale: Record<string, string | undefined> = {
+    'en': process.env.DEMO_PROFILE_ID_EN,
+    'zh-CN': process.env.DEMO_PROFILE_ID_ZH_CN,
+    'zh-TW': process.env.DEMO_PROFILE_ID_ZH_TW,
+  }
+  const demoId = demoIdByLocale[locale]
+  const envVarName = locale === 'zh-CN'
+    ? 'DEMO_PROFILE_ID_ZH_CN'
+    : locale === 'zh-TW'
+      ? 'DEMO_PROFILE_ID_ZH_TW'
+      : 'DEMO_PROFILE_ID_EN'
 
   // Graceful fallback — render informative message instead of crashing
   if (!demoId) {
@@ -51,8 +62,8 @@ export default async function DemoPage() {
             maxWidth: '400px',
             lineHeight: 1.6,
           }}>
-            Demo not configured.
-            Set <code style={{ fontFamily: 'monospace', color: '#854F0B' }}>DEMO_PROFILE_ID</code> in{' '}
+            Demo not configured for locale &lsquo;{locale}&rsquo;.
+            Set <code style={{ fontFamily: 'monospace', color: '#854F0B' }}>{envVarName}</code> in{' '}
             <code style={{ fontFamily: 'monospace', color: '#854F0B' }}>.env.local</code> and restart.
           </p>
           <Link
