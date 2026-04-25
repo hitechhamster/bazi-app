@@ -195,6 +195,63 @@
       "startFreshLink": "start a new one"
     }
   },
+  "home": {
+    "topNav": {
+      "login": "Log in"
+    },
+    "hero": {
+      "brandLine1": "命主",
+      "brandLine2": "BAZI MASTER",
+      "tagline": "Your personal Bazi chart · AI reading",
+      "primaryCTA": "Generate my chart →",
+      "secondaryCTA": "See sample",
+      "scrollHint": "Scroll to learn more"
+    },
+    "features": {
+      "title": "What Bazi Master can do for you",
+      "card1Caption": "Chart · Four Pillars",
+      "card1Title": "Complete chart",
+      "card1Desc": "Full four-pillar arrangement with Five Elements distribution, Luck Pillars, and annual cycles.",
+      "card2Caption": "AI Reading",
+      "card2Title": "Deep AI analysis",
+      "card2Desc": "Several thousand words of structured analysis interpreting your core chart and life trajectory.",
+      "card3Caption": "Conversation",
+      "card3Title": "Multi-turn questions",
+      "card3Desc": "Ask anything about your chart in an ongoing AI conversation grounded in your specific Bazi.",
+      "alsoNote": "Also: daily personalized fortune readings with classical poetry."
+    },
+    "what": {
+      "title": "What is Bazi",
+      "p1": "Bazi, also known as the \"Four Pillars,\" maps your moment of birth onto coordinates of the Year, Month, Day, and Hour pillars.",
+      "p2": "It records the configuration of Heavenly Stems and Earthly Branches at the moment you entered the world — a record of celestial and terrestrial energy.",
+      "p3": "For thousands of years, Chinese readers have used Bazi to understand their personality tendencies, life rhythms, and major decisions. It is not fortune-telling; it is a framework for self-knowledge based on time and energy.",
+      "bridge": "Bazi Master combines this tradition with AI, turning thousand-year-old practice into insights you can read and use."
+    },
+    "process": {
+      "title": "How your chart is computed",
+      "step1Title": "You enter",
+      "step1Desc": "Birth date, time, and place",
+      "step2Title": "We correct",
+      "step2Desc": "True solar time at your location",
+      "step3Title": "We arrange",
+      "step3Desc": "Four pillars, Ten Gods, hidden stems",
+      "step4Title": "AI reads",
+      "step4Desc": "Thousand-word structured analysis",
+      "footnote": "Not a template generator. We use classical 《渊海子平》 ranking logic, real true-solar-time correction based on your birth coordinates, and AI reading grounded in the structured chart — never abstract guesswork."
+    },
+    "cta": {
+      "title": "See your chart",
+      "primaryCTA": "Generate my chart →",
+      "subText": "One minute · Completely free"
+    },
+    "footer": {
+      "disclaimer": "Bazi Master is for personal reference only. It does not constitute medical, legal, or financial advice.",
+      "privacy": "Privacy",
+      "terms": "Disclaimer",
+      "contact": "Contact",
+      "copyright": "© 2026 Bazi Master"
+    }
+  },
   "errors": {
     "generic": "Something went wrong.",
     "network": "Network error. Please try again.",

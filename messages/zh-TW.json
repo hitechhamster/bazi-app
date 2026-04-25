@@ -195,6 +195,63 @@
       "startFreshLink": "開新對話"
     }
   },
+  "home": {
+    "topNav": {
+      "login": "登入"
+    },
+    "hero": {
+      "brandLine1": "命主",
+      "brandLine2": "BAZI MASTER",
+      "tagline": "你的專屬八字命盤 · AI 解讀",
+      "primaryCTA": "生成我的命盤 →",
+      "secondaryCTA": "看範例",
+      "scrollHint": "向下了解"
+    },
+    "features": {
+      "title": "你能用 Bazi Master 做什麼",
+      "card1Caption": "命盤 · 四柱五行",
+      "card1Title": "完整命盤",
+      "card1Desc": "四柱排盤、五行強弱分布、大運流年,每一根柱、每一個十神都對得起命理傳統。",
+      "card2Caption": "AI 解讀",
+      "card2Title": "深度 AI 解讀",
+      "card2Desc": "數千字結構化分析,從核心命盤出發,解讀你的人生軌跡和重要節點。",
+      "card3Caption": "多輪問答",
+      "card3Title": "AI 命理對話",
+      "card3Desc": "圍繞你的命盤問任何問題。AI 記得上下文,可以連續追問、深入探討。",
+      "alsoNote": "還有今日黃曆:每日個性化運勢 + 命理詩歌。"
+    },
+    "what": {
+      "title": "什麼是八字",
+      "p1": "八字,即「四柱」——年柱、月柱、日柱、時柱。",
+      "p2": "以你出生的那一刻為座標,記錄天干地支在天地間的能量配置。",
+      "p3": "中國人千年來用它理解自己的性格傾向、運勢節奏、人生抉擇。它不是預言未來的玄學,而是一套基於時間和能量的自我認知工具。",
+      "bridge": "Bazi Master 把傳統命理與 AI 結合,把千年沉澱變成你看得懂、用得上的洞察。"
+    },
+    "process": {
+      "title": "你的命盤怎麼算出來",
+      "step1Title": "你輸入",
+      "step1Desc": "出生日期、時間、地點",
+      "step2Title": "我們校正",
+      "step2Desc": "你出生地的真太陽時",
+      "step3Title": "我們排盤",
+      "step3Desc": "四柱、十神、藏干",
+      "step4Title": "AI 解讀",
+      "step4Desc": "千字結構化深度分析",
+      "footnote": "不是套話生成器。我們採用經典《淵海子平》排盤邏輯,根據你的精確出生地做真太陽時校正,AI 解讀基於結構化排盤結果——絕非抽象套話。"
+    },
+    "cta": {
+      "title": "看見你的命盤",
+      "primaryCTA": "生成我的命盤 →",
+      "subText": "一分鐘生成 · 完整免費"
+    },
+    "footer": {
+      "disclaimer": "命主僅供個人參考,不構成醫療、法律或財務建議。",
+      "privacy": "隱私",
+      "terms": "免責聲明",
+      "contact": "聯繫",
+      "copyright": "© 2026 Bazi Master"
+    }
+  },
   "errors": {
     "generic": "出問題了。",
     "network": "網路錯誤,請重試。",

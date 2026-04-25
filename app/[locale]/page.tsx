@@ -1,34 +1,49 @@
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import BrandMark from '@/components/BrandMark'
+import HomeHero from './_home/HomeHero'
+import HomeFeatures from './_home/HomeFeatures'
+import HomeWhatIsBazi from './_home/HomeWhatIsBazi'
+import HomeProcess from './_home/HomeProcess'
+import HomeCTA from './_home/HomeCTA'
+import HomeFooter from './_home/HomeFooter'
 
 export default async function HomePage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const t = await getTranslations('home')
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-xl text-center">
-        <h1 className="text-4xl font-bold mb-4">Bazi Master</h1>
-        <p className="text-gray-600 mb-8">
-          Precision BaZi analysis powered by AI
-        </p>
+    <main style={{ minHeight: '100vh', backgroundColor: 'var(--zen-paper)', position: 'relative' }}>
+      <div className="zen-circle-bg" aria-hidden="true" />
 
-        {user ? (
-          <Link
-            href="/dashboard"
-            className="inline-block bg-black text-white px-8 py-3 rounded-md hover:bg-gray-800"
-          >
-            Go to Dashboard
-          </Link>
-        ) : (
-          <Link
-            href="/login"
-            className="inline-block bg-black text-white px-8 py-3 rounded-md hover:bg-gray-800"
-          >
-            Log in to get started
-          </Link>
-        )}
-      </div>
-    </div>
+      {/* Top nav: BrandMark left, Login right */}
+      <header style={{
+        position: 'relative',
+        zIndex: 10,
+        padding: '24px 32px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottom: '1px solid var(--zen-gold-pale)',
+      }}>
+        <BrandMark variant="full" size="small" href="/" />
+        <Link href="/login" style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: '11px',
+          color: '#854F0B',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          textDecoration: 'none',
+        }}>
+          {t('topNav.login')}
+        </Link>
+      </header>
+
+      <HomeHero />
+      <HomeFeatures />
+      <HomeWhatIsBazi />
+      <HomeProcess />
+      <HomeCTA />
+      <HomeFooter />
+    </main>
   )
 }

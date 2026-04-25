@@ -195,6 +195,63 @@
       "startFreshLink": "开新对话"
     }
   },
+  "home": {
+    "topNav": {
+      "login": "登录"
+    },
+    "hero": {
+      "brandLine1": "命主",
+      "brandLine2": "BAZI MASTER",
+      "tagline": "你的专属八字命盘 · AI 解读",
+      "primaryCTA": "生成我的命盘 →",
+      "secondaryCTA": "看示例",
+      "scrollHint": "向下了解"
+    },
+    "features": {
+      "title": "你能用 Bazi Master 做什么",
+      "card1Caption": "命盘 · 四柱五行",
+      "card1Title": "完整命盘",
+      "card1Desc": "四柱排盘、五行强弱分布、大运流年,每一根柱、每一个十神都对得起命理传统。",
+      "card2Caption": "AI 解读",
+      "card2Title": "深度 AI 解读",
+      "card2Desc": "数千字结构化分析,从核心命盘出发,解读你的人生轨迹和重要节点。",
+      "card3Caption": "多轮问答",
+      "card3Title": "AI 命理对话",
+      "card3Desc": "围绕你的命盘问任何问题。AI 记得上下文,可以连续追问、深入探讨。",
+      "alsoNote": "还有今日黄历:每日个性化运势 + 命理诗歌。"
+    },
+    "what": {
+      "title": "什么是八字",
+      "p1": "八字,即\"四柱\"——年柱、月柱、日柱、时柱。",
+      "p2": "以你出生的那一刻为坐标,记录天干地支在天地间的能量配置。",
+      "p3": "中国人千年来用它理解自己的性格倾向、运势节奏、人生抉择。它不是预言未来的玄学,而是一套基于时间和能量的自我认知工具。",
+      "bridge": "Bazi Master 把传统命理与 AI 结合,把千年沉淀变成你看得懂、用得上的洞察。"
+    },
+    "process": {
+      "title": "你的命盘怎么算出来",
+      "step1Title": "你输入",
+      "step1Desc": "出生日期、时间、地点",
+      "step2Title": "我们校正",
+      "step2Desc": "你出生地的真太阳时",
+      "step3Title": "我们排盘",
+      "step3Desc": "四柱、十神、藏干",
+      "step4Title": "AI 解读",
+      "step4Desc": "千字结构化深度分析",
+      "footnote": "不是套话生成器。我们采用经典《渊海子平》排盘逻辑,根据你的精确出生地做真太阳时校正,AI 解读基于结构化排盘结果——绝非抽象套话。"
+    },
+    "cta": {
+      "title": "看见你的命盘",
+      "primaryCTA": "生成我的命盘 →",
+      "subText": "一分钟生成 · 完整免费"
+    },
+    "footer": {
+      "disclaimer": "命主仅供个人参考,不构成医疗、法律或财务建议。",
+      "privacy": "隐私",
+      "terms": "免责声明",
+      "contact": "联系",
+      "copyright": "© 2026 Bazi Master"
+    }
+  },
   "errors": {
     "generic": "出问题了。",
     "network": "网络出错,请重试。",
