@@ -16,7 +16,7 @@ import {
 import { type DailyReading, type DailyStatus } from '../actions'
 import { generateDailyReading } from '@/lib/ai/generate-daily'
 import { createAdminClient } from '@/lib/supabase/server'
-import { getUserLocale } from '@/lib/actions/preferences'
+import { getLocale } from 'next-intl/server'
 
 export default async function AlmanacPage({
   params,
@@ -89,8 +89,8 @@ export default async function AlmanacPage({
       .update({ daily_reading_status: 'pending', daily_reading_error: null })
       .eq('id', id)
 
-    // Capture locale before after() — getUserLocale() uses cookies, cannot run inside after()
-    const locale = await getUserLocale()
+    // Capture locale before after() — getLocale() reads request context, unavailable in after()
+    const locale = await getLocale()
     after(async () => {
       try {
         await generateDailyReading(id, locale)

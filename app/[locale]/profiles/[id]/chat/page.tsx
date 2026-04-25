@@ -7,7 +7,8 @@ export default async function ChatIndexPage({
 }: {
   params: Promise<{ locale: string; id: string }>
 }) {
-  const { id } = await params
+  const { locale, id } = await params
+  const localePrefix = locale === 'en' ? '' : `/${locale}`
 
   // Auth + ownership check
   const supabase = await createClient()
@@ -27,7 +28,7 @@ export default async function ChatIndexPage({
   const result = await getConversationsForProfile(id)
   if ('conversations' in result && result.conversations.length > 0) {
     // Already sorted by updated_at desc — first is most recent
-    redirect(`/profiles/${id}/chat/${result.conversations[0].id}`)
+    redirect(`${localePrefix}/profiles/${id}/chat/${result.conversations[0].id}`)
   }
 
   // No conversations yet — create one and redirect to it
@@ -46,5 +47,5 @@ export default async function ChatIndexPage({
     )
   }
 
-  redirect(`/profiles/${id}/chat/${created.conversationId}`)
+  redirect(`${localePrefix}/profiles/${id}/chat/${created.conversationId}`)
 }

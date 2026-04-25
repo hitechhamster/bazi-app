@@ -3,7 +3,7 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { after } from 'next/server'
 import { generateAndSaveReport } from '@/lib/ai/generate-report'
-import { getUserLocale } from '@/lib/actions/preferences'
+import { getLocale } from 'next-intl/server'
 
 export type ReportStatus =
   | 'pending'
@@ -73,8 +73,8 @@ export async function retryReport(profileId: string): Promise<{ ok: boolean; err
     })
     .eq('id', profileId)
 
-  // Capture locale before after() — getUserLocale() uses cookies, cannot run inside after()
-  const locale = await getUserLocale()
+  // Capture locale before after() — getLocale() reads request context, unavailable in after()
+  const locale = await getLocale()
   after(async () => { await generateAndSaveReport(profileId, locale) })
   return { ok: true }
 }
@@ -148,8 +148,8 @@ export async function triggerDailyReading(
     .update({ daily_reading_status: 'pending', daily_reading_error: null })
     .eq('id', profileId)
 
-  // Capture locale before after() — getUserLocale() uses cookies, cannot run inside after()
-  const locale = await getUserLocale()
+  // Capture locale before after() — getLocale() reads request context, unavailable in after()
+  const locale = await getLocale()
   after(async () => {
     const { generateDailyReading } = await import('@/lib/ai/generate-daily')
     await generateDailyReading(profileId, locale)

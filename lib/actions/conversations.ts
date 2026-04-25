@@ -2,7 +2,7 @@
 
 import { after } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
-import { getUserLocale } from './preferences'
+import { getLocale } from 'next-intl/server'
 import { generateChatReply } from '@/lib/ai/generate-chat-reply'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -51,7 +51,7 @@ export async function createConversation(
     .single()
   if (!profile) return { error: 'Profile not found' }
 
-  const locale = await getUserLocale()
+  const locale = await getLocale()
   const adminClient = createAdminClient()
 
   const { data, error } = await adminClient

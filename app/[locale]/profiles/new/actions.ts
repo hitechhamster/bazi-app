@@ -6,7 +6,7 @@ import { after } from 'next/server'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import { normalizeLuckCycles } from '@/lib/bazi/chart-helpers'
 import { generateAndSaveReport } from '@/lib/ai/generate-report'
-import { getUserLocale } from '@/lib/actions/preferences'
+import { getLocale } from 'next-intl/server'
 
 export type ActionState = { error: string } | null
 
@@ -70,9 +70,9 @@ export async function createProfile(
     const report = generateBaziReport(tst, gender)
     const luck_cycles = normalizeLuckCycles(report.luckCycles)
 
-    // Locale from user preference — drives both AI prompt language and locale tagging
-    // Captured before after() because getUserLocale() uses cookies (unavailable in after())
-    const locale = await getUserLocale()
+    // Locale from URL — authoritative for the current request.
+    // Captured before after() because getLocale() reads request context (unavailable in after())
+    const locale = await getLocale()
 
     const adminClient = createAdminClient()
     const { data, error } = await adminClient
@@ -111,7 +111,8 @@ export async function createProfile(
     }
 
     after(async () => { await generateAndSaveReport(data.id, locale) })
-    redirect(`/profiles/${data.id}`)
+    const localePrefix = locale === 'en' ? '' : `/${locale}`
+    redirect(`${localePrefix}/profiles/${data.id}`)
   } catch (e) {
     if (e && typeof e === 'object' && 'digest' in e) throw e
     console.error('[createProfile] Unexpected error:', e)
