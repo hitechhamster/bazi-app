@@ -1,7 +1,12 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import type { MockData, MockSubject } from './mock-data'
 
 export default function Sidebar({ data }: { data: MockData }) {
+  const pathname = usePathname()
+  const profileBase = pathname.replace(/\/(almanac|ask)$/, '')
   return (
     <aside style={{
       width: '220px',
@@ -33,9 +38,9 @@ export default function Sidebar({ data }: { data: MockData }) {
 
       <div style={labelStyle}>VIEW</div>
 
-      <NavButton active label="Basic Report" labelZh="基础报告" />
-      <NavButton active={false} label="Today's Almanac" labelZh="今日黄历" />
-      <NavButton active={false} label="Ask a Question" labelZh="一事一问" />
+      <NavButton active={pathname === profileBase} href={profileBase} label="Basic Report" labelZh="基础报告" />
+      <NavButton active={pathname === `${profileBase}/almanac`} href={`${profileBase}/almanac`} label="Today's Almanac" labelZh="今日黄历" />
+      <NavButton active={pathname === `${profileBase}/ask`} href={`${profileBase}/ask`} label="Ask a Question" labelZh="一事一问" />
     </aside>
   )
 }
@@ -99,7 +104,7 @@ function SubjectCard({ subject: s }: { subject: MockSubject }) {
   )
 }
 
-function NavButton({ active, label, labelZh }: { active: boolean; label: string; labelZh: string }) {
+function NavButton({ active, href, label, labelZh }: { active: boolean; href: string; label: string; labelZh: string }) {
   if (active) {
     return (
       <div style={{
@@ -130,19 +135,25 @@ function NavButton({ active, label, labelZh }: { active: boolean; label: string;
     )
   }
   return (
-    <div style={{
-      border: '0.5px dashed var(--zen-border)',
-      borderRadius: '0',
-      padding: '9px 8px',
-      cursor: 'default',
-    }}>
+    <Link
+      href={href}
+      style={{
+        border: '0.5px dashed var(--zen-border)',
+        borderRadius: '0',
+        padding: '9px 8px',
+        cursor: 'pointer',
+        display: 'block',
+        textDecoration: 'none',
+        color: 'inherit',
+      }}
+    >
       <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-ink)' }}>
         {label}
       </div>
       <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
         {labelZh}
       </div>
-    </div>
+    </Link>
   )
 }
 

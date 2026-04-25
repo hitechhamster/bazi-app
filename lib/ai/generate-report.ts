@@ -92,7 +92,7 @@ async function callReadingStage(prompt: string): Promise<string> {
   throw new Error('Unreachable')
 }
 
-function buildPromptContext(profile: Record<string, unknown>): PromptContext {
+export function buildPromptContext(profile: Record<string, unknown>): PromptContext {
   const luckCycles: StoredLuckCycle[] = Array.isArray(profile.luck_cycles)
     ? (profile.luck_cycles as StoredLuckCycle[]) : []
 

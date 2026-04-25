@@ -75,3 +75,80 @@ export async function retryReport(profileId: string): Promise<{ ok: boolean; err
   after(async () => { await generateAndSaveReport(profileId) })
   return { ok: true }
 }
+
+// ── Daily reading types ────────────────────────────────────────────────────
+
+export interface DailyReading {
+  date: string        // YYYY-MM-DD
+  content: string     // markdown with 3 ## sections
+  poem: string[]      // 4 items, each 4 Chinese characters
+}
+
+export type DailyStatus = 'pending' | 'generating' | 'done' | 'failed'
+
+// ── Daily reading actions ──────────────────────────────────────────────────
+
+/** Polling: return latest daily reading status + cached content */
+export async function getDailyReadingStatus(profileId: string): Promise<{
+  status: DailyStatus
+  reading: DailyReading | null
+  error: string | null
+}> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { status: 'failed', reading: null, error: 'Not authenticated' }
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('daily_reading, daily_reading_status, daily_reading_error, user_id')
+    .eq('id', profileId)
+    .single()
+
+  if (error || !data) return { status: 'failed', reading: null, error: 'Profile not found' }
+  if (data.user_id !== user.id) return { status: 'failed', reading: null, error: 'Forbidden' }
+
+  return {
+    status: ((data.daily_reading_status ?? 'pending') as DailyStatus),
+    reading: (data.daily_reading ?? null) as DailyReading | null,
+    error: data.daily_reading_error ?? null,
+  }
+}
+
+/** Fire-and-forget trigger: checks cache, queues generation if needed */
+export async function triggerDailyReading(
+  profileId: string
+): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'Not authenticated' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('user_id, daily_reading, daily_reading_status')
+    .eq('id', profileId)
+    .single()
+
+  if (!profile) return { ok: false, error: 'Profile not found' }
+  if (profile.user_id !== user.id) return { ok: false, error: 'Forbidden' }
+
+  const todayStr = new Date().toISOString().slice(0, 10)
+  const cached = profile.daily_reading as { date?: string } | null
+  if (cached?.date === todayStr && profile.daily_reading_status === 'done') {
+    return { ok: true }
+  }
+  if (profile.daily_reading_status === 'generating') {
+    return { ok: true }
+  }
+
+  const admin = createAdminClient()
+  await admin.from('profiles')
+    .update({ daily_reading_status: 'pending', daily_reading_error: null })
+    .eq('id', profileId)
+
+  after(async () => {
+    const { generateDailyReading } = await import('@/lib/ai/generate-daily')
+    await generateDailyReading(profileId)
+  })
+
+  return { ok: true }
+}
