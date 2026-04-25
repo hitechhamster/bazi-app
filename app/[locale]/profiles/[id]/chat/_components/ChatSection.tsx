@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { Conversation, ConversationListItem, Message } from '@/lib/actions/conversations'
 import ChatHeader from './ChatHeader'
 import MessageList from './MessageList'
@@ -16,6 +17,8 @@ export default function ChatSection({
   messages: Message[]
   profileId: string
 }) {
+  const t = useTranslations('chat')
+
   return (
     <div>
       {/* Page header */}
@@ -28,8 +31,7 @@ export default function ChatSection({
           letterSpacing: '0.05em',
           margin: 0,
         }}>
-          {/* Hardcoded until C6 i18n pass */}
-          Conversation · 多轮问答
+          {t('title')}
         </h2>
         <p style={{
           fontFamily: 'var(--font-ui)',
@@ -38,7 +40,7 @@ export default function ChatSection({
           marginTop: '6px',
           marginBottom: 0,
         }}>
-          Continuing conversation about your chart.
+          {t('subtitle')}
         </p>
       </div>
 

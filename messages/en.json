@@ -94,7 +94,9 @@
       "todaysAlmanac": "Today's Almanac",
       "todaysAlmanacZh": "今日黄历",
       "askQuestion": "Ask a Question",
-      "askQuestionZh": "一事一问"
+      "askQuestionZh": "一事一问",
+      "conversation": "Conversation",
+      "conversationZh": "多轮问答"
     },
     "status": {
       "done": "Reading ready",
@@ -153,6 +155,44 @@
     },
     "error": {
       "generic": "Something went wrong. Please try again."
+    }
+  },
+  "mobileNav": {
+    "report": "Report",
+    "almanac": "Almanac",
+    "ask": "Ask",
+    "chat": "Chat"
+  },
+  "chat": {
+    "title": "Conversation · 多轮问答",
+    "subtitle": "Continuing conversation about your chart.",
+    "newConversation": "+ New",
+    "history": "History",
+    "currentBadge": "Current",
+    "turnsLabel": "turns",
+    "delete": "Delete",
+    "deleteConfirm": "Confirm delete",
+    "deleteCancel": "Cancel",
+    "deleting": "Deleting…",
+    "deleteError": "Failed to delete.",
+    "creating": "Creating…",
+    "noConversations": "No conversations yet.",
+    "notFound": "Conversation not found.",
+    "messageList": {
+      "empty": "Start the conversation below."
+    },
+    "messageItem": {
+      "userLabel": "You",
+      "assistantLabel": "Assistant",
+      "generating": "Generating reply…",
+      "generationFailed": "Generation failed."
+    },
+    "input": {
+      "placeholder": "Continue the conversation…",
+      "send": "Send",
+      "sending": "Sending…",
+      "warningLong": "Conversation is getting long — for clearer answers,",
+      "startFreshLink": "start a new one"
     }
   },
   "errors": {

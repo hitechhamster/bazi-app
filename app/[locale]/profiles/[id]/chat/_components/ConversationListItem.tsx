@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { deleteConversation } from '@/lib/actions/conversations'
 import type { ConversationListItem as ConversationListItemType } from '@/lib/actions/conversations'
 
@@ -27,6 +28,7 @@ export default function ConversationListItem({
   profileId: string
 }) {
   const router = useRouter()
+  const t = useTranslations('chat')
   const [confirming, setConfirming] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
@@ -103,7 +105,7 @@ export default function ConversationListItem({
               padding: '1px 6px',
               flexShrink: 0,
             }}>
-              Current
+              {t('currentBadge')}
             </span>
           )}
         </div>
@@ -128,7 +130,7 @@ export default function ConversationListItem({
                   cursor: 'pointer',
                 }}
               >
-                Delete
+                {t('delete')}
               </button>
             )}
             {confirming && !deleting && (
@@ -146,7 +148,7 @@ export default function ConversationListItem({
                     cursor: 'pointer',
                   }}
                 >
-                  Confirm delete
+                  {t('deleteConfirm')}
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); setConfirming(false) }}
@@ -161,13 +163,13 @@ export default function ConversationListItem({
                     cursor: 'pointer',
                   }}
                 >
-                  Cancel
+                  {t('deleteCancel')}
                 </button>
               </span>
             )}
             {deleting && (
               <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
-                Deleting…
+                {t('deleting')}
               </span>
             )}
           </div>
@@ -181,7 +183,7 @@ export default function ConversationListItem({
         color: 'var(--zen-text-muted)',
         letterSpacing: '0.02em',
       }}>
-        {dateStr} · {turns} {turns === 1 ? 'turn' : 'turns'}
+        {dateStr} · {turns} {t('turnsLabel')}
       </div>
 
       {/* Inline delete error */}

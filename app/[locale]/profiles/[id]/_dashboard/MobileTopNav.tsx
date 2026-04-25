@@ -7,16 +7,15 @@ import LocaleSwitcher from '../../../_components/LocaleSwitcher'
 
 export default function MobileTopNav({ profileId }: { profileId: string }) {
   const t = useTranslations('profileReport')
-  const tSidebar = useTranslations('profileReport.sidebar')
+  const tNav = useTranslations('mobileNav')
   const pathname = usePathname()
   const base = `/profiles/${profileId}`
 
   const segments = [
-    { href: base,              label: tSidebar('basicReport'),    active: pathname === base },
-    { href: `${base}/almanac`, label: tSidebar('todaysAlmanac'),  active: pathname.endsWith('/almanac') },
-    { href: `${base}/ask`,     label: tSidebar('askQuestion'),    active: pathname.endsWith('/ask') },
-    // Hardcoded until C6 adds translation keys
-    { href: `${base}/chat`,    label: 'Chat',                     active: pathname.includes('/chat') },
+    { href: base,              label: tNav('report'),   active: pathname === base },
+    { href: `${base}/almanac`, label: tNav('almanac'),  active: pathname.endsWith('/almanac') },
+    { href: `${base}/ask`,     label: tNav('ask'),      active: pathname.endsWith('/ask') },
+    { href: `${base}/chat`,    label: tNav('chat'),     active: pathname.includes('/chat') },
   ]
 
   return (

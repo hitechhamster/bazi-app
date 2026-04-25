@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { submitChatMessage, createConversation } from '@/lib/actions/conversations'
 
 const MAX_LENGTH = 2000
@@ -16,6 +17,7 @@ export default function ChatInput({
   turnCount: number
 }) {
   const router = useRouter()
+  const t = useTranslations('chat')
   const [text, setText] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -72,7 +74,7 @@ export default function ChatInput({
           color: turnCount >= 25 ? 'var(--zen-red)' : 'var(--zen-text-muted)',
           lineHeight: 1.5,
         }}>
-          Conversation is getting long — for clearer answers,{' '}
+          {t('input.warningLong')}{' '}
           <button
             type="button"
             onClick={handleStartFresh}
@@ -88,7 +90,7 @@ export default function ChatInput({
               cursor: creatingNew ? 'default' : 'pointer',
             }}
           >
-            {creatingNew ? 'creating…' : 'start a new one'}
+            {creatingNew ? t('creating') : t('input.startFreshLink')}
           </button>
           .
         </div>
@@ -97,7 +99,7 @@ export default function ChatInput({
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Continue the conversation…"
+        placeholder={t('input.placeholder')}
         rows={3}
         maxLength={MAX_LENGTH}
         style={{
@@ -154,7 +156,7 @@ export default function ChatInput({
             if (!disabled) e.currentTarget.style.background = '#854F0B'
           }}
         >
-          {submitting ? 'Sending…' : 'Send'}
+          {submitting ? t('input.sending') : t('input.send')}
         </button>
       </div>
 

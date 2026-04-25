@@ -255,3 +255,36 @@ export async function getMessageStatus(
   if (error || !data) return { error: error?.message ?? 'Message not found' }
   return { message: data as Message }
 }
+
+export async function retryMessage(
+  messageId: string
+): Promise<{ ok: true } | { error: string }> {
+  // Auth + ownership check via user-scoped client
+  const userClient = await createClient()
+  const { data: { user } } = await userClient.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  // Verify the message exists and belongs to a conversation the user owns
+  const { data: msg } = await userClient
+    .from('messages')
+    .select('id, role, status, conversation_id')
+    .eq('id', messageId)
+    .single()
+  if (!msg) return { error: 'Message not found' }
+  if ((msg.role as string) !== 'assistant') return { error: 'Only assistant messages can be retried' }
+  if ((msg.status as string) !== 'failed') return { error: 'Message is not in failed state' }
+
+  // Reset status + content via admin client
+  const adminClient = createAdminClient()
+  const { error } = await adminClient
+    .from('messages')
+    .update({ status: 'pending', content: '', error: null })
+    .eq('id', messageId)
+  if (error) return { error: error.message }
+
+  after(() => {
+    generateChatReply(messageId)
+  })
+
+  return { ok: true }
+}

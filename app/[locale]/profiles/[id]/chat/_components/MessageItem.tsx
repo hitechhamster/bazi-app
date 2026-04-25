@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { renderBaziMarkdown } from '@/lib/markdown/renderer'
-import { getMessageStatus } from '@/lib/actions/conversations'
+import { getMessageStatus, retryMessage } from '@/lib/actions/conversations'
 import type { Message } from '@/lib/actions/conversations'
 
 const labelStyle: React.CSSProperties = {
@@ -15,7 +16,10 @@ const labelStyle: React.CSSProperties = {
 }
 
 export default function MessageItem({ message }: { message: Message }) {
+  const t = useTranslations('chat')
+  const tCommon = useTranslations('common')
   const [localMsg, setLocalMsg] = useState<Message>(message)
+  const [retrying, setRetrying] = useState(false)
 
   // Poll for status updates on pending/generating assistant messages
   useEffect(() => {
@@ -38,10 +42,25 @@ export default function MessageItem({ message }: { message: Message }) {
     return () => clearInterval(id)
   }, [localMsg.status, localMsg.id, localMsg.role])
 
+  async function handleRetry() {
+    if (retrying) return
+    setRetrying(true)
+    try {
+      const result = await retryMessage(localMsg.id)
+      if ('ok' in result) {
+        setLocalMsg((prev) => ({ ...prev, status: 'pending', content: '', error: null }))
+      }
+    } catch {
+      // non-fatal
+    } finally {
+      setRetrying(false)
+    }
+  }
+
   if (localMsg.role === 'user') {
     return (
       <div>
-        <div style={labelStyle}>You</div>
+        <div style={labelStyle}>{t('messageItem.userLabel')}</div>
         <div style={{
           background: 'var(--zen-paper-deep)',
           border: '1px solid var(--zen-gold-pale)',
@@ -64,12 +83,12 @@ export default function MessageItem({ message }: { message: Message }) {
   // Assistant message
   return (
     <div>
-      <div style={labelStyle}>Assistant</div>
+      <div style={labelStyle}>{t('messageItem.assistantLabel')}</div>
 
       {(localMsg.status === 'pending' || localMsg.status === 'generating') && (
         <div style={{ textAlign: 'center', padding: '16px 0' }}>
           <div className="reading-spinner" style={{ margin: '0 auto 12px' }} />
-          <p className="reading-loading-text">Generating reply…</p>
+          <p className="reading-loading-text">{t('messageItem.generating')}</p>
         </div>
       )}
 
@@ -81,14 +100,32 @@ export default function MessageItem({ message }: { message: Message }) {
       )}
 
       {localMsg.status === 'failed' && (
-        <p style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '11px',
-          color: 'var(--zen-red)',
-          margin: 0,
-        }}>
-          Generation failed.{localMsg.error ? ` ${localMsg.error}` : ''}
-        </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <p style={{
+            fontFamily: 'var(--font-ui)',
+            fontSize: '11px',
+            color: 'var(--zen-red)',
+            margin: 0,
+          }}>
+            {t('messageItem.generationFailed')}
+          </p>
+          <button
+            onClick={handleRetry}
+            disabled={retrying}
+            style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '11px',
+              color: retrying ? 'var(--zen-text-muted)' : '#854F0B',
+              textDecoration: retrying ? 'none' : 'underline',
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              cursor: retrying ? 'default' : 'pointer',
+            }}
+          >
+            {retrying ? tCommon('tryAgain') + '…' : tCommon('tryAgain')}
+          </button>
+        </div>
       )}
     </div>
   )

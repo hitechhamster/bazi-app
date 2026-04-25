@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { ConversationListItem } from '@/lib/actions/conversations'
 import ConversationListItemComponent from './ConversationListItem'
 
@@ -12,6 +13,8 @@ export default function ConversationListPanel({
   currentId: string
   profileId: string
 }) {
+  const t = useTranslations('chat')
+
   if (conversations.length === 0) {
     return (
       <div style={{
@@ -27,7 +30,7 @@ export default function ConversationListPanel({
           color: '#888',
           margin: 0,
         }}>
-          No conversations yet.
+          {t('noConversations')}
         </p>
       </div>
     )

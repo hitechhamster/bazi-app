@@ -94,7 +94,9 @@
       "todaysAlmanac": "今日黄历",
       "todaysAlmanacZh": "Today's Almanac",
       "askQuestion": "一事一问",
-      "askQuestionZh": "Ask a Question"
+      "askQuestionZh": "Ask a Question",
+      "conversation": "多轮问答",
+      "conversationZh": "Conversation"
     },
     "status": {
       "done": "解读已就绪",
@@ -153,6 +155,44 @@
     },
     "error": {
       "generic": "出问题了，请重试。"
+    }
+  },
+  "mobileNav": {
+    "report": "报告",
+    "almanac": "黄历",
+    "ask": "问命",
+    "chat": "多轮"
+  },
+  "chat": {
+    "title": "多轮问答 · Conversation",
+    "subtitle": "围绕你的命盘的持续对话。",
+    "newConversation": "+ 新建",
+    "history": "历史会话",
+    "currentBadge": "当前",
+    "turnsLabel": "轮",
+    "delete": "删除",
+    "deleteConfirm": "确认删除",
+    "deleteCancel": "取消",
+    "deleting": "删除中…",
+    "deleteError": "删除失败。",
+    "creating": "创建中…",
+    "noConversations": "还没有对话。",
+    "notFound": "找不到这个对话。",
+    "messageList": {
+      "empty": "在下方开始对话。"
+    },
+    "messageItem": {
+      "userLabel": "你",
+      "assistantLabel": "AI",
+      "generating": "正在生成回答…",
+      "generationFailed": "生成失败。"
+    },
+    "input": {
+      "placeholder": "继续对话…",
+      "send": "发送",
+      "sending": "发送中…",
+      "warningLong": "对话已较长，为了回答质量，建议",
+      "startFreshLink": "开新对话"
     }
   },
   "errors": {

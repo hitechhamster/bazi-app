@@ -94,7 +94,9 @@
       "todaysAlmanac": "今日黃曆",
       "todaysAlmanacZh": "Today's Almanac",
       "askQuestion": "一事一問",
-      "askQuestionZh": "Ask a Question"
+      "askQuestionZh": "Ask a Question",
+      "conversation": "多輪問答",
+      "conversationZh": "Conversation"
     },
     "status": {
       "done": "解讀已就緒",
@@ -153,6 +155,44 @@
     },
     "error": {
       "generic": "出問題了，請重試。"
+    }
+  },
+  "mobileNav": {
+    "report": "報告",
+    "almanac": "黃曆",
+    "ask": "問命",
+    "chat": "多輪"
+  },
+  "chat": {
+    "title": "多輪問答 · Conversation",
+    "subtitle": "圍繞你的命盤的持續對話。",
+    "newConversation": "+ 新建",
+    "history": "歷史對話",
+    "currentBadge": "目前",
+    "turnsLabel": "輪",
+    "delete": "刪除",
+    "deleteConfirm": "確認刪除",
+    "deleteCancel": "取消",
+    "deleting": "刪除中…",
+    "deleteError": "刪除失敗。",
+    "creating": "建立中…",
+    "noConversations": "還沒有對話。",
+    "notFound": "找不到這個對話。",
+    "messageList": {
+      "empty": "在下方開始對話。"
+    },
+    "messageItem": {
+      "userLabel": "你",
+      "assistantLabel": "AI",
+      "generating": "正在生成回答…",
+      "generationFailed": "生成失敗。"
+    },
+    "input": {
+      "placeholder": "繼續對話…",
+      "send": "傳送",
+      "sending": "傳送中…",
+      "warningLong": "對話已較長，為了回答品質，建議",
+      "startFreshLink": "開新對話"
     }
   },
   "errors": {

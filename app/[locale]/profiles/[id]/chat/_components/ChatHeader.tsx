@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { createConversation } from '@/lib/actions/conversations'
 import type { ConversationListItem } from '@/lib/actions/conversations'
 import ConversationListPanel from './ConversationListPanel'
@@ -36,6 +37,7 @@ export default function ChatHeader({
   profileId: string
 }) {
   const router = useRouter()
+  const t = useTranslations('chat')
   const [historyExpanded, setHistoryExpanded] = useState(false)
   const [creating, setCreating] = useState(false)
   const [createError, setCreateError] = useState<string | null>(null)
@@ -89,14 +91,14 @@ export default function ChatHeader({
             disabled={creating}
             style={creating ? actionButtonDisabledStyle : actionButtonStyle}
           >
-            {creating ? 'Creating…' : '+ New'}
+            {creating ? t('creating') : t('newConversation')}
           </button>
 
           <button
             onClick={() => setHistoryExpanded((v) => !v)}
             style={actionButtonStyle}
           >
-            {historyExpanded ? '▲' : '▼'} History ({allConversations.length})
+            {historyExpanded ? '▲' : '▼'} {t('history')} ({allConversations.length})
           </button>
         </div>
       </div>

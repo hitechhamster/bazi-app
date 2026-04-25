@@ -81,6 +81,7 @@ export default async function ChatConversationPage({
   const allConversations = 'conversations' in listResult ? listResult.conversations : []
 
   const t = await getTranslations('profileReport')
+  const tChat = await getTranslations('chat')
 
   // Conversation not found or not owned (RLS will return nothing if not owned)
   if ('error' in convoResult) {
@@ -92,7 +93,7 @@ export default async function ChatConversationPage({
           style={{ position: 'relative', zIndex: 10, textAlign: 'center', paddingTop: '80px' }}
         >
           <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-text-muted)', marginBottom: '16px' }}>
-            Conversation not found.
+            {tChat('notFound')}
           </p>
           <Link
             href="/dashboard"
