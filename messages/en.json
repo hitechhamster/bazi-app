@@ -8,7 +8,10 @@
     "loading": "Loading…",
     "back": "Back",
     "confirm": "Confirm",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "next": "Next →",
+    "saving": "Saving…",
+    "deleting": "Deleting…"
   },
   "dashboard": {
     "title": "Your Profiles",
@@ -35,9 +38,40 @@
       "genderFemale": "Female",
       "birthDate": "Birth date",
       "birthTime": "Birth time",
+      "birthTimeOptional": "(optional)",
       "timeUnknown": "I don't know the time",
       "location": "Birth location",
       "locationPlaceholder": "City, Country"
+    },
+    "step1": {
+      "title": "Who are you creating this profile for?",
+      "options": {
+        "self": "Self · For your own reading",
+        "family": "Family · Parent, sibling, child",
+        "partner": "Partner · Romantic relationship",
+        "other": "Other · Friend, colleague, etc."
+      }
+    },
+    "step2": {
+      "titleSelf": "What's your name?",
+      "titleOther": "What should we call them?",
+      "placeholderSelf": "Your name",
+      "placeholderOther": "Their name"
+    },
+    "step3": {
+      "titleSelf": "What's your gender?",
+      "titleOther": "What's their gender?"
+    },
+    "step4": {
+      "titleSelf": "When were you born?",
+      "titleOther": "When were they born?"
+    },
+    "step5": {
+      "titleSelf": "Where were you born?",
+      "titleOther": "Where were they born?",
+      "statusSelected": "✓ Coordinates loaded",
+      "statusSuggesting": "Select from suggestions…",
+      "statusOptional": "Optional — skip if unknown"
     }
   },
   "editProfile": {

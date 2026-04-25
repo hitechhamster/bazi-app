@@ -24,7 +24,7 @@ export default function Step3Gender({
 
   return (
     <div>
-      <StepTitle>{isSelf ? "What's your gender?" : "What's their gender?"}</StepTitle>
+      <StepTitle>{isSelf ? t('step3.titleSelf') : t('step3.titleOther')}</StepTitle>
       <div style={{
         display: 'flex',
         gap: '24px',

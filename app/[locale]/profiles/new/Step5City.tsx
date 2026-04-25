@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
-import { StepTitle, NavRow, BackButton, NextButton } from './StepShared'
+import { StepTitle, NavRow, BackButton } from './StepShared'
 import type { Fields } from './ProfileForm'
 
 type GeoResult = { label: string; lat: number; lng: number; tzOffsetSec: number }
@@ -10,15 +10,15 @@ type GeoResult = { label: string; lat: number; lng: number; tzOffsetSec: number 
 export default function Step5City({
   fields,
   setField,
-  onNext,
   onBack,
   relation,
+  isPending,
 }: {
   fields: Fields
   setField: (key: keyof Fields, value: string | boolean) => void
-  onNext: () => void
   onBack: () => void
   relation: string
+  isPending: boolean
 }) {
   const t = useTranslations('newProfile')
   const [cityQuery, setCityQuery] = useState(fields.birth_city)
@@ -63,7 +63,7 @@ export default function Step5City({
 
   return (
     <div>
-      <StepTitle>{isSelf ? 'Where were you born?' : 'Where were they born?'}</StepTitle>
+      <StepTitle>{isSelf ? t('step5.titleSelf') : t('step5.titleOther')}</StepTitle>
       <div style={{ marginTop: '48px', maxWidth: '400px', margin: '48px auto 0', position: 'relative' }}>
         <input
           type="text"
@@ -78,15 +78,15 @@ export default function Step5City({
 
         {isSelected ? (
           <p style={{ fontSize: '12px', color: 'var(--element-wood)', marginTop: '8px', fontFamily: 'var(--font-ui)' }}>
-            ✓ Coordinates loaded — solar time will be calibrated
+            {t('step5.statusSelected')}
           </p>
         ) : cityQuery.length > 0 ? (
           <p style={{ fontSize: '12px', color: 'var(--zen-text-light)', marginTop: '8px', fontFamily: 'var(--font-ui)' }}>
-            Select from suggestions for true solar time calibration
+            {t('step5.statusSuggesting')}
           </p>
         ) : (
           <p style={{ fontSize: '12px', color: 'var(--zen-text-light)', marginTop: '8px', fontFamily: 'var(--font-ui)' }}>
-            Optional — skip if unknown
+            {t('step5.statusOptional')}
           </p>
         )}
 
@@ -103,7 +103,27 @@ export default function Step5City({
 
       <NavRow>
         <BackButton onClick={onBack} />
-        <NextButton onClick={onNext} />
+        <button
+          type="submit"
+          disabled={isPending}
+          className="zen-btn-primary"
+          style={{
+            opacity: isPending ? 0.65 : 1,
+            cursor: isPending ? 'not-allowed' : 'pointer',
+            minWidth: '180px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+          }}
+        >
+          {isPending ? (
+            <>
+              <span className="wizard-spinner" />
+              {t('submitting')}
+            </>
+          ) : t('submit')}
+        </button>
       </NavRow>
     </div>
   )

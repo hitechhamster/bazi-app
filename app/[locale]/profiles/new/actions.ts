@@ -7,11 +7,8 @@ import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import { normalizeLuckCycles } from '@/lib/bazi/chart-helpers'
 import { generateAndSaveReport } from '@/lib/ai/generate-report'
 import { getUserLocale } from '@/lib/actions/preferences'
-import type { BaziLanguage } from '@/lib/ai/bazi-prompt'
 
 export type ActionState = { error: string } | null
-
-const VALID_LANGUAGES: BaziLanguage[] = ['en', 'zh-CN', 'zh-TW', 'es', 'de', 'fr', 'it', 'nl']
 
 function getEquationOfTime(d: Date): number {
   const n = Math.floor(
@@ -39,12 +36,6 @@ export async function createProfile(
     const birthCity = (formData.get('birth_city') as string)?.trim() || null
     const longitudeRaw = formData.get('longitude') as string
     const tzOffsetRaw = formData.get('timezone_offset_sec') as string
-
-    const raw = formData.get('language')
-    const language: BaziLanguage =
-      typeof raw === 'string' && (VALID_LANGUAGES as string[]).includes(raw)
-        ? (raw as BaziLanguage)
-        : 'en'
 
     if (!name || !gender || !birthDate || !relation) {
       return { error: 'Please fill in all required fields.' }
@@ -79,6 +70,10 @@ export async function createProfile(
     const report = generateBaziReport(tst, gender)
     const luck_cycles = normalizeLuckCycles(report.luckCycles)
 
+    // Locale from user preference — drives both AI prompt language and locale tagging
+    // Captured before after() because getUserLocale() uses cookies (unavailable in after())
+    const locale = await getUserLocale()
+
     const adminClient = createAdminClient()
     const { data, error } = await adminClient
       .from('profiles')
@@ -103,7 +98,7 @@ export async function createProfile(
         lunar_date: report.lunarDate,
         true_solar_time: trueSolarTime?.toISOString() ?? null,
         zodiac: report.zodiac.year,
-        base_report_language: language,
+        base_report_language: locale,
         luck_cycles,
         base_report_status: 'generating_structured',
       })
@@ -115,8 +110,6 @@ export async function createProfile(
       return { error: `Database error: ${error.message}` }
     }
 
-    // Capture locale before after() — getUserLocale() uses cookies, cannot run inside after()
-    const locale = await getUserLocale()
     after(async () => { await generateAndSaveReport(data.id, locale) })
     redirect(`/profiles/${data.id}`)
   } catch (e) {

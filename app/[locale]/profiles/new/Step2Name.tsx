@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { useTranslations } from 'next-intl'
 import { StepTitle, NavRow, BackButton, NextButton } from './StepShared'
 
 export default function Step2Name({
@@ -16,7 +17,9 @@ export default function Step2Name({
   onBack: () => void
   relation: string
 }) {
+  const t = useTranslations('newProfile')
   const inputRef = useRef<HTMLInputElement>(null)
+  const isSelf = relation.toLowerCase() === 'self'
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -36,17 +39,15 @@ export default function Step2Name({
     return () => window.removeEventListener('keydown', handleKey)
   }, [value, onNext, onBack])
 
-  const isSelf = relation.toLowerCase() === 'self'
-
   return (
     <div>
-      <StepTitle>{isSelf ? "What's your name?" : 'What should we call them?'}</StepTitle>
+      <StepTitle>{isSelf ? t('step2.titleSelf') : t('step2.titleOther')}</StepTitle>
       <div style={{ marginTop: '48px', maxWidth: '400px', margin: '48px auto 0' }}>
         <input
           ref={inputRef}
           type="text"
           className="zen-input wizard-name-input"
-          placeholder={isSelf ? 'Your name' : 'Their name'}
+          placeholder={isSelf ? t('step2.placeholderSelf') : t('step2.placeholderOther')}
           value={value}
           onChange={e => onChange(e.target.value)}
           autoComplete="off"

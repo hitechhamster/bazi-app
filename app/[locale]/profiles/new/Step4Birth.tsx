@@ -54,7 +54,7 @@ export default function Step4Birth({
 
   return (
     <div>
-      <StepTitle>{isSelf ? 'When were you born?' : 'When were they born?'}</StepTitle>
+      <StepTitle>{isSelf ? t('step4.titleSelf') : t('step4.titleOther')}</StepTitle>
       <div style={{ marginTop: '48px', maxWidth: '340px', margin: '48px auto 0' }}>
         <label style={labelStyle}>{t('fields.birthDate')}</label>
         <input
@@ -70,7 +70,7 @@ export default function Step4Birth({
         <div style={{ marginTop: '36px' }}>
           <label style={labelStyle}>
             {t('fields.birthTime')}{' '}
-            <span style={{ opacity: 0.5, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+            <span style={{ opacity: 0.5, textTransform: 'none', letterSpacing: 0 }}>{t('fields.birthTimeOptional')}</span>
           </label>
           <input
             type="time"

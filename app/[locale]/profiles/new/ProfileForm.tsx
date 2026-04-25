@@ -10,8 +10,6 @@ import Step2Name from './Step2Name'
 import Step3Gender from './Step3Gender'
 import Step4Birth from './Step4Birth'
 import Step5City from './Step5City'
-import Step6Language from './Step6Language'
-import type { BaziLanguage } from '@/lib/ai/bazi-prompt'
 
 export type Fields = {
   relation: string
@@ -23,7 +21,6 @@ export type Fields = {
   birth_city: string
   longitude: string
   timezone_offset_sec: string
-  language: BaziLanguage
 }
 
 export default function ProfileForm() {
@@ -40,7 +37,6 @@ export default function ProfileForm() {
     birth_city: '',
     longitude: '',
     timezone_offset_sec: '',
-    language: 'en',
   })
 
   const setField = useCallback((key: keyof Fields, value: string | boolean) => {
@@ -49,7 +45,7 @@ export default function ProfileForm() {
 
   const goNext = useCallback(() => {
     setDirection('forward')
-    setStep(s => Math.min(s + 1, 6))
+    setStep(s => Math.min(s + 1, 5))
   }, [])
 
   const goBack = useCallback(() => {
@@ -72,7 +68,7 @@ export default function ProfileForm() {
               命
             </div>
           </Link>
-          <ProgressDots total={6} current={step} />
+          <ProgressDots total={5} current={step} />
           <div style={{ width: '36px', flexShrink: 0 }} />
         </div>
 
@@ -99,7 +95,6 @@ export default function ProfileForm() {
           <input type="hidden" name="longitude"           value={fields.longitude} />
           <input type="hidden" name="timezone_offset_sec" value={fields.timezone_offset_sec} />
           <input type="hidden" name="birth_city"          value={fields.birth_city} />
-          <input type="hidden" name="language"            value={fields.language} />
 
           {/* Animated step container — key change triggers CSS enter animation */}
           <div key={step} className={`step-anim-${direction}`}>
@@ -139,17 +134,9 @@ export default function ProfileForm() {
               <Step5City
                 fields={fields}
                 setField={setField}
-                onNext={goNext}
                 onBack={goBack}
                 relation={fields.relation}
-              />
-            )}
-            {step === 6 && (
-              <Step6Language
-                value={fields.language}
-                onSelect={(v) => setField('language', v)}
                 isPending={isPending}
-                onBack={goBack}
               />
             )}
           </div>

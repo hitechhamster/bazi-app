@@ -1,3 +1,7 @@
+'use client'
+
+import { useTranslations } from 'next-intl'
+
 export function StepTitle({ children }: { children: React.ReactNode }) {
   return (
     <h2 style={{
@@ -30,6 +34,7 @@ export function NavRow({ children }: { children: React.ReactNode }) {
 }
 
 export function BackButton({ onClick }: { onClick: () => void }) {
+  const t = useTranslations('common')
   return (
     <button
       type="button"
@@ -46,12 +51,13 @@ export function BackButton({ onClick }: { onClick: () => void }) {
         textDecoration: 'none',
       }}
     >
-      ← Back
+      ← {t('back')}
     </button>
   )
 }
 
 export function NextButton({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
+  const t = useTranslations('common')
   return (
     <button
       type="button"
@@ -66,7 +72,7 @@ export function NextButton({ onClick, disabled }: { onClick: () => void; disable
         fontSize: '0.95rem',
       }}
     >
-      Next →
+      {t('next')}
     </button>
   )
 }

@@ -8,7 +8,10 @@
     "loading": "加载中…",
     "back": "返回",
     "confirm": "确认",
-    "tryAgain": "重试"
+    "tryAgain": "重试",
+    "next": "下一步 →",
+    "saving": "保存中…",
+    "deleting": "删除中…"
   },
   "dashboard": {
     "title": "你的命盘",
@@ -35,9 +38,40 @@
       "genderFemale": "女",
       "birthDate": "出生日期",
       "birthTime": "出生时间",
+      "birthTimeOptional": "(可选)",
       "timeUnknown": "不知道具体时间",
       "location": "出生地",
       "locationPlaceholder": "城市,国家"
+    },
+    "step1": {
+      "title": "你想为谁建命盘?",
+      "options": {
+        "self": "自己 · 给自己看",
+        "family": "家人 · 父母、兄弟姐妹、子女",
+        "partner": "伴侣 · 恋爱或婚姻关系",
+        "other": "其他 · 朋友、同事等"
+      }
+    },
+    "step2": {
+      "titleSelf": "你叫什么名字?",
+      "titleOther": "我们怎么称呼这位?",
+      "placeholderSelf": "你的名字",
+      "placeholderOther": "这位的名字"
+    },
+    "step3": {
+      "titleSelf": "你的性别?",
+      "titleOther": "这位的性别?"
+    },
+    "step4": {
+      "titleSelf": "你的出生日期和时间?",
+      "titleOther": "这位的出生日期和时间?"
+    },
+    "step5": {
+      "titleSelf": "你出生在哪里?",
+      "titleOther": "这位出生在哪里?",
+      "statusSelected": "✓ 已选定坐标",
+      "statusSuggesting": "请从建议中选择…",
+      "statusOptional": "可不填 — 不知道就跳过"
     }
   },
   "editProfile": {
