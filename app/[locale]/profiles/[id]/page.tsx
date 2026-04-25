@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import LocaleSwitcher from '../../_components/LocaleSwitcher'
+import BrandMark from '@/components/BrandMark'
 import Sidebar from './_dashboard/Sidebar'
 import MobileTopNav from './_dashboard/MobileTopNav'
 import DashboardGrid from './_dashboard/DashboardGrid'
@@ -88,21 +89,24 @@ export default async function ProfileDetailPage({
         className="max-w-[1320px] mx-auto px-4 lg:px-5 py-6"
         style={{ position: 'relative', zIndex: 10 }}
       >
-        {/* Back link — desktop only; mobile uses MobileTopNav */}
+        {/* Desktop header: BrandMark left, back link + LocaleSwitcher right */}
         <div className="hidden lg:flex" style={{ marginBottom: '16px', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link
-            href="/dashboard"
-            style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: '13px',
-              color: 'var(--zen-ink)',
-              textDecoration: 'none',
-              letterSpacing: '0.08em',
-            }}
-          >
-            {t('backToDashboard')}
-          </Link>
-          <LocaleSwitcher />
+          <BrandMark variant="full" size="small" href="/dashboard" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <Link
+              href="/dashboard"
+              style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: '13px',
+                color: 'var(--zen-ink)',
+                textDecoration: 'none',
+                letterSpacing: '0.08em',
+              }}
+            >
+              {t('backToDashboard')}
+            </Link>
+            <LocaleSwitcher />
+          </div>
         </div>
 
         {/* Two-column: sticky sidebar + scrolling main */}

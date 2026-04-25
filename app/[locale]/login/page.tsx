@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import BrandMark from '@/components/BrandMark'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -31,6 +32,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '32px' }}>
+        <BrandMark variant="full" size="default" href="/" />
+      </div>
       <div className="zen-card w-full max-w-md">
         <h1 className="text-2xl font-bold mb-2 text-center">Log in</h1>
         <p className="text-gray-500 text-sm mb-6 text-center">
@@ -74,6 +79,7 @@ export default function LoginPage() {
             )}
           </form>
         )}
+      </div>
       </div>
     </div>
   )

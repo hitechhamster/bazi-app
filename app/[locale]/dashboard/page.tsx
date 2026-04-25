@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import LogoutButton from './logout-button'
 import ProfileListCard, { type ProfileListCardData } from './_components/ProfileListCard'
 import LocaleSwitcher from '../_components/LocaleSwitcher'
+import BrandMark from '@/components/BrandMark'
 
 const SELECT_FIELDS = [
   'id', 'name', 'relation', 'gender', 'birth_date', 'birth_city',
@@ -82,21 +83,24 @@ export default async function DashboardPage() {
         <header style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'baseline',
+          alignItems: 'center',
           marginBottom: '32px',
           flexWrap: 'wrap',
           gap: '12px',
         }}>
-          <h1 style={{
-            fontFamily: 'var(--font-main)',
-            fontSize: '20px',
-            fontWeight: 500,
-            color: 'var(--zen-ink)',
-            margin: 0,
-            letterSpacing: '0.05em',
-          }}>
-            {t('title')}
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
+            <BrandMark variant="full" size="small" href="/dashboard" />
+            <h1 style={{
+              fontFamily: 'var(--font-main)',
+              fontSize: '20px',
+              fontWeight: 500,
+              color: 'var(--zen-ink)',
+              margin: 0,
+              letterSpacing: '0.05em',
+            }}>
+              {t('title')}
+            </h1>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <LocaleSwitcher />
             <Link
