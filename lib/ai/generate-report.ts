@@ -177,6 +177,9 @@ export async function generateAndSaveReport(profileId: string, locale = 'en'): P
   }
 
   const context = buildPromptContext(profile as Record<string, unknown>)
+  // Override language with the caller-supplied locale so the prompt always reflects
+  // the user's current locale, not the locale stored at profile creation time.
+  context.language = locale as BaziLanguage
 
   // ─── Stage 1: Structured analysis ───
   await db.from('profiles')

@@ -105,6 +105,8 @@ export async function generateDailyReading(profileId: string, locale = 'en'): Pr
 
     const dailyCtx: DailyContext = {
       ...baseCtx,
+      // Override language with the caller-supplied locale (user's current preference)
+      language: locale as import('./structured-prompt').BaziLanguage,
       profileName: (profile.name as string) ?? 'this person',
       todayDate: todayStr,
       todayGanZhi,

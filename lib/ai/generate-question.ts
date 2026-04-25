@@ -5,6 +5,12 @@ import { buildPromptContext } from './generate-report'
 import { createAdminClient } from '@/lib/supabase/server'
 import type { PromptContext } from './structured-prompt'
 
+const LANG_INSTRUCTION: Record<string, string> = {
+  'en':    'Write your answer in clear, professional English.',
+  'zh-CN': '请用专业且温暖的简体中文回答。',
+  'zh-TW': '請用專業且溫暖的繁體中文回答。',
+}
+
 const MODEL = 'gemini-3.1-flash-lite-preview'
 const MAX_OUTPUT_TOKENS = 8192
 
@@ -84,14 +90,17 @@ export async function generateQuestionAnswer(questionId: string): Promise<void> 
     .eq('id', questionId)
 
   try {
-    // 2. Fetch the question
+    // 2. Fetch the question (include locale — captured at submit time)
     const { data: question, error: qErr } = await db
       .from('questions')
-      .select('id, profile_id, question')
+      .select('id, profile_id, question, locale')
       .eq('id', questionId)
       .single()
 
     if (qErr || !question) throw new Error('Question not found')
+
+    const locale = (question.locale as string | null) ?? 'en'
+    const langInstruction = LANG_INSTRUCTION[locale] ?? LANG_INSTRUCTION['en']
 
     // 3. Fetch the profile
     const { data: profile, error: pErr } = await db
@@ -123,7 +132,7 @@ Constraints:
 - Do NOT write poems
 - Do NOT invent chart elements not present in the context
 - Tone: contemplative, classical, but accessible. Measured, not flashy.
-- Default language: English. If the question is written in Chinese, answer in Chinese.
+- ${langInstruction}
 
 ## User's Birth Chart
 
