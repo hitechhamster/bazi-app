@@ -157,8 +157,12 @@ export function buildPromptContext(profile: Record<string, unknown>): PromptCont
  * Stage 1: pending → generating_structured → writes report_structured → generating_reading
  * Stage 2: generating_reading → writes base_report → done
  * Any stage failure → failed (no fallback to single-stage)
+ *
+ * @param locale - The user's locale at generation time. Written to report_structured_locale
+ *                 and base_report_locale so content can be re-generated in a different locale
+ *                 in future without ambiguity. Defaults to 'en'.
  */
-export async function generateAndSaveReport(profileId: string): Promise<void> {
+export async function generateAndSaveReport(profileId: string, locale = 'en'): Promise<void> {
   const db = createAdminClient()
 
   const { data: profile, error: fetchErr } = await db
@@ -201,6 +205,7 @@ export async function generateAndSaveReport(profileId: string): Promise<void> {
       favorable: structured.favorable.length > 0 ? structured.favorable : null,
       unfavorable: structured.unfavorable.length > 0 ? structured.unfavorable : null,
     },
+    report_structured_locale: locale,
     base_report_status: 'generating_reading',
   }).eq('id', profileId)
 
@@ -222,6 +227,7 @@ export async function generateAndSaveReport(profileId: string): Promise<void> {
   // Final write
   await db.from('profiles').update({
     base_report: reading,
+    base_report_locale: locale,
     base_report_status: 'done',
     base_report_generated_at: new Date().toISOString(),
     base_report_error: null,

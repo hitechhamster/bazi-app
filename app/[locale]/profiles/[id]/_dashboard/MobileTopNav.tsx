@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import LocaleSwitcher from '../../../_components/LocaleSwitcher'
 
 export default function MobileTopNav({ profileId }: { profileId: string }) {
   const pathname = usePathname()
@@ -15,8 +16,8 @@ export default function MobileTopNav({ profileId }: { profileId: string }) {
 
   return (
     <div style={{ marginBottom: '12px' }}>
-      {/* Row 1: back link */}
-      <div style={{ paddingTop: '8px', paddingBottom: '8px' }}>
+      {/* Row 1: back link + locale switcher */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', paddingBottom: '8px' }}>
         <Link
           href="/profiles"
           style={{
@@ -29,6 +30,7 @@ export default function MobileTopNav({ profileId }: { profileId: string }) {
         >
           ← All profiles
         </Link>
+        <LocaleSwitcher />
       </div>
 
       {/* Row 2: segmented control */}

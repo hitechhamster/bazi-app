@@ -6,6 +6,7 @@ import { after } from 'next/server'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import { normalizeLuckCycles } from '@/lib/bazi/chart-helpers'
 import { generateAndSaveReport } from '@/lib/ai/generate-report'
+import { getUserLocale } from '@/lib/actions/preferences'
 import type { BaziLanguage } from '@/lib/ai/bazi-prompt'
 
 export type ActionState = { error: string } | null
@@ -114,7 +115,9 @@ export async function createProfile(
       return { error: `Database error: ${error.message}` }
     }
 
-    after(async () => { await generateAndSaveReport(data.id) })
+    // Capture locale before after() — getUserLocale() uses cookies, cannot run inside after()
+    const locale = await getUserLocale()
+    after(async () => { await generateAndSaveReport(data.id, locale) })
     redirect(`/profiles/${data.id}`)
   } catch (e) {
     if (e && typeof e === 'object' && 'digest' in e) throw e

@@ -3,6 +3,7 @@
 import { after } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { generateQuestionAnswer } from '@/lib/ai/generate-question'
+import { getUserLocale } from '@/lib/actions/preferences'
 
 export async function submitQuestion(
   profileId: string,
@@ -12,6 +13,9 @@ export async function submitQuestion(
   if (!trimmed) return { error: 'Question cannot be empty' }
   if (trimmed.length > 500) return { error: 'Question too long (max 500 chars)' }
 
+  // Capture locale before insert — locked at submission time, preserved on retry
+  const locale = await getUserLocale()
+
   const supabase = createAdminClient()
 
   const { data, error } = await supabase
@@ -20,6 +24,7 @@ export async function submitQuestion(
       profile_id: profileId,
       question: trimmed,
       status: 'pending',
+      locale,
     })
     .select('id')
     .single()

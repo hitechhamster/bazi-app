@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import LogoutButton from './logout-button'
 import ProfileListCard, { type ProfileListCardData } from './_components/ProfileListCard'
+import LocaleSwitcher from '../_components/LocaleSwitcher'
 
 const SELECT_FIELDS = [
   'id', 'name', 'relation', 'gender', 'birth_date', 'birth_city',
@@ -94,6 +95,7 @@ export default async function DashboardPage() {
             My Profiles · 我的档案
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <LocaleSwitcher />
             <Link
               href="/profiles/new"
               style={{

@@ -15,6 +15,7 @@ import {
 import { type DailyReading, type DailyStatus } from '../actions'
 import { generateDailyReading } from '@/lib/ai/generate-daily'
 import { createAdminClient } from '@/lib/supabase/server'
+import { getUserLocale } from '@/lib/actions/preferences'
 
 export default async function AlmanacPage({
   params,
@@ -87,9 +88,11 @@ export default async function AlmanacPage({
       .update({ daily_reading_status: 'pending', daily_reading_error: null })
       .eq('id', id)
 
+    // Capture locale before after() — getUserLocale() uses cookies, cannot run inside after()
+    const locale = await getUserLocale()
     after(async () => {
       try {
-        await generateDailyReading(id)
+        await generateDailyReading(id, locale)
       } catch (err) {
         console.error('[almanac/page] generateDailyReading failed:', err)
       }

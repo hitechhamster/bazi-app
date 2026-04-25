@@ -1,9 +1,17 @@
+import createIntlMiddleware from 'next-intl/middleware'
+import { routing } from './i18n/routing'
 import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { type NextRequest } from 'next/server'
+
+const intlMiddleware = createIntlMiddleware(routing)
 
 export async function proxy(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+  // 1. Run intl middleware first — handles locale detection, prefix redirects, rewrites
+  const response = intlMiddleware(request)
 
+  // 2. Apply Supabase session refresh on top of the intl response.
+  //    Cookie setters write directly onto `response` (the intl response) instead of
+  //    creating a fresh NextResponse.next() — this preserves intl redirects/rewrites.
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -16,9 +24,8 @@ export async function proxy(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           )
-          supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            response.cookies.set(name, value, options)
           )
         },
       },
@@ -28,11 +35,12 @@ export async function proxy(request: NextRequest) {
   // 刷新过期的 session
   await supabase.auth.getUser()
 
-  return supabaseResponse
+  return response
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // Exclude: /api, /auth, /_next internals, static files with extensions
+    '/((?!api|auth|_next|_vercel|.*\\..*).*)',
   ],
 }

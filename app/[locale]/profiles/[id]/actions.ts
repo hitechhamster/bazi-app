@@ -3,6 +3,7 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { after } from 'next/server'
 import { generateAndSaveReport } from '@/lib/ai/generate-report'
+import { getUserLocale } from '@/lib/actions/preferences'
 
 export type ReportStatus =
   | 'pending'
@@ -72,7 +73,9 @@ export async function retryReport(profileId: string): Promise<{ ok: boolean; err
     })
     .eq('id', profileId)
 
-  after(async () => { await generateAndSaveReport(profileId) })
+  // Capture locale before after() — getUserLocale() uses cookies, cannot run inside after()
+  const locale = await getUserLocale()
+  after(async () => { await generateAndSaveReport(profileId, locale) })
   return { ok: true }
 }
 
@@ -145,9 +148,11 @@ export async function triggerDailyReading(
     .update({ daily_reading_status: 'pending', daily_reading_error: null })
     .eq('id', profileId)
 
+  // Capture locale before after() — getUserLocale() uses cookies, cannot run inside after()
+  const locale = await getUserLocale()
   after(async () => {
     const { generateDailyReading } = await import('@/lib/ai/generate-daily')
-    await generateDailyReading(profileId)
+    await generateDailyReading(profileId, locale)
   })
 
   return { ok: true }

@@ -3,6 +3,7 @@
 import { useLocale } from 'next-intl'
 import { useRouter, usePathname } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
+import { setUserLocale, type Locale } from '@/lib/actions/preferences'
 
 const LOCALE_LABELS: Record<string, string> = {
   'en': 'EN',
@@ -17,7 +18,12 @@ export default function LocaleSwitcher() {
 
   function switchLocale(next: string) {
     if (next === locale) return
+    // Optimistically navigate first — do not block on DB write
     router.replace(pathname, { locale: next })
+    // Fire-and-forget: persist preference; silent failure is acceptable (locale works via URL)
+    setUserLocale(next as Locale).catch((e) =>
+      console.error('Failed to persist locale:', e)
+    )
   }
 
   return (

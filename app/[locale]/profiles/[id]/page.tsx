@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
+import LocaleSwitcher from '../../_components/LocaleSwitcher'
 import Sidebar from './_dashboard/Sidebar'
 import MobileTopNav from './_dashboard/MobileTopNav'
 import DashboardGrid from './_dashboard/DashboardGrid'
@@ -85,7 +86,7 @@ export default async function ProfileDetailPage({
         style={{ position: 'relative', zIndex: 10 }}
       >
         {/* Back link — desktop only; mobile uses MobileTopNav */}
-        <div className="hidden lg:block" style={{ marginBottom: '16px' }}>
+        <div className="hidden lg:flex" style={{ marginBottom: '16px', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link
             href="/dashboard"
             style={{
@@ -98,6 +99,7 @@ export default async function ProfileDetailPage({
           >
             ← Dashboard
           </Link>
+          <LocaleSwitcher />
         </div>
 
         {/* Two-column: sticky sidebar + scrolling main */}

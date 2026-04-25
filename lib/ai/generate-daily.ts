@@ -60,7 +60,7 @@ async function callGemini(prompt: string): Promise<DailyResult> {
   throw new Error('Unreachable')
 }
 
-export async function generateDailyReading(profileId: string): Promise<void> {
+export async function generateDailyReading(profileId: string, locale = 'en'): Promise<void> {
   const db = createAdminClient()
   const todayStr = new Date().toISOString().slice(0, 10)
 
@@ -120,6 +120,7 @@ export async function generateDailyReading(profileId: string): Promise<void> {
 
     await db.from('profiles').update({
       daily_reading: { date: todayStr, content: result.content, poem: result.poem },
+      daily_reading_locale: locale,
       daily_reading_status: 'done',
       daily_reading_error: null,
     }).eq('id', profileId)
