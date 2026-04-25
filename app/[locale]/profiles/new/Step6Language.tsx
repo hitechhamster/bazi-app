@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { BaziLanguage } from '@/lib/ai/bazi-prompt'
 import { StepTitle, NavRow, BackButton } from './StepShared'
 
@@ -25,6 +26,8 @@ export default function Step6Language({
   isPending: boolean
   onBack: () => void
 }) {
+  const t = useTranslations('newProfile')
+
   return (
     <div>
       <StepTitle>Which language should your reading be in?</StepTitle>
@@ -70,9 +73,9 @@ export default function Step6Language({
           {isPending ? (
             <>
               <span className="wizard-spinner" />
-              Creating…
+              {t('submitting')}
             </>
-          ) : 'Create profile'}
+          ) : t('submit')}
         </button>
       </NavRow>
     </div>

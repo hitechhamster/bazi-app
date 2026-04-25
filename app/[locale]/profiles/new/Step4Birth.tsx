@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { useTranslations } from 'next-intl'
 import { StepTitle, NavRow, BackButton, NextButton } from './StepShared'
 import type { Fields } from './ProfileForm'
 
@@ -29,6 +30,7 @@ export default function Step4Birth({
   onBack: () => void
   relation: string
 }) {
+  const t = useTranslations('newProfile')
   const dateRef = useRef<HTMLInputElement>(null)
   const isSelf = relation.toLowerCase() === 'self'
 
@@ -54,7 +56,7 @@ export default function Step4Birth({
     <div>
       <StepTitle>{isSelf ? 'When were you born?' : 'When were they born?'}</StepTitle>
       <div style={{ marginTop: '48px', maxWidth: '340px', margin: '48px auto 0' }}>
-        <label style={labelStyle}>Date of birth</label>
+        <label style={labelStyle}>{t('fields.birthDate')}</label>
         <input
           ref={dateRef}
           type="date"
@@ -67,7 +69,7 @@ export default function Step4Birth({
 
         <div style={{ marginTop: '36px' }}>
           <label style={labelStyle}>
-            Time of birth{' '}
+            {t('fields.birthTime')}{' '}
             <span style={{ opacity: 0.5, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
           </label>
           <input
@@ -94,7 +96,7 @@ export default function Step4Birth({
               onChange={e => setField('is_time_unknown', e.target.checked)}
               style={{ accentColor: 'var(--zen-red)', width: '14px', height: '14px' }}
             />
-            I don&apos;t know the exact time
+            {t('fields.timeUnknown')}
           </label>
         </div>
       </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { StepTitle, NavRow, BackButton, NextButton } from './StepShared'
 import type { Fields } from './ProfileForm'
 
@@ -19,6 +20,7 @@ export default function Step5City({
   onBack: () => void
   relation: string
 }) {
+  const t = useTranslations('newProfile')
   const [cityQuery, setCityQuery] = useState(fields.birth_city)
   const [cityResults, setCityResults] = useState<GeoResult[]>([])
   const [showDropdown, setShowDropdown] = useState(false)
@@ -66,7 +68,7 @@ export default function Step5City({
         <input
           type="text"
           className="zen-input"
-          placeholder="Type to search city…"
+          placeholder={t('fields.locationPlaceholder')}
           value={cityQuery}
           onChange={e => handleCityInput(e.target.value)}
           onBlur={() => setTimeout(() => setShowDropdown(false), 150)}

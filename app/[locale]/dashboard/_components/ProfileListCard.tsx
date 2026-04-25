@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { deleteProfile, updateProfile } from '../actions'
 
 export interface ProfileListCardData {
@@ -116,6 +117,9 @@ function Avatar({ dayMaster }: { dayMaster: string }) {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function ProfileListCard({ data: p }: { data: ProfileListCardData }) {
+  const tCommon = useTranslations('common')
+  const tEdit = useTranslations('editProfile')
+
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
@@ -217,7 +221,7 @@ export default function ProfileListCard({ data: p }: { data: ProfileListCardData
           gap: '12px', minHeight: '110px',
         }}>
           <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-ink)', textAlign: 'center', margin: 0 }}>
-            Delete this profile? 确定要删除吗？
+            {tEdit('deleteConfirm')}
           </p>
           {deleteError && (
             <p style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-red)', margin: 0 }}>
@@ -230,14 +234,14 @@ export default function ProfileListCard({ data: p }: { data: ProfileListCardData
               disabled={isPending}
               style={{ border: '1px solid var(--zen-red)', color: 'var(--zen-red)', padding: '4px 12px', background: 'transparent', borderRadius: '0', fontSize: '12px', fontFamily: 'var(--font-ui)', cursor: isPending ? 'wait' : 'pointer', opacity: isPending ? 0.5 : 1 }}
             >
-              {isPending ? 'Deleting...' : 'Delete'}
+              {tCommon('delete')}
             </button>
             <button
               onClick={() => { setConfirmDelete(false); setDeleteError(null) }}
               disabled={isPending}
               style={{ border: '0.5px solid var(--zen-border)', color: 'var(--zen-text-muted)', padding: '4px 12px', background: 'transparent', borderRadius: '0', fontSize: '12px', fontFamily: 'var(--font-ui)', cursor: 'pointer' }}
             >
-              Cancel
+              {tCommon('cancel')}
             </button>
           </div>
         </div>
@@ -259,14 +263,14 @@ export default function ProfileListCard({ data: p }: { data: ProfileListCardData
               <input
                 value={editName}
                 onChange={e => setEditName(e.target.value)}
-                placeholder="Name"
+                placeholder={tEdit('nameLabel')}
                 maxLength={50}
                 style={{ ...inputStyle, flex: '1 1 auto', minWidth: 0 }}
               />
               <input
                 value={editRelation}
                 onChange={e => setEditRelation(e.target.value)}
-                placeholder="Relation"
+                placeholder={tEdit('relationLabel')}
                 maxLength={20}
                 style={{ ...inputStyle, flex: '0 1 90px', minWidth: 0 }}
               />
@@ -287,14 +291,14 @@ export default function ProfileListCard({ data: p }: { data: ProfileListCardData
                 disabled={isPending}
                 style={{ border: '1px solid var(--zen-gold)', color: '#854F0B', padding: '4px 12px', background: 'transparent', borderRadius: '0', fontSize: '12px', fontFamily: 'var(--font-ui)', cursor: isPending ? 'wait' : 'pointer', opacity: isPending ? 0.5 : 1 }}
               >
-                {isPending ? 'Saving...' : 'Save'}
+                {tCommon('save')}
               </button>
               <button
                 onClick={() => { setIsEditing(false); setEditError(null) }}
                 disabled={isPending}
                 style={{ border: '0.5px solid var(--zen-border)', color: 'var(--zen-text-muted)', padding: '4px 12px', background: 'transparent', borderRadius: '0', fontSize: '12px', fontFamily: 'var(--font-ui)', cursor: 'pointer' }}
               >
-                Cancel
+                {tCommon('cancel')}
               </button>
             </div>
           </div>

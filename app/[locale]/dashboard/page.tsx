@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import LogoutButton from './logout-button'
 import ProfileListCard, { type ProfileListCardData } from './_components/ProfileListCard'
 import LocaleSwitcher from '../_components/LocaleSwitcher'
@@ -22,7 +23,7 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 500,
 }
 
-function EmptyState() {
+function EmptyState({ empty, createButton }: { empty: string; createButton: string }) {
   return (
     <div style={{ textAlign: 'center', padding: '80px 0' }}>
       <p style={{
@@ -31,7 +32,7 @@ function EmptyState() {
         color: 'var(--zen-text-muted)',
         marginBottom: '24px',
       }}>
-        No profiles yet · 还没有档案
+        {empty}
       </p>
       <Link
         href="/profiles/new"
@@ -47,7 +48,7 @@ function EmptyState() {
           cursor: 'pointer',
         }}
       >
-        + New profile
+        {createButton}
       </Link>
     </div>
   )
@@ -57,6 +58,8 @@ export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const t = await getTranslations('dashboard')
 
   const { data: profiles } = await supabase
     .from('profiles')
@@ -92,7 +95,7 @@ export default async function DashboardPage() {
             margin: 0,
             letterSpacing: '0.05em',
           }}>
-            My Profiles · 我的档案
+            {t('title')}
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <LocaleSwitcher />
@@ -110,7 +113,7 @@ export default async function DashboardPage() {
                 cursor: 'pointer',
               }}
             >
-              + New profile
+              {t('createButton')}
             </Link>
             <LogoutButton />
           </div>
@@ -118,7 +121,7 @@ export default async function DashboardPage() {
 
         {/* Grid or empty */}
         {list.length === 0 ? (
-          <EmptyState />
+          <EmptyState empty={t('empty')} createButton={t('createButton')} />
         ) : (
           <>
             <div style={{ ...labelStyle, marginBottom: '12px' }}>

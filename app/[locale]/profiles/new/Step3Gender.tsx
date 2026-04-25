@@ -1,9 +1,7 @@
-import { StepTitle, NavRow, BackButton } from './StepShared'
+'use client'
 
-const OPTIONS = [
-  { value: 'male',   label: 'Male',   accent: 'var(--zen-ink)' },
-  { value: 'female', label: 'Female', accent: 'var(--zen-red)' },
-]
+import { useTranslations } from 'next-intl'
+import { StepTitle, NavRow, BackButton } from './StepShared'
 
 export default function Step3Gender({
   value,
@@ -16,7 +14,13 @@ export default function Step3Gender({
   onBack: () => void
   relation: string
 }) {
+  const t = useTranslations('newProfile')
   const isSelf = relation.toLowerCase() === 'self'
+
+  const OPTIONS = [
+    { value: 'male',   label: t('fields.genderMale'),   accent: 'var(--zen-ink)' },
+    { value: 'female', label: t('fields.genderFemale'), accent: 'var(--zen-red)' },
+  ]
 
   return (
     <div>

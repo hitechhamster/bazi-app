@@ -1,3 +1,55 @@
 {
-  "_meta": "繁體中文"
+  "common": {
+    "save": "儲存",
+    "cancel": "取消",
+    "delete": "刪除",
+    "edit": "編輯",
+    "submit": "提交",
+    "loading": "載入中…",
+    "back": "返回",
+    "confirm": "確認",
+    "tryAgain": "重試"
+  },
+  "dashboard": {
+    "title": "你的命盤",
+    "subtitle": "你建立的所有命盤。",
+    "createButton": "+ 新增命盤",
+    "empty": "還沒有命盤。來建立第一個吧。",
+    "logout": "登出"
+  },
+  "profileCard": {
+    "relation": "關係",
+    "born": "出生",
+    "openReport": "查看報告"
+  },
+  "newProfile": {
+    "title": "新增命盤",
+    "submit": "生成命盤",
+    "submitting": "生成中…",
+    "fields": {
+      "name": "姓名",
+      "relation": "關係",
+      "relationPlaceholder": "例如:自己、伴侶、孩子",
+      "gender": "性別",
+      "genderMale": "男",
+      "genderFemale": "女",
+      "birthDate": "出生日期",
+      "birthTime": "出生時間",
+      "timeUnknown": "不知道確切時間",
+      "location": "出生地",
+      "locationPlaceholder": "城市,國家"
+    }
+  },
+  "editProfile": {
+    "nameLabel": "姓名",
+    "relationLabel": "關係",
+    "genderLocked": "性別(不可改)",
+    "deleteConfirm": "確定刪除這個命盤?無法復原。"
+  },
+  "errors": {
+    "generic": "出問題了。",
+    "network": "網路錯誤,請重試。",
+    "unauthorized": "請先登入。",
+    "notFound": "找不到。"
+  }
 }

@@ -3,11 +3,13 @@
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export default function LogoutButton() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [hover, setHover] = useState(false)
+  const t = useTranslations('dashboard')
 
   async function handleLogout() {
     setLoading(true)
@@ -36,7 +38,7 @@ export default function LogoutButton() {
         transition: 'color 0.15s ease',
       }}
     >
-      {loading ? 'Logging out...' : 'Log out'}
+      {t('logout')}
     </button>
   )
 }

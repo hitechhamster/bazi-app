@@ -1,3 +1,55 @@
 {
-  "_meta": "English (default)"
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "submit": "Submit",
+    "loading": "Loading…",
+    "back": "Back",
+    "confirm": "Confirm",
+    "tryAgain": "Try again"
+  },
+  "dashboard": {
+    "title": "Your Profiles",
+    "subtitle": "All the charts you've created.",
+    "createButton": "+ New profile",
+    "empty": "No profiles yet. Create your first one.",
+    "logout": "Log out"
+  },
+  "profileCard": {
+    "relation": "Relation",
+    "born": "Born",
+    "openReport": "Open report"
+  },
+  "newProfile": {
+    "title": "New Profile",
+    "submit": "Create profile",
+    "submitting": "Generating…",
+    "fields": {
+      "name": "Name",
+      "relation": "Relation",
+      "relationPlaceholder": "e.g. self, partner, child",
+      "gender": "Gender",
+      "genderMale": "Male",
+      "genderFemale": "Female",
+      "birthDate": "Birth date",
+      "birthTime": "Birth time",
+      "timeUnknown": "I don't know the time",
+      "location": "Birth location",
+      "locationPlaceholder": "City, Country"
+    }
+  },
+  "editProfile": {
+    "nameLabel": "Name",
+    "relationLabel": "Relation",
+    "genderLocked": "Gender (locked)",
+    "deleteConfirm": "Delete this profile? This cannot be undone."
+  },
+  "errors": {
+    "generic": "Something went wrong.",
+    "network": "Network error. Please try again.",
+    "unauthorized": "Please log in to continue.",
+    "notFound": "Not found."
+  }
 }
