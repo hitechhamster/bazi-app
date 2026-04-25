@@ -195,6 +195,20 @@
       "startFreshLink": "start a new one"
     }
   },
+  "demo": {
+    "sampleChartName": "Sample Chart",
+    "banner": {
+      "text": "This is a sample chart",
+      "cta": "Generate your own →"
+    },
+    "aiReportTitle": "AI Reading",
+    "aiReportDescription": "A multi-thousand-word structured analysis of this person's chart, covering core identity, career and wealth, relationships, and health. Available after free registration.",
+    "almanacTitle": "Today's Almanac",
+    "almanacDescription": "Personalized daily fortune readings rooted in the chart, plus a four-line classical poem composed for today. Available after free registration.",
+    "chatTitle": "Multi-turn Conversation",
+    "chatDescription": "Ask anything about the chart in an ongoing AI conversation. The AI remembers context and stays grounded in this person's specific Bazi. Available after free registration.",
+    "unlockCTA": "Register to unlock →"
+  },
   "login": {
     "title": "Log in",
     "subtitle": "Enter your email to receive a magic link",

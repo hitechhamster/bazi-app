@@ -195,6 +195,20 @@
       "startFreshLink": "開新對話"
     }
   },
+  "demo": {
+    "sampleChartName": "範例命盤",
+    "banner": {
+      "text": "這是範例命盤",
+      "cta": "生成你自己的 →"
+    },
+    "aiReportTitle": "AI 解讀",
+    "aiReportDescription": "數千字結構化分析，從核心命盤出發，解讀這個人的核心特質、事業財富、感情、健康等多個維度。免費註冊後可查看。",
+    "almanacTitle": "今日黃曆",
+    "almanacDescription": "基於命盤的每日個性化運勢 + 為今日量身寫的四句命理詩。免費註冊後可查看。",
+    "chatTitle": "多輪問答",
+    "chatDescription": "圍繞命盤問任何問題。AI 記得上下文，可以連續追問、深入探討。免費註冊後可使用。",
+    "unlockCTA": "註冊解鎖 →"
+  },
   "login": {
     "title": "登入",
     "subtitle": "輸入信箱，我們將發送一次性登入連結",

@@ -195,6 +195,20 @@
       "startFreshLink": "开新对话"
     }
   },
+  "demo": {
+    "sampleChartName": "示例命盘",
+    "banner": {
+      "text": "这是示例命盘",
+      "cta": "生成你自己的 →"
+    },
+    "aiReportTitle": "AI 解读",
+    "aiReportDescription": "数千字结构化分析，从核心命盘出发，解读这个人的核心特质、事业财富、感情、健康等多个维度。免费注册后可查看。",
+    "almanacTitle": "今日黄历",
+    "almanacDescription": "基于命盘的每日个性化运势 + 为今日量身写的四句命理诗。免费注册后可查看。",
+    "chatTitle": "多轮问答",
+    "chatDescription": "围绕命盘问任何问题。AI 记得上下文，可以连续追问、深入探讨。免费注册后可使用。",
+    "unlockCTA": "注册解锁 →"
+  },
   "login": {
     "title": "登录",
     "subtitle": "输入邮箱，我们将发送一次性登录链接",
