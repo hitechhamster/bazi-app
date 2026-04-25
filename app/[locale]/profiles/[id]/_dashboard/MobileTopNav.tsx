@@ -2,16 +2,19 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import LocaleSwitcher from '../../../_components/LocaleSwitcher'
 
 export default function MobileTopNav({ profileId }: { profileId: string }) {
+  const t = useTranslations('profileReport')
+  const tSidebar = useTranslations('profileReport.sidebar')
   const pathname = usePathname()
   const base = `/profiles/${profileId}`
 
   const segments = [
-    { href: base,              label: 'Basic Report',    active: pathname === base },
-    { href: `${base}/almanac`, label: "Today's Almanac", active: pathname.endsWith('/almanac') },
-    { href: `${base}/ask`,     label: 'Ask a Question',  active: pathname.endsWith('/ask') },
+    { href: base,              label: tSidebar('basicReport'),    active: pathname === base },
+    { href: `${base}/almanac`, label: tSidebar('todaysAlmanac'),  active: pathname.endsWith('/almanac') },
+    { href: `${base}/ask`,     label: tSidebar('askQuestion'),    active: pathname.endsWith('/ask') },
   ]
 
   return (
@@ -28,7 +31,7 @@ export default function MobileTopNav({ profileId }: { profileId: string }) {
             textDecoration: 'none',
           }}
         >
-          ← All profiles
+          {t('backToAll')}
         </Link>
         <LocaleSwitcher />
       </div>

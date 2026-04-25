@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import type { MockData, MockSubject } from './mock-data'
 
 export default function Sidebar({ data }: { data: MockData }) {
+  const t = useTranslations('profileReport.sidebar')
   const pathname = usePathname()
   const profileBase = pathname.replace(/\/(almanac|ask)$/, '')
   return (
@@ -15,7 +17,7 @@ export default function Sidebar({ data }: { data: MockData }) {
       flexDirection: 'column',
       gap: '10px',
     }}>
-      <div style={{ ...labelStyle, marginTop: '-26px' }}>SUBJECTS</div>
+      <div style={{ ...labelStyle, marginTop: '-26px' }}>{t('subjects')}</div>
 
       {data.subjects.map(s => (
         <SubjectCard key={s.id} subject={s} />
@@ -31,16 +33,16 @@ export default function Sidebar({ data }: { data: MockData }) {
         color: 'var(--zen-text-muted)',
         cursor: 'default',
       }}>
-        + Add subject
+        {t('addSubject')}
       </div>
 
       <hr style={{ border: 'none', borderTop: '1px solid var(--zen-border)', margin: 0 }} />
 
-      <div style={labelStyle}>VIEW</div>
+      <div style={labelStyle}>{t('view')}</div>
 
-      <NavButton active={pathname === profileBase} href={profileBase} label="Basic Report" labelZh="基础报告" />
-      <NavButton active={pathname === `${profileBase}/almanac`} href={`${profileBase}/almanac`} label="Today's Almanac" labelZh="今日黄历" />
-      <NavButton active={pathname === `${profileBase}/ask`} href={`${profileBase}/ask`} label="Ask a Question" labelZh="一事一问" />
+      <NavButton active={pathname === profileBase} href={profileBase} label={t('basicReport')} labelSub={t('basicReportZh')} />
+      <NavButton active={pathname === `${profileBase}/almanac`} href={`${profileBase}/almanac`} label={t('todaysAlmanac')} labelSub={t('todaysAlmanacZh')} />
+      <NavButton active={pathname === `${profileBase}/ask`} href={`${profileBase}/ask`} label={t('askQuestion')} labelSub={t('askQuestionZh')} />
     </aside>
   )
 }
@@ -104,7 +106,7 @@ function SubjectCard({ subject: s }: { subject: MockSubject }) {
   )
 }
 
-function NavButton({ active, href, label, labelZh }: { active: boolean; href: string; label: string; labelZh: string }) {
+function NavButton({ active, href, label, labelSub }: { active: boolean; href: string; label: string; labelSub: string }) {
   if (active) {
     return (
       <div style={{
@@ -128,7 +130,7 @@ function NavButton({ active, href, label, labelZh }: { active: boolean; href: st
             {label}
           </div>
           <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: '#854F0B', opacity: 0.7 }}>
-            {labelZh}
+            {labelSub}
           </div>
         </div>
       </div>
@@ -151,7 +153,7 @@ function NavButton({ active, href, label, labelZh }: { active: boolean; href: st
         {label}
       </div>
       <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
-        {labelZh}
+        {labelSub}
       </div>
     </Link>
   )

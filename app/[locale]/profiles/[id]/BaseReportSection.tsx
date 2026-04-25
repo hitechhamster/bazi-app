@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { renderBaziMarkdown } from '@/lib/markdown/renderer'
 import { getReportStatus, retryReport } from './actions'
 
@@ -15,6 +16,9 @@ export default function BaseReportSection({
   initialReport: string | null
   initialError: string | null
 }) {
+  const t = useTranslations('profileReport')
+  const tCommon = useTranslations('common')
+
   const [status, setStatus] = useState(initialStatus)
   const [report, setReport] = useState<string | null>(initialReport)
   const [error, setError] = useState<string | null>(initialError)
@@ -61,10 +65,12 @@ export default function BaseReportSection({
         <div style={{ textAlign: 'center', padding: '48px 0' }}>
           <div className="reading-spinner" style={{ margin: '0 auto 20px' }} />
           <p className="reading-loading-text">
-            {status === 'generating_structured' ? 'Analyzing chart structure...' : 'Generating your reading...'}
+            {status === 'generating_structured'
+              ? t('loading.analyzingStructure')
+              : t('loading.generatingReading')}
           </p>
           <p className="reading-loading-sub">
-            This usually takes 30–60 seconds. You can leave this page; the reading will be saved to your profile.
+            {t('loading.loadingHint')}
           </p>
         </div>
       )}
@@ -84,7 +90,7 @@ export default function BaseReportSection({
             fontSize: '1.05rem',
             marginBottom: '12px',
           }}>
-            Something went wrong while generating your reading.
+            {t('error.generationFailed')}
           </p>
           {error && (
             <p style={{
@@ -102,7 +108,7 @@ export default function BaseReportSection({
             className="zen-btn-primary"
             style={{ fontSize: '0.9rem', padding: '12px 32px', letterSpacing: '0.15em' }}
           >
-            {retrying ? 'Retrying...' : 'Try again'}
+            {retrying ? t('error.retrying') : tCommon('tryAgain')}
           </button>
         </div>
       )}

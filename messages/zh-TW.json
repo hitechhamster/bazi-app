@@ -80,6 +80,40 @@
     "genderLocked": "性別(不可改)",
     "deleteConfirm": "確定刪除這個命盤?無法復原。"
   },
+  "profileReport": {
+    "backToDashboard": "← 返回主頁",
+    "backToAll": "← 所有命盤",
+    "destinyReadingTitle": "命運解讀 · Your Destiny Reading",
+    "destinyReadingSubtitle": "基於四柱的 AI 解讀",
+    "sidebar": {
+      "subjects": "命盤對象",
+      "view": "視圖",
+      "addSubject": "+ 新增對象",
+      "basicReport": "基礎報告",
+      "basicReportZh": "Basic Report",
+      "todaysAlmanac": "今日黃曆",
+      "todaysAlmanacZh": "Today's Almanac",
+      "askQuestion": "一事一問",
+      "askQuestionZh": "Ask a Question"
+    },
+    "status": {
+      "done": "解讀已就緒",
+      "generating": "生成中...",
+      "analyzingChart": "分析中...",
+      "writingReading": "撰寫中...",
+      "error": "出錯",
+      "pending": "待處理"
+    },
+    "loading": {
+      "analyzingStructure": "正在分析命盤結構...",
+      "generatingReading": "正在生成您的解讀...",
+      "loadingHint": "通常需要 30–60 秒。您可以離開此頁，解讀將自動儲存至您的檔案。"
+    },
+    "error": {
+      "generationFailed": "生成解讀時出現錯誤，請重試。",
+      "retrying": "重試中..."
+    }
+  },
   "errors": {
     "generic": "出問題了。",
     "network": "網路錯誤,請重試。",

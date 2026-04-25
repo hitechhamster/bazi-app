@@ -37,14 +37,13 @@ function getCurrentDayun(luckCycles: ProfileListCardData['luck_cycles'] | null) 
   ) ?? null
 }
 
-const STATUS_CONFIG: Record<string, { dot: string; label: string }> = {
-  done:                  { dot: 'var(--element-wood)', label: 'Reading ready' },
-  generating:            { dot: 'var(--zen-gold)',     label: 'Generating...' },
-  generating_structured: { dot: 'var(--zen-gold)',     label: 'Analyzing...' },
-  generating_reading:    { dot: 'var(--zen-gold)',     label: 'Writing...' },
-  error:                 { dot: 'var(--zen-red)',      label: 'Error' },
+const STATUS_DOTS: Record<string, string> = {
+  done:                  'var(--element-wood)',
+  generating:            'var(--zen-gold)',
+  generating_structured: 'var(--zen-gold)',
+  generating_reading:    'var(--zen-gold)',
+  error:                 'var(--zen-red)',
 }
-const STATUS_FALLBACK = { dot: 'var(--zen-border)', label: 'Pending' }
 
 const inputStyle: React.CSSProperties = {
   fontFamily: 'var(--font-ui)',
@@ -119,6 +118,16 @@ function Avatar({ dayMaster }: { dayMaster: string }) {
 export default function ProfileListCard({ data: p }: { data: ProfileListCardData }) {
   const tCommon = useTranslations('common')
   const tEdit = useTranslations('editProfile')
+  const tStatus = useTranslations('profileReport.status')
+
+  const STATUS_CONFIG: Record<string, { dot: string; label: string }> = {
+    done:                  { dot: STATUS_DOTS.done,                  label: tStatus('done') },
+    generating:            { dot: STATUS_DOTS.generating,            label: tStatus('generating') },
+    generating_structured: { dot: STATUS_DOTS.generating_structured, label: tStatus('analyzingChart') },
+    generating_reading:    { dot: STATUS_DOTS.generating_reading,    label: tStatus('writingReading') },
+    error:                 { dot: STATUS_DOTS.error,                  label: tStatus('error') },
+  }
+  const STATUS_FALLBACK = { dot: 'var(--zen-border)', label: tStatus('pending') }
 
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)

@@ -80,6 +80,40 @@
     "genderLocked": "Gender (locked)",
     "deleteConfirm": "Delete this profile? This cannot be undone."
   },
+  "profileReport": {
+    "backToDashboard": "← Dashboard",
+    "backToAll": "← All profiles",
+    "destinyReadingTitle": "Your Destiny Reading · 解读",
+    "destinyReadingSubtitle": "AI-generated reading based on your Four Pillars",
+    "sidebar": {
+      "subjects": "SUBJECTS",
+      "view": "VIEW",
+      "addSubject": "+ Add subject",
+      "basicReport": "Basic Report",
+      "basicReportZh": "基础报告",
+      "todaysAlmanac": "Today's Almanac",
+      "todaysAlmanacZh": "今日黄历",
+      "askQuestion": "Ask a Question",
+      "askQuestionZh": "一事一问"
+    },
+    "status": {
+      "done": "Reading ready",
+      "generating": "Generating...",
+      "analyzingChart": "Analyzing...",
+      "writingReading": "Writing...",
+      "error": "Error",
+      "pending": "Pending"
+    },
+    "loading": {
+      "analyzingStructure": "Analyzing chart structure...",
+      "generatingReading": "Generating your reading...",
+      "loadingHint": "This usually takes 30–60 seconds. You can leave this page; the reading will be saved to your profile."
+    },
+    "error": {
+      "generationFailed": "Something went wrong while generating your reading.",
+      "retrying": "Retrying..."
+    }
+  },
   "errors": {
     "generic": "Something went wrong.",
     "network": "Network error. Please try again.",

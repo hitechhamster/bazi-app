@@ -80,6 +80,40 @@
     "genderLocked": "性别(不可改)",
     "deleteConfirm": "确定删除这个命盘?无法撤销。"
   },
+  "profileReport": {
+    "backToDashboard": "← 返回主页",
+    "backToAll": "← 所有命盘",
+    "destinyReadingTitle": "命运解读 · Your Destiny Reading",
+    "destinyReadingSubtitle": "基于四柱的 AI 解读",
+    "sidebar": {
+      "subjects": "命盘对象",
+      "view": "视图",
+      "addSubject": "+ 添加对象",
+      "basicReport": "基础报告",
+      "basicReportZh": "Basic Report",
+      "todaysAlmanac": "今日黄历",
+      "todaysAlmanacZh": "Today's Almanac",
+      "askQuestion": "一事一问",
+      "askQuestionZh": "Ask a Question"
+    },
+    "status": {
+      "done": "解读已就绪",
+      "generating": "生成中...",
+      "analyzingChart": "分析中...",
+      "writingReading": "撰写中...",
+      "error": "出错",
+      "pending": "待处理"
+    },
+    "loading": {
+      "analyzingStructure": "正在分析命盘结构...",
+      "generatingReading": "正在生成您的解读...",
+      "loadingHint": "通常需要 30–60 秒。您可以离开此页，解读将自动保存至您的档案。"
+    },
+    "error": {
+      "generationFailed": "生成解读时出现错误，请重试。",
+      "retrying": "重试中..."
+    }
+  },
   "errors": {
     "generic": "出问题了。",
     "network": "网络出错,请重试。",

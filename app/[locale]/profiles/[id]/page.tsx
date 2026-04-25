@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import LocaleSwitcher from '../../_components/LocaleSwitcher'
 import Sidebar from './_dashboard/Sidebar'
@@ -77,6 +78,8 @@ export default async function ProfileDetailPage({
   // Adapt (profile, subjects, report) → MockData-shaped object
   const dashboardData = buildDashboardData(profile as unknown as ProfileRow, subjects, report)
 
+  const t = await getTranslations('profileReport')
+
   return (
     <div className="min-h-screen relative overflow-visible">
       <div className="zen-circle-bg" style={{ top: '-200px', right: '-200px', left: 'auto' }} />
@@ -97,7 +100,7 @@ export default async function ProfileDetailPage({
               letterSpacing: '0.08em',
             }}
           >
-            ← Dashboard
+            {t('backToDashboard')}
           </Link>
           <LocaleSwitcher />
         </div>
@@ -142,7 +145,7 @@ export default async function ProfileDetailPage({
                   letterSpacing: '0.05em',
                   margin: 0,
                 }}>
-                  Your Destiny Reading · 解读
+                  {t('destinyReadingTitle')}
                 </h2>
                 <p style={{
                   fontFamily: 'var(--font-ui)',
@@ -151,7 +154,7 @@ export default async function ProfileDetailPage({
                   marginTop: '6px',
                   marginBottom: 0,
                 }}>
-                  AI-generated reading based on your Four Pillars
+                  {t('destinyReadingSubtitle')}
                 </p>
               </div>
               <BaseReportSection
