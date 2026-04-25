@@ -207,7 +207,8 @@
     "almanacDescription": "基于命盘的每日个性化运势 + 为今日量身写的四句命理诗。免费注册后可查看。",
     "chatTitle": "多轮问答",
     "chatDescription": "围绕命盘问任何问题。AI 记得上下文，可以连续追问、深入探讨。免费注册后可使用。",
-    "unlockCTA": "注册解锁 →"
+    "unlockCTA": "注册解锁 →",
+    "sampleHint": "本份解读基于上方示例命盘 · 注册后可生成你自己的 →"
   },
   "login": {
     "title": "登录",

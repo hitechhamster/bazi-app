@@ -207,7 +207,8 @@
     "almanacDescription": "Personalized daily fortune readings rooted in the chart, plus a four-line classical poem composed for today. Available after free registration.",
     "chatTitle": "Multi-turn Conversation",
     "chatDescription": "Ask anything about the chart in an ongoing AI conversation. The AI remembers context and stays grounded in this person's specific Bazi. Available after free registration.",
-    "unlockCTA": "Register to unlock →"
+    "unlockCTA": "Register to unlock →",
+    "sampleHint": "This reading is for the sample chart above. Register to generate your own →"
   },
   "login": {
     "title": "Log in",

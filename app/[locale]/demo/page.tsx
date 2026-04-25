@@ -18,6 +18,7 @@ import LuckCycleTimeline from '@/app/[locale]/profiles/[id]/_dashboard/LuckCycle
 import CurrentLiuNianStrip from '@/app/[locale]/profiles/[id]/_dashboard/CurrentLiuNianStrip'
 import DemoBanner from './_components/DemoBanner'
 import LockedSection from './_components/LockedSection'
+import DemoAIReadingSection from './_components/DemoAIReadingSection'
 
 // Demo chart is public — no auth required, served via admin client
 export default async function DemoPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -188,11 +189,11 @@ export default async function DemoPage({ params }: { params: Promise<{ locale: s
           <CurrentLiuNianStrip data={dashboardData} />
         </div>
 
-        {/* Locked AI sections */}
-        <LockedSection
-          title={t('aiReportTitle')}
-          description={t('aiReportDescription')}
-        />
+        {/* AI Reading — unlocked if base_report is present, locked otherwise */}
+        {profile.base_report
+          ? <DemoAIReadingSection report={profile.base_report as string} />
+          : <LockedSection title={t('aiReportTitle')} description={t('aiReportDescription')} />
+        }
 
         <LockedSection
           title={t('almanacTitle')}
