@@ -8,7 +8,7 @@ import type { MockData, MockSubject } from './mock-data'
 export default function Sidebar({ data }: { data: MockData }) {
   const t = useTranslations('profileReport.sidebar')
   const pathname = usePathname()
-  const profileBase = pathname.replace(/\/(almanac|ask)$/, '')
+  const profileBase = pathname.replace(/\/(almanac|ask|chat(\/[^/]+)?)$/, '')
   return (
     <aside style={{
       width: '220px',
@@ -43,6 +43,8 @@ export default function Sidebar({ data }: { data: MockData }) {
       <NavButton active={pathname === profileBase} href={profileBase} label={t('basicReport')} labelSub={t('basicReportZh')} />
       <NavButton active={pathname === `${profileBase}/almanac`} href={`${profileBase}/almanac`} label={t('todaysAlmanac')} labelSub={t('todaysAlmanacZh')} />
       <NavButton active={pathname === `${profileBase}/ask`} href={`${profileBase}/ask`} label={t('askQuestion')} labelSub={t('askQuestionZh')} />
+      {/* Hardcoded until C6 adds translation keys */}
+      <NavButton active={pathname.includes('/chat')} href={`${profileBase}/chat`} label="Conversation" labelSub="多轮问答" />
     </aside>
   )
 }

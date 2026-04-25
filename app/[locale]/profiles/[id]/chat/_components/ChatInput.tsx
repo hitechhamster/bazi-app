@@ -2,15 +2,24 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { submitChatMessage } from '@/lib/actions/conversations'
+import { submitChatMessage, createConversation } from '@/lib/actions/conversations'
 
 const MAX_LENGTH = 2000
 
-export default function ChatInput({ conversationId }: { conversationId: string }) {
+export default function ChatInput({
+  conversationId,
+  profileId,
+  turnCount,
+}: {
+  conversationId: string
+  profileId: string
+  turnCount: number
+}) {
   const router = useRouter()
   const [text, setText] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [creatingNew, setCreatingNew] = useState(false)
 
   const disabled = submitting || text.trim().length === 0
 
@@ -36,8 +45,55 @@ export default function ChatInput({ conversationId }: { conversationId: string }
     }
   }
 
+  async function handleStartFresh() {
+    if (creatingNew) return
+    setCreatingNew(true)
+    try {
+      const result = await createConversation(profileId)
+      if ('error' in result) {
+        setError(result.error)
+      } else {
+        router.push(`/profiles/${profileId}/chat/${result.conversationId}`)
+      }
+    } catch {
+      setError('Failed to create new conversation.')
+    } finally {
+      setCreatingNew(false)
+    }
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      {/* 16-turn advisory — appears above textarea at ≥15 turns */}
+      {turnCount >= 15 && (
+        <div style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: '11px',
+          color: turnCount >= 25 ? 'var(--zen-red)' : 'var(--zen-text-muted)',
+          lineHeight: 1.5,
+        }}>
+          Conversation is getting long — for clearer answers,{' '}
+          <button
+            type="button"
+            onClick={handleStartFresh}
+            disabled={creatingNew}
+            style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '11px',
+              color: creatingNew ? 'var(--zen-text-muted)' : '#854F0B',
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              textDecoration: creatingNew ? 'none' : 'underline',
+              cursor: creatingNew ? 'default' : 'pointer',
+            }}
+          >
+            {creatingNew ? 'creating…' : 'start a new one'}
+          </button>
+          .
+        </div>
+      )}
+
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}

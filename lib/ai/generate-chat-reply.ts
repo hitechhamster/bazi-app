@@ -8,11 +8,49 @@ import type { PromptContext } from './structured-prompt'
 const MODEL = 'gemini-3.1-flash-lite-preview'
 const MAX_OUTPUT_TOKENS = 4096
 const TIMEOUT_MS = 90_000
+const MAX_HISTORY_TOKENS = 80_000
 
 const LANG_NAME: Record<string, string> = {
   'en':    'English',
   'zh-CN': '简体中文 (Simplified Chinese)',
   'zh-TW': '繁體中文 (Traditional Chinese)',
+}
+
+// ── Token budget helpers ──────────────────────────────────────────────────────
+
+type HistoryEntry = { role: 'user' | 'model'; parts: { text: string }[] }
+
+/** Rough token estimate: CJK chars ~1.5 chars/token, others ~4 chars/token */
+function estimateTokens(text: string): number {
+  let cjk = 0
+  let other = 0
+  for (const ch of text) {
+    if (/[\u3000-\u9FFF\uFF00-\uFFEF]/.test(ch)) cjk += 1
+    else other += 1
+  }
+  return Math.ceil(cjk / 1.5 + other / 4)
+}
+
+/** Trim history from oldest first, always keeping the most recent turns.
+ *  After trimming, drops any orphan 'model' message at the start to preserve
+ *  the required user/model alternation for the Gemini API. */
+function trimHistoryToBudget(history: HistoryEntry[], budget: number): HistoryEntry[] {
+  let totalTokens = 0
+  const reversed = [...history].reverse()
+  const kept: HistoryEntry[] = []
+  for (const msg of reversed) {
+    const text = msg.parts[0]?.text ?? ''
+    const tokens = estimateTokens(text)
+    if (totalTokens + tokens > budget) break
+    totalTokens += tokens
+    kept.push(msg)
+  }
+  let result = kept.reverse()
+  // Drop orphan model message at start (would violate user/model alternation)
+  if (result.length > 0 && result[0].role === 'model') {
+    result = result.slice(1)
+  }
+  return result
 }
 
 // ── Helpers (mirrors generate-question.ts — both unexported there) ─────────────
@@ -102,12 +140,15 @@ export async function generateChatReply(assistantMessageId: string): Promise<voi
     // Build conversation history — exclude the current pending/generating assistant row.
     // For any prior failed assistant rows (edge case), substitute placeholder text
     // so the user/model alternation pattern stays intact for the Gemini API.
-    const history = (allMessages ?? [])
+    const rawHistory: HistoryEntry[] = (allMessages ?? [])
       .filter((m) => m.id !== assistantMessageId)
       .map((m) => ({
         role: m.role === 'user' ? ('user' as const) : ('model' as const),
         parts: [{ text: (m.content as string) || '[no response]' }],
       }))
+
+    // Apply token budget safety net — silently trims oldest turns if needed
+    const history = trimHistoryToBudget(rawHistory, MAX_HISTORY_TOKENS)
 
     // 5. Build chart context and system instruction
     const ctx = buildPromptContext(profile as Record<string, unknown>)

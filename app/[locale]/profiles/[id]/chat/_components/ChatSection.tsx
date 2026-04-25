@@ -56,7 +56,11 @@ export default function ChatSection({
 
         {/* Input — simple flow layout (C5/C6 may sticky this) */}
         <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--zen-gold-pale)' }}>
-          <ChatInput conversationId={conversation.id} />
+          <ChatInput
+            conversationId={conversation.id}
+            profileId={profileId}
+            turnCount={messages.reduce((max, m) => Math.max(max, m.turn_number), 0)}
+          />
         </div>
       </div>
     </div>

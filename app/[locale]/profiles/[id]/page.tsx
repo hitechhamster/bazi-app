@@ -165,21 +165,6 @@ export default async function ProfileDetailPage({
               />
             </div>
 
-            {/* [TEMP TEST LINK] — removed in C5 when Sidebar gains Conversation segment */}
-            <div style={{ paddingTop: '8px', textAlign: 'right' }}>
-              <Link
-                href={`/profiles/${profile.id as string}/chat`}
-                style={{
-                  fontFamily: 'var(--font-ui)',
-                  fontSize: '11px',
-                  color: '#854F0B',
-                  textDecoration: 'underline',
-                  letterSpacing: '0.05em',
-                }}
-              >
-                [TEMP TEST LINK] Open Conversation →
-              </Link>
-            </div>
           </div>
         </div>
       </div>

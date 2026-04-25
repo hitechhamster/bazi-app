@@ -15,6 +15,8 @@ export default function MobileTopNav({ profileId }: { profileId: string }) {
     { href: base,              label: tSidebar('basicReport'),    active: pathname === base },
     { href: `${base}/almanac`, label: tSidebar('todaysAlmanac'),  active: pathname.endsWith('/almanac') },
     { href: `${base}/ask`,     label: tSidebar('askQuestion'),    active: pathname.endsWith('/ask') },
+    // Hardcoded until C6 adds translation keys
+    { href: `${base}/chat`,    label: 'Chat',                     active: pathname.includes('/chat') },
   ]
 
   return (
