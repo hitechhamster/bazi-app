@@ -44,7 +44,7 @@ export default function Sidebar({ data }: { data: MockData }) {
       <NavButton active={pathname === `${profileBase}/almanac`} href={`${profileBase}/almanac`} label={t('todaysAlmanac')} labelSub={t('todaysAlmanacZh')} />
       <NavButton active={pathname === `${profileBase}/ask`} href={`${profileBase}/ask`} label={t('askQuestion')} labelSub={t('askQuestionZh')} />
       {/* Hardcoded until C6 adds translation keys */}
-      <NavButton active={pathname.includes('/chat')} href={`${profileBase}/chat`} label="Conversation" labelSub="多轮问答" />
+      <NavButton active={pathname.includes('/chat')} href={`${profileBase}/chat`} label="多轮问答" labelSub="Conversation" />
     </aside>
   )
 }
