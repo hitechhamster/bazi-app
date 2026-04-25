@@ -195,6 +195,17 @@
       "startFreshLink": "start a new one"
     }
   },
+  "login": {
+    "title": "Log in",
+    "subtitle": "Enter your email to receive a magic link",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "sendMagicLink": "Send magic link",
+    "sending": "Sending…",
+    "successMessage": "Check your inbox — magic link sent.",
+    "errorMessage": "Could not send magic link. Please try again.",
+    "backToHome": "← Back to home"
+  },
   "home": {
     "topNav": {
       "login": "Log in"

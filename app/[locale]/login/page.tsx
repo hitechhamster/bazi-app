@@ -1,18 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import BrandMark from '@/components/BrandMark'
 
 export default function LoginPage() {
+  const t = useTranslations('login')
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
-  const [errorMsg, setErrorMsg] = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus('sending')
-    setErrorMsg('')
 
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithOtp({
@@ -22,64 +23,181 @@ export default function LoginPage() {
       },
     })
 
-    if (error) {
-      setStatus('error')
-      setErrorMsg(error.message)
-    } else {
-      setStatus('sent')
-    }
+    setStatus(error ? 'error' : 'sent')
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '32px' }}>
-        <BrandMark variant="full" size="default" href="/" />
-      </div>
-      <div className="zen-card w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-2 text-center">Log in</h1>
-        <p className="text-gray-500 text-sm mb-6 text-center">
-          Enter your email to receive a magic link
-        </p>
+    <div
+      className="min-h-screen relative overflow-hidden"
+      style={{ background: 'var(--zen-paper)' }}
+    >
+      {/* Decorative circle — matches home page */}
+      <div className="zen-circle-bg" aria-hidden="true" />
 
-        {status === 'sent' ? (
-          <div className="bg-green-50 border border-green-200 text-green-700 rounded p-4 text-center">
-            <p className="font-medium">Check your inbox</p>
-            <p className="text-sm mt-1">
-              We sent a login link to <strong>{email}</strong>
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              />
-            </div>
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '32px 16px',
+        }}
+      >
+        {/* BrandMark — prominent above card */}
+        <div style={{ marginBottom: '64px' }}>
+          <BrandMark variant="full" size="default" href="/" />
+        </div>
 
-            <button
-              type="submit"
-              disabled={status === 'sending'}
-              className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+        {/* Login card */}
+        <div
+          style={{
+            width: '100%',
+            maxWidth: '400px',
+            background: 'var(--zen-paper)',
+            border: '1px solid var(--zen-gold-pale)',
+            padding: '48px',
+          }}
+        >
+          <h1
+            style={{
+              fontFamily: 'var(--font-main)',
+              fontSize: '20px',
+              fontWeight: 500,
+              color: 'var(--zen-ink)',
+              letterSpacing: '0.05em',
+              margin: '0 0 8px',
+              textAlign: 'center',
+            }}
+          >
+            {t('title')}
+          </h1>
+          <p
+            style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '12px',
+              color: 'var(--zen-text-muted)',
+              margin: '0 0 32px',
+              textAlign: 'center',
+              lineHeight: 1.5,
+            }}
+          >
+            {t('subtitle')}
+          </p>
+
+          {status === 'sent' ? (
+            <div
+              style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: '13px',
+                color: 'var(--zen-ink)',
+                textAlign: 'center',
+                padding: '16px',
+                border: '1px solid var(--zen-gold-pale)',
+                lineHeight: 1.6,
+              }}
             >
-              {status === 'sending' ? 'Sending...' : 'Send magic link'}
-            </button>
+              {t('successMessage')}
+            </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit}
+              style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+            >
+              <div>
+                <label
+                  htmlFor="email"
+                  style={{
+                    fontFamily: 'var(--font-ui)',
+                    fontSize: '11px',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: 'var(--zen-ink)',
+                    fontWeight: 500,
+                    display: 'block',
+                    marginBottom: '8px',
+                  }}
+                >
+                  {t('emailLabel')}
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t('emailPlaceholder')}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    fontFamily: 'var(--font-ui)',
+                    fontSize: '13px',
+                    color: 'var(--zen-ink)',
+                    background: 'white',
+                    border: '1px solid var(--zen-gold-pale)',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                    transition: 'border-color 0.15s ease',
+                  }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = '#854F0B' }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--zen-gold-pale)' }}
+                />
+              </div>
 
-            {status === 'error' && (
-              <p className="text-red-600 text-sm text-center">{errorMsg}</p>
-            )}
-          </form>
-        )}
-      </div>
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                style={{
+                  fontFamily: 'var(--font-ui)',
+                  fontSize: '14px',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  fontWeight: 500,
+                  background: status === 'sending' ? 'var(--zen-gold-pale)' : 'var(--zen-red)',
+                  color: status === 'sending' ? '#999' : 'white',
+                  border: 'none',
+                  padding: '14px',
+                  cursor: status === 'sending' ? 'default' : 'pointer',
+                  width: '100%',
+                  transition: 'background 0.15s ease',
+                }}
+              >
+                {status === 'sending' ? t('sending') : t('sendMagicLink')}
+              </button>
+
+              {status === 'error' && (
+                <p
+                  style={{
+                    fontFamily: 'var(--font-ui)',
+                    fontSize: '11px',
+                    color: 'var(--zen-red)',
+                    margin: 0,
+                    textAlign: 'center',
+                  }}
+                >
+                  {t('errorMessage')}
+                </p>
+              )}
+            </form>
+          )}
+        </div>
+
+        {/* Back to home */}
+        <div style={{ marginTop: '32px' }}>
+          <Link
+            href="/"
+            style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '11px',
+              color: '#854F0B',
+              textDecoration: 'underline',
+            }}
+          >
+            {t('backToHome')}
+          </Link>
+        </div>
       </div>
     </div>
   )

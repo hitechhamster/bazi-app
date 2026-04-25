@@ -195,6 +195,17 @@
       "startFreshLink": "开新对话"
     }
   },
+  "login": {
+    "title": "登录",
+    "subtitle": "输入邮箱，我们将发送一次性登录链接",
+    "emailLabel": "邮箱",
+    "emailPlaceholder": "you@example.com",
+    "sendMagicLink": "发送登录链接",
+    "sending": "发送中…",
+    "successMessage": "请查收邮箱，登录链接已发送。",
+    "errorMessage": "发送失败，请重试。",
+    "backToHome": "← 返回首页"
+  },
   "home": {
     "topNav": {
       "login": "登录"

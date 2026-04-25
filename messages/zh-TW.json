@@ -195,6 +195,17 @@
       "startFreshLink": "開新對話"
     }
   },
+  "login": {
+    "title": "登入",
+    "subtitle": "輸入信箱，我們將發送一次性登入連結",
+    "emailLabel": "信箱",
+    "emailPlaceholder": "you@example.com",
+    "sendMagicLink": "發送登入連結",
+    "sending": "發送中…",
+    "successMessage": "請查收信箱，登入連結已發送。",
+    "errorMessage": "發送失敗，請重試。",
+    "backToHome": "← 返回首頁"
+  },
   "home": {
     "topNav": {
       "login": "登入"
