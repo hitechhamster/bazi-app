@@ -3,6 +3,7 @@
 import { after } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { getUserLocale } from './preferences'
+import { generateChatReply } from '@/lib/ai/generate-chat-reply'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -235,43 +236,11 @@ export async function submitChatMessage(
     .update({ updated_at: new Date().toISOString() })
     .eq('id', conversationId)
 
-  // C2 PLACEHOLDER — replaced by real Gemini call in C4
   after(() => {
-    generatePlaceholderReply(assistantRow.id)
+    generateChatReply(assistantRow.id)
   })
 
   return { assistantMessageId: assistantRow.id }
-}
-
-// Temporary placeholder. C4 will replace with real generate-chat-reply.ts.
-// Not exported — only called via after() in submitChatMessage.
-async function generatePlaceholderReply(assistantMessageId: string): Promise<void> {
-  const adminClient = createAdminClient()
-  try {
-    await adminClient
-      .from('messages')
-      .update({ status: 'generating' })
-      .eq('id', assistantMessageId)
-
-    // Simulate AI thinking
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-
-    await adminClient
-      .from('messages')
-      .update({
-        status: 'done',
-        content: '[Placeholder reply — C4 will wire actual Gemini generation.]',
-      })
-      .eq('id', assistantMessageId)
-  } catch (err) {
-    await adminClient
-      .from('messages')
-      .update({
-        status: 'failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
-      })
-      .eq('id', assistantMessageId)
-  }
 }
 
 export async function getMessageStatus(
