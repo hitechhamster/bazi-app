@@ -13,6 +13,7 @@ const LANG_INSTRUCTION: Record<string, string> = {
 
 const MODEL = 'gemini-3.1-flash-lite-preview'
 const MAX_OUTPUT_TOKENS = 8192
+const TIMEOUT_MS = 90_000
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -97,7 +98,7 @@ export async function generateQuestionAnswer(questionId: string): Promise<void> 
       .eq('id', questionId)
       .single()
 
-    if (qErr || !question) throw new Error('Question not found')
+    if (qErr || !question) throw new Error(`Question not found — DB error: ${qErr?.message ?? 'no data'}`)
 
     const locale = (question.locale as string | null) ?? 'en'
     const langInstruction = LANG_INSTRUCTION[locale] ?? LANG_INSTRUCTION['en']
@@ -109,7 +110,7 @@ export async function generateQuestionAnswer(questionId: string): Promise<void> 
       .eq('id', question.profile_id)
       .single()
 
-    if (pErr || !profile) throw new Error('Profile not found')
+    if (pErr || !profile) throw new Error(`Profile not found — DB error: ${pErr?.message ?? 'no data'}`)
 
     // 4. Build prompt context (reuse exported helper from generate-report.ts)
     const ctx = buildPromptContext(profile as Record<string, unknown>)
@@ -142,8 +143,16 @@ ${todayDailyReading ? `\n## Today's Daily Reading (for reference — do not repe
 
 ${question.question}`
 
-    // 7. Call the model
-    const answer = await callGeminiForAnswer(prompt)
+    // 7. Call the model — wrapped in a 90 s timeout so silent hangs surface as errors
+    const answer = await Promise.race([
+      callGeminiForAnswer(prompt),
+      new Promise<string>((_, reject) =>
+        setTimeout(
+          () => reject(new Error(`Gemini call timed out after ${TIMEOUT_MS}ms`)),
+          TIMEOUT_MS
+        )
+      ),
+    ])
 
     // 8. Write back
     await db
@@ -152,8 +161,8 @@ ${question.question}`
       .eq('id', questionId)
 
   } catch (err) {
+    console.error('[generate-question] CAUGHT ERROR', questionId, err)
     const errorMsg = err instanceof Error ? err.message : String(err)
-    console.error('[generate-question] Failed:', errorMsg)
     await db
       .from('questions')
       .update({ status: 'failed', error: errorMsg })
