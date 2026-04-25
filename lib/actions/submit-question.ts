@@ -33,3 +33,22 @@ export async function submitQuestion(
 
   return { questionId: data.id }
 }
+
+export async function retryQuestion(
+  questionId: string
+): Promise<{ success: boolean } | { error: string }> {
+  const supabase = createAdminClient()
+
+  const { error } = await supabase
+    .from('questions')
+    .update({ status: 'pending', error: null, answer: null })
+    .eq('id', questionId)
+
+  if (error) return { error: error.message }
+
+  after(() => {
+    generateQuestionAnswer(questionId)
+  })
+
+  return { success: true }
+}

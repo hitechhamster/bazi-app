@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { submitQuestion } from '@/lib/actions/submit-question'
 import type { QuestionRow } from '@/lib/actions/get-questions'
@@ -20,6 +20,20 @@ export default function AskSection({
   const [text, setText] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Ref for auto-scroll to history list after new question is submitted
+  const historyRef = useRef<HTMLDivElement>(null)
+  const prevCountRef = useRef(initialQuestions.length)
+
+  // Scroll to history list top when a new question appears (after router.refresh)
+  useEffect(() => {
+    if (initialQuestions.length > prevCountRef.current && historyRef.current) {
+      setTimeout(() => {
+        historyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+    prevCountRef.current = initialQuestions.length
+  }, [initialQuestions.length])
 
   async function handleSubmit() {
     const trimmed = text.trim()
@@ -90,16 +104,18 @@ export default function AskSection({
           margin: '24px 0',
         }} />
 
-        {/* History */}
-        {initialQuestions.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div>
-            {initialQuestions.map((q, i) => (
-              <QuestionItem key={q.id} question={q} isFirst={i === 0} />
-            ))}
-          </div>
-        )}
+        {/* History — ref anchors scroll target */}
+        <div ref={historyRef}>
+          {initialQuestions.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div>
+              {initialQuestions.map((q, i) => (
+                <QuestionItem key={q.id} question={q} isFirst={i === 0} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

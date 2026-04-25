@@ -1,6 +1,9 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { renderBaziMarkdown } from '@/lib/markdown/renderer'
+import { getQuestionStatus } from '@/lib/actions/get-questions'
+import { retryQuestion } from '@/lib/actions/submit-question'
 import type { QuestionRow } from '@/lib/actions/get-questions'
 
 const labelStyle: React.CSSProperties = {
@@ -30,6 +33,49 @@ export default function QuestionItem({
   question: QuestionRow
   isFirst: boolean
 }) {
+  const [status, setStatus] = useState(q.status)
+  const [answer, setAnswer] = useState<string | null>(q.answer)
+  const [itemError, setItemError] = useState<string | null>(q.error)
+  const [retrying, setRetrying] = useState(false)
+
+  // Mirror BaseReportSection's polling pattern exactly
+  useEffect(() => {
+    const isPolling = status === 'pending' || status === 'generating'
+    if (!isPolling) return
+
+    const id = setInterval(async () => {
+      try {
+        const result = await getQuestionStatus(q.id)
+        if (result.question) {
+          setStatus(result.question.status)
+          setAnswer(result.question.answer ?? null)
+          setItemError(result.question.error ?? null)
+        }
+      } catch {
+        // non-fatal: will retry on next tick
+      }
+    }, 3000)
+
+    return () => clearInterval(id)
+  }, [status, q.id])
+
+  async function handleRetry() {
+    setRetrying(true)
+    try {
+      const result = await retryQuestion(q.id)
+      if ('success' in result && result.success) {
+        // Reset to pending — triggers the polling useEffect
+        setStatus('pending')
+        setAnswer(null)
+        setItemError(null)
+      } else if ('error' in result) {
+        setItemError(result.error)
+      }
+    } finally {
+      setRetrying(false)
+    }
+  }
+
   return (
     <div style={{
       borderTop: isFirst ? 'none' : '1px solid var(--zen-gold-pale)',
@@ -63,35 +109,49 @@ export default function QuestionItem({
       {/* Answer label */}
       <div style={{ ...labelStyle, marginBottom: '8px' }}>Answer</div>
 
-      {/* Answer body */}
-      {(q.status === 'pending' || q.status === 'generating') && (
-        <p style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '11px',
-          color: 'var(--zen-text-muted)',
-          fontStyle: 'italic',
-          margin: 0,
-        }}>
-          Generating...
-        </p>
+      {/* Answer body — mirrors BaseReportSection's generating UI */}
+      {(status === 'pending' || status === 'generating') && (
+        <div style={{ textAlign: 'center', padding: '16px 0' }}>
+          <div className="reading-spinner" style={{ margin: '0 auto 12px' }} />
+          <p className="reading-loading-text">Generating your answer...</p>
+        </div>
       )}
 
-      {q.status === 'done' && q.answer && (
+      {status === 'done' && answer && (
         <div
           className="ai-content-box"
-          dangerouslySetInnerHTML={{ __html: renderBaziMarkdown(q.answer) }}
+          dangerouslySetInnerHTML={{ __html: renderBaziMarkdown(answer) }}
         />
       )}
 
-      {q.status === 'failed' && (
-        <p style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '11px',
-          color: 'var(--zen-red)',
-          margin: 0,
-        }}>
-          Generation failed. {q.error ?? 'Please try again.'}
-        </p>
+      {status === 'failed' && (
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
+          <p style={{
+            fontFamily: 'var(--font-ui)',
+            fontSize: '11px',
+            color: 'var(--zen-red)',
+            margin: 0,
+          }}>
+            Generation failed. {itemError ?? 'Please try again.'}
+          </p>
+          <button
+            onClick={handleRetry}
+            disabled={retrying}
+            style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '11px',
+              color: retrying ? 'var(--zen-text-muted)' : '#854F0B',
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              cursor: retrying ? 'default' : 'pointer',
+              textDecoration: retrying ? 'none' : 'underline',
+              flexShrink: 0,
+            }}
+          >
+            {retrying ? 'Retrying...' : 'Retry'}
+          </button>
+        </div>
       )}
     </div>
   )
