@@ -21,13 +21,13 @@ export default function DashboardGrid({ data, profileId, initialStatus, initialS
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
       {/* Row 1: DayMasterHero | FourPillarsPanel */}
-      <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '6px', alignItems: 'start' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[140px_1fr]" style={{ gap: '6px', alignItems: 'start' }}>
         <DayMasterHero data={data} />
         <FourPillarsPanel data={data} />
       </div>
 
       {/* Row 2: Radar + ChartReading side by side, equal height */}
-      <div style={{ display: 'grid', gridTemplateColumns: '170px 1fr', gap: '6px', alignItems: 'start' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[170px_1fr]" style={{ gap: '6px', alignItems: 'start' }}>
         <FiveElementsRadar data={data} />
         <ChartReadingPanel
           data={data}

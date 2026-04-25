@@ -2,7 +2,7 @@ import type { MockData } from './mock-data'
 
 export default function DayMasterHero({ data }: { data: MockData }) {
   return (
-    <div style={{
+    <div className="lg:h-[323.5px]" style={{
       background: 'var(--zen-paper)',
       border: '0.5px solid rgba(188,45,45,0.12)',
       borderRadius: '0',
@@ -11,7 +11,6 @@ export default function DayMasterHero({ data }: { data: MockData }) {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'space-between',
-      height: '323.5px',
       textAlign: 'center',
       gap: '12px',
     }}>
