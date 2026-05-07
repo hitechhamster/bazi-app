@@ -219,7 +219,23 @@
     "sending": "发送中…",
     "successMessage": "请查收邮箱，登录链接已发送。",
     "errorMessage": "发送失败，请重试。",
-    "backToHome": "← 返回首页"
+    "backToHome": "← 返回首页",
+    "continueWithGoogle": "使用 Google 登录",
+    "or": "或",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "你的密码",
+    "signIn": "登录",
+    "signingIn": "登录中…",
+    "signUp": "注册",
+    "signingUp": "注册中…",
+    "switchToSignUp": "还没账户？注册",
+    "switchToSignIn": "已有账户？登录",
+    "signUpSuccess": "请查收邮件以确认账户。",
+    "signInError": "邮箱或密码错误。",
+    "signUpError": "注册失败，请重试。",
+    "emailAlreadyRegistered": "该邮箱已注册。",
+    "magicLinkToggle": "改用邮件链接登录",
+    "emailRequired": "请先填写邮箱。"
   },
   "home": {
     "topNav": {

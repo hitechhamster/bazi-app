@@ -219,7 +219,23 @@
     "sending": "Sending…",
     "successMessage": "Check your inbox — magic link sent.",
     "errorMessage": "Could not send magic link. Please try again.",
-    "backToHome": "← Back to home"
+    "backToHome": "← Back to home",
+    "continueWithGoogle": "Continue with Google",
+    "or": "or",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Your password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "signUp": "Create account",
+    "signingUp": "Creating account…",
+    "switchToSignUp": "No account? Sign up",
+    "switchToSignIn": "Have an account? Sign in",
+    "signUpSuccess": "Check your inbox to confirm your account.",
+    "signInError": "Incorrect email or password.",
+    "signUpError": "Could not create account. Please try again.",
+    "emailAlreadyRegistered": "This email is already registered.",
+    "magicLinkToggle": "Sign in with email link instead",
+    "emailRequired": "Please enter your email first."
   },
   "home": {
     "topNav": {

@@ -219,7 +219,23 @@
     "sending": "發送中…",
     "successMessage": "請查收信箱，登入連結已發送。",
     "errorMessage": "發送失敗，請重試。",
-    "backToHome": "← 返回首頁"
+    "backToHome": "← 返回首頁",
+    "continueWithGoogle": "使用 Google 登入",
+    "or": "或",
+    "passwordLabel": "密碼",
+    "passwordPlaceholder": "你的密碼",
+    "signIn": "登入",
+    "signingIn": "登入中…",
+    "signUp": "註冊",
+    "signingUp": "註冊中…",
+    "switchToSignUp": "還沒帳戶？註冊",
+    "switchToSignIn": "已有帳戶？登入",
+    "signUpSuccess": "請查收信件以確認帳戶。",
+    "signInError": "信箱或密碼錯誤。",
+    "signUpError": "註冊失敗，請重試。",
+    "emailAlreadyRegistered": "此信箱已註冊。",
+    "magicLinkToggle": "改用信件連結登入",
+    "emailRequired": "請先填寫信箱。"
   },
   "home": {
     "topNav": {
