@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { submitChatMessage, createConversation } from '@/lib/actions/conversations'
@@ -18,12 +18,13 @@ export default function ChatInput({
 }) {
   const router = useRouter()
   const t = useTranslations('chat')
+  const [isPending, startTransition] = useTransition()
   const [text, setText] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [creatingNew, setCreatingNew] = useState(false)
 
-  const disabled = submitting || text.trim().length === 0
+  const disabled = submitting || isPending || text.trim().length === 0
 
   async function handleSubmit() {
     const trimmed = text.trim()
@@ -38,7 +39,7 @@ export default function ChatInput({
         setError(result.error)
       } else {
         setText('')
-        router.refresh()
+        startTransition(() => { router.refresh() })
       }
     } catch {
       setError('Something went wrong. Please try again.')
@@ -156,7 +157,7 @@ export default function ChatInput({
             if (!disabled) e.currentTarget.style.background = '#854F0B'
           }}
         >
-          {submitting ? t('input.sending') : t('input.send')}
+          {(submitting || isPending) ? t('input.sending') : t('input.send')}
         </button>
       </div>
 

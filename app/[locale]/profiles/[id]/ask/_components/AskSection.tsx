@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { submitQuestion } from '@/lib/actions/submit-question'
@@ -19,6 +19,7 @@ export default function AskSection({
 }) {
   const t = useTranslations('ask')
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const [text, setText] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -50,7 +51,7 @@ export default function AskSection({
         setError(result.error)
       } else {
         setText('')
-        router.refresh()
+        startTransition(() => { router.refresh() })
       }
     } catch {
       setError(t('error.generic'))
@@ -90,7 +91,7 @@ export default function AskSection({
           profileId={profileId}
           text={text}
           setText={setText}
-          submitting={submitting}
+          submitting={submitting || isPending}
           error={error}
           onSubmit={handleSubmit}
         />

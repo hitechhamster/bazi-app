@@ -34,6 +34,8 @@ export default async function AlmanacPage({
     cached?.date === todayStr &&
     (profile.daily_reading_status as string) === 'done'
 
+  let triggeredGeneration = false
+
   if (!alreadyDone && profile.daily_reading_status !== 'generating') {
     // Pre-mark generating BEFORE after() — within request context where DB write is fine.
     // after() then runs the AI call without needing cookies/auth.
@@ -51,9 +53,17 @@ export default async function AlmanacPage({
         console.error('[almanac/page] generateDailyReading failed:', err)
       }
     })
+
+    triggeredGeneration = true
   }
 
-  const initialStatus = ((profile.daily_reading_status as string) ?? 'pending') as DailyStatus
+  // Do NOT read initialStatus from stale pre-update profile object.
+  // Priority: 1) already done today → 'done'  2) we just triggered → 'pending'  3) fallback to DB value
+  const initialStatus: DailyStatus = alreadyDone
+    ? 'done'
+    : triggeredGeneration
+      ? 'pending'
+      : ((profile.daily_reading_status as string) ?? 'pending') as DailyStatus
   const initialReading = alreadyDone ? (profile.daily_reading as DailyReading) : null
 
   return (

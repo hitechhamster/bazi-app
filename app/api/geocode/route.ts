@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
+  if (!process.env.OPENCAGE_API_KEY) {
+    console.error('[geocode] OPENCAGE_API_KEY not configured')
+    return NextResponse.json(
+      { error: 'Geocoding service not configured' },
+      { status: 503 }
+    )
+  }
+
   const q = request.nextUrl.searchParams.get('q')?.trim()
   if (!q) {
     return NextResponse.json({ error: 'q is required' }, { status: 400 })
