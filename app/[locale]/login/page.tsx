@@ -1,8 +1,10 @@
 import { getTranslations } from 'next-intl/server'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import BrandMark from '@/components/BrandMark'
 import LoginForm from './_components/LoginForm'
 import { localePath } from '@/lib/i18n/path'
+import { createClient } from '@/lib/supabase/server'
 
 export default async function LoginPage({
   params,
@@ -10,6 +12,15 @@ export default async function LoginPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+
+  // 已确认邮箱的已登录用户直接跳 dashboard
+  // 未确认邮箱的用户留在登录页等待确认，不踢走
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user?.email_confirmed_at) {
+    redirect(localePath(locale, '/dashboard'))
+  }
+
   const t = await getTranslations({ locale, namespace: 'login' })
 
   return (

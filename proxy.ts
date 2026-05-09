@@ -63,8 +63,14 @@ export async function proxy(request: NextRequest) {
   const localePrefix = localeMatch?.[0] ?? ''          // '' | '/zh-CN' | '/zh-TW'
   const logicalPath = pathname.slice(localePrefix.length) || '/'
 
-  if (user) {
-    // Logged-in visitors: redirect / and /login straight to /dashboard
+  // Only treat user as fully authenticated if email is confirmed.
+  // Unconfirmed users (registered but haven't clicked the confirmation link) are
+  // treated the same as unauthenticated: they stay on public paths (e.g. /login)
+  // and cannot access protected routes.
+  const isConfirmed = !!(user && user.email_confirmed_at)
+
+  if (isConfirmed) {
+    // Fully authenticated: redirect / and /login straight to /dashboard
     if (logicalPath === '/' || logicalPath === '/login') {
       return NextResponse.redirect(
         new URL(`${localePrefix}/dashboard`, request.url)
@@ -72,7 +78,7 @@ export async function proxy(request: NextRequest) {
     }
     // All other paths: allow through
   } else {
-    // Unauthenticated visitors: block protected paths, preserve locale on redirect
+    // Unauthenticated OR unconfirmed: block protected paths, preserve locale on redirect
     if (!isPublicPath(logicalPath)) {
       return NextResponse.redirect(
         new URL(`${localePrefix}/login`, request.url)

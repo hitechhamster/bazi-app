@@ -212,7 +212,7 @@
   },
   "login": {
     "title": "Log in",
-    "subtitle": "Enter your email to receive a magic link",
+    "subtitle": "Sign in or create an account",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "sendMagicLink": "Send magic link",

@@ -29,7 +29,7 @@ export async function signUpWithPassword(
 ): Promise<{ error?: string }> {
   const supabase = await createClient()
   const origin = await getAppOrigin()
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -37,6 +37,13 @@ export async function signUpWithPassword(
     },
   })
   if (error) return { error: error.message }
+
+  // 防御：Supabase 在 Confirm email = ON 时仍可能设 session
+  // 强制清掉未确认邮箱用户的 session，确保不能进 app
+  if (data.user && !data.user.email_confirmed_at) {
+    await supabase.auth.signOut()
+  }
+
   return {}
 }
 

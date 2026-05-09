@@ -6,6 +6,7 @@ import LogoutButton from './logout-button'
 import ProfileListCard, { type ProfileListCardData } from './_components/ProfileListCard'
 import LocaleSwitcher from '../_components/LocaleSwitcher'
 import BrandMark from '@/components/BrandMark'
+import { localePath } from '@/lib/i18n/path'
 
 const SELECT_FIELDS = [
   'id', 'name', 'relation', 'gender', 'birth_date', 'birth_city',
@@ -55,10 +56,17 @@ function EmptyState({ empty, createButton }: { empty: string; createButton: stri
   )
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  if (!user || !user.email_confirmed_at) {
+    redirect(localePath(locale, '/login'))
+  }
 
   const t = await getTranslations('dashboard')
 

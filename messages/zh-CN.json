@@ -212,7 +212,7 @@
   },
   "login": {
     "title": "登录",
-    "subtitle": "输入邮箱，我们将发送一次性登录链接",
+    "subtitle": "登录或创建账户",
     "emailLabel": "邮箱",
     "emailPlaceholder": "you@example.com",
     "sendMagicLink": "发送登录链接",

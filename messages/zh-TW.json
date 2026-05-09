@@ -212,7 +212,7 @@
   },
   "login": {
     "title": "登入",
-    "subtitle": "輸入信箱，我們將發送一次性登入連結",
+    "subtitle": "登入或建立帳戶",
     "emailLabel": "信箱",
     "emailPlaceholder": "you@example.com",
     "sendMagicLink": "發送登入連結",
