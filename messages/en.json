@@ -1,4 +1,23 @@
 {
+  "footer": {
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "disclaimer": "Disclaimer"
+  },
+  "metadata": {
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "Learn how Bazi Master collects, uses, and protects your personal information."
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "description": "Read the terms and conditions governing your use of Bazi Master."
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "description": "Important information about the nature of Bazi Master's content and its limitations."
+    }
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",

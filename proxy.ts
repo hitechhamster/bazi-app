@@ -16,7 +16,8 @@ function isPublicPath(logicalPath: string): boolean {
   return (
     PUBLIC_PATHS.has(logicalPath) ||
     logicalPath.startsWith('/auth/') ||
-    logicalPath.startsWith('/api/')
+    logicalPath.startsWith('/api/') ||
+    logicalPath.startsWith('/legal/')
   )
 }
 

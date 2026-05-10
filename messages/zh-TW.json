@@ -1,4 +1,23 @@
 {
+  "footer": {
+    "privacy": "隱私政策",
+    "terms": "服務條款",
+    "disclaimer": "免責聲明"
+  },
+  "metadata": {
+    "privacy": {
+      "title": "隱私政策",
+      "description": "了解 Bazi Master 如何收集、使用及保護您的個人資訊。"
+    },
+    "terms": {
+      "title": "服務條款",
+      "description": "閱讀使用 Bazi Master 所適用的服務條款。"
+    },
+    "disclaimer": {
+      "title": "免責聲明",
+      "description": "關於 Bazi Master 內容性質及其限制的重要說明。"
+    }
+  },
   "common": {
     "save": "儲存",
     "cancel": "取消",
