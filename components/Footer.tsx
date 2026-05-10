@@ -13,40 +13,29 @@ export default async function Footer({ locale }: { locale: string }) {
         fontWeight: 400,
       }}
     >
-      <div
-        className="max-w-6xl mx-auto px-6 py-8"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-        }}
-      >
-        {/* Desktop: row; mobile: column via responsive Tailwind */}
+      <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex flex-col gap-3 lg:flex-row lg:justify-between lg:items-center">
 
           {/* Left: legal links */}
           <nav style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
             <Link
               href={localePath(locale, '/legal/privacy')}
-              style={{ fontSize: '12px', color: '#57534e', textDecoration: 'none' }}
-              onMouseOver={(e) => (e.currentTarget.style.color = '#1c1917')}
-              onMouseOut={(e) => (e.currentTarget.style.color = '#57534e')}
+              className="text-[12px] text-stone-600 hover:text-stone-900 transition-colors"
+              style={{ textDecoration: 'none' }}
             >
               {t('privacy')}
             </Link>
             <Link
               href={localePath(locale, '/legal/terms')}
-              style={{ fontSize: '12px', color: '#57534e', textDecoration: 'none' }}
-              onMouseOver={(e) => (e.currentTarget.style.color = '#1c1917')}
-              onMouseOut={(e) => (e.currentTarget.style.color = '#57534e')}
+              className="text-[12px] text-stone-600 hover:text-stone-900 transition-colors"
+              style={{ textDecoration: 'none' }}
             >
               {t('terms')}
             </Link>
             <Link
               href={localePath(locale, '/legal/disclaimer')}
-              style={{ fontSize: '12px', color: '#57534e', textDecoration: 'none' }}
-              onMouseOver={(e) => (e.currentTarget.style.color = '#1c1917')}
-              onMouseOut={(e) => (e.currentTarget.style.color = '#57534e')}
+              className="text-[12px] text-stone-600 hover:text-stone-900 transition-colors"
+              style={{ textDecoration: 'none' }}
             >
               {t('disclaimer')}
             </Link>
@@ -57,9 +46,8 @@ export default async function Footer({ locale }: { locale: string }) {
             © {new Date().getFullYear()} Bazi Master ·{' '}
             <a
               href="mailto:contact@bazi-master.com"
+              className="hover:text-stone-700 transition-colors"
               style={{ color: '#78716c', textDecoration: 'none' }}
-              onMouseOver={(e) => (e.currentTarget.style.color = '#1c1917')}
-              onMouseOut={(e) => (e.currentTarget.style.color = '#78716c')}
             >
               contact@bazi-master.com
             </a>
