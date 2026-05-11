@@ -4,17 +4,25 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import ChatSection from '../_components/ChatSection'
 import { getConversation, getConversationsForProfile } from '@/lib/actions/conversations'
+import { canAccessChat } from '@/lib/subscription/tier'
+import { localePath } from '@/lib/i18n/path'
 
 export default async function ChatConversationPage({
   params,
 }: {
-  params: Promise<{ id: string; conversationId: string }>
+  params: Promise<{ locale: string; id: string; conversationId: string }>
 }) {
-  const { id, conversationId } = await params
+  const { locale, id, conversationId } = await params
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  // Tier gate — chat is a Pro feature
+  const chatAllowed = await canAccessChat(user.id)
+  if (!chatAllowed) {
+    redirect(localePath(locale, '/pricing'))
+  }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -31,8 +39,8 @@ export default async function ChatConversationPage({
   ])
   const allConversations = 'conversations' in listResult ? listResult.conversations : []
 
-  const t = await getTranslations('profileReport')
-  const tChat = await getTranslations('chat')
+  const t = await getTranslations({ locale, namespace: 'profileReport' })
+  const tChat = await getTranslations({ locale, namespace: 'chat' })
 
   if ('error' in convoResult) {
     return (
@@ -41,7 +49,7 @@ export default async function ChatConversationPage({
           {tChat('notFound')}
         </p>
         <Link
-          href="/dashboard"
+          href={localePath(locale, '/dashboard')}
           style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: '#854F0B', textDecoration: 'underline' }}
         >
           {t('backToDashboard')}

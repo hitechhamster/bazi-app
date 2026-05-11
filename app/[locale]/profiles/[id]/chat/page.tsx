@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import { getConversationsForProfile, createConversation } from '@/lib/actions/conversations'
+import { canAccessChat } from '@/lib/subscription/tier'
+import { localePath } from '@/lib/i18n/path'
 
 export default async function ChatIndexPage({
   params,
@@ -14,6 +16,12 @@ export default async function ChatIndexPage({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  // Tier gate — chat is a Pro feature
+  const chatAllowed = await canAccessChat(user.id)
+  if (!chatAllowed) {
+    redirect(localePath(locale, '/pricing'))
+  }
 
   const { data: profile } = await supabase
     .from('profiles')

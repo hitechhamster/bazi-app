@@ -7,6 +7,7 @@ import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import { normalizeLuckCycles } from '@/lib/bazi/chart-helpers'
 import { generateAndSaveReport } from '@/lib/ai/generate-report'
 import { getLocale } from 'next-intl/server'
+import { canCreateProfile } from '@/lib/subscription/tier'
 
 export type ActionState = { error: string } | null
 
@@ -26,6 +27,12 @@ export async function createProfile(
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { error: 'Not authenticated. Please log in.' }
+
+    // Tier gate — check before doing any computation
+    const quota = await canCreateProfile(user.id)
+    if (!quota.allowed) {
+      return { error: `Profile limit reached (${quota.current}/${quota.cap}). Upgrade to create more profiles.` }
+    }
 
     const name = (formData.get('name') as string)?.trim()
     const relation = formData.get('relation') as string

@@ -9,13 +9,20 @@ import QuestionInput from './QuestionInput'
 import PresetButtons from './PresetButtons'
 import QuestionItem from './QuestionItem'
 import EmptyState from './EmptyState'
+import UpgradeModal from '@/components/UpgradeModal'
 
 export default function AskSection({
   profileId,
   initialQuestions,
+  askUsed,
+  askLimit,
+  locale,
 }: {
   profileId: string
   initialQuestions: QuestionRow[]
+  askUsed: number
+  askLimit: number   // -1 means unlimited
+  locale: string
 }) {
   const t = useTranslations('ask')
   const router = useRouter()
@@ -23,6 +30,10 @@ export default function AskSection({
   const [text, setText] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+
+  const isUnlimited = askLimit === -1
+  const quotaExceeded = !isUnlimited && askUsed >= askLimit
 
   // Ref for auto-scroll to history list after new question is submitted
   const historyRef = useRef<HTMLDivElement>(null)
@@ -42,13 +53,22 @@ export default function AskSection({
     const trimmed = text.trim()
     if (!trimmed || submitting) return
 
+    if (quotaExceeded) {
+      setShowUpgradeModal(true)
+      return
+    }
+
     setSubmitting(true)
     setError(null)
 
     try {
       const result = await submitQuestion(profileId, trimmed)
       if ('error' in result) {
-        setError(result.error)
+        if (result.error === 'quota_exceeded') {
+          setShowUpgradeModal(true)
+        } else {
+          setError(result.error)
+        }
       } else {
         setText('')
         startTransition(() => { router.refresh() })
@@ -94,6 +114,9 @@ export default function AskSection({
           submitting={submitting || isPending}
           error={error}
           onSubmit={handleSubmit}
+          askUsed={askUsed}
+          askLimit={askLimit}
+          onUpgradeClick={() => setShowUpgradeModal(true)}
         />
 
         {/* Preset buttons */}
@@ -120,6 +143,13 @@ export default function AskSection({
           )}
         </div>
       </div>
+
+      <UpgradeModal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        reason="ask_quota"
+        locale={locale}
+      />
     </div>
   )
 }

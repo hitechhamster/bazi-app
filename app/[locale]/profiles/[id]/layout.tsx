@@ -13,6 +13,8 @@ import {
   type ProfileRow,
   type SubjectRow,
 } from './_dashboard/build-dashboard-data'
+import { getUserTier } from '@/lib/subscription/tier'
+import type { Tier } from '@/lib/subscription/tier'
 
 export default async function ProfileLayout({
   children,
@@ -72,7 +74,10 @@ export default async function ProfileLayout({
   const report = generateBaziReport(tst, gender) as unknown as BaziReportRaw
   const dashboardData = buildDashboardData(profile as unknown as ProfileRow, subjects, report)
 
-  const t = await getTranslations({ locale, namespace: 'profileReport' })
+  const [t, tier] = await Promise.all([
+    getTranslations({ locale, namespace: 'profileReport' }),
+    getUserTier(user!.id) as Promise<Tier>,
+  ])
 
   return (
     <div className="min-h-screen relative overflow-visible">
@@ -111,7 +116,7 @@ export default async function ProfileLayout({
             className="hidden lg:block"
             style={{ position: 'sticky', top: '16px', maxHeight: 'calc(100vh - 32px)', overflowY: 'auto' }}
           >
-            <Sidebar data={dashboardData} />
+            <Sidebar data={dashboardData} tier={tier} locale={locale} />
           </div>
 
           {/* Main column */}

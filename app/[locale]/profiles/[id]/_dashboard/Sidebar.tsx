@@ -1,14 +1,29 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import UpgradeModal from '@/components/UpgradeModal'
 import type { MockData, MockSubject } from './mock-data'
+import type { Tier } from '@/lib/subscription/tier'
 
-export default function Sidebar({ data }: { data: MockData }) {
+export default function Sidebar({
+  data,
+  tier,
+  locale,
+}: {
+  data: MockData
+  tier: Tier
+  locale: string
+}) {
   const t = useTranslations('profileReport.sidebar')
   const pathname = usePathname()
   const profileBase = pathname.replace(/\/(almanac|ask|chat(\/[^/]+)?)$/, '')
+  const [showChatModal, setShowChatModal] = useState(false)
+
+  const chatLocked = tier === 'free'
+
   return (
     <aside style={{
       width: '220px',
@@ -43,7 +58,28 @@ export default function Sidebar({ data }: { data: MockData }) {
       <NavButton active={pathname === profileBase} href={profileBase} label={t('basicReport')} labelSub={t('basicReportZh')} />
       <NavButton active={pathname === `${profileBase}/almanac`} href={`${profileBase}/almanac`} label={t('todaysAlmanac')} labelSub={t('todaysAlmanacZh')} />
       <NavButton active={pathname === `${profileBase}/ask`} href={`${profileBase}/ask`} label={t('askQuestion')} labelSub={t('askQuestionZh')} />
-      <NavButton active={pathname.includes('/chat')} href={`${profileBase}/chat`} label={t('conversation')} labelSub={t('conversationZh')} />
+
+      {chatLocked ? (
+        <LockedNavButton
+          label={t('conversation')}
+          labelSub={t('conversationZh')}
+          onLockedClick={() => setShowChatModal(true)}
+        />
+      ) : (
+        <NavButton
+          active={pathname.includes('/chat')}
+          href={`${profileBase}/chat`}
+          label={t('conversation')}
+          labelSub={t('conversationZh')}
+        />
+      )}
+
+      <UpgradeModal
+        open={showChatModal}
+        onClose={() => setShowChatModal(false)}
+        reason="chat_locked"
+        locale={locale}
+      />
     </aside>
   )
 }
@@ -157,6 +193,46 @@ function NavButton({ active, href, label, labelSub }: { active: boolean; href: s
         {labelSub}
       </div>
     </Link>
+  )
+}
+
+function LockedNavButton({
+  label,
+  labelSub,
+  onLockedClick,
+}: {
+  label: string
+  labelSub: string
+  onLockedClick: () => void
+}) {
+  return (
+    <button
+      onClick={onLockedClick}
+      style={{
+        border: '0.5px dashed var(--zen-border)',
+        borderRadius: '0',
+        padding: '9px 8px',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        background: 'transparent',
+        width: '100%',
+        textAlign: 'left',
+      }}
+    >
+      <div>
+        <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-ink)' }}>
+          {label}
+        </div>
+        <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+          {labelSub}
+        </div>
+      </div>
+      <span style={{ fontSize: '11px', color: 'var(--zen-text-muted)', flexShrink: 0, marginLeft: '4px' }}>
+        🔒
+      </span>
+    </button>
   )
 }
 

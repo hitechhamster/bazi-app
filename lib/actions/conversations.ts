@@ -4,6 +4,7 @@ import { after } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { getLocale } from 'next-intl/server'
 import { generateChatReply } from '@/lib/ai/generate-chat-reply'
+import { canAccessChat } from '@/lib/subscription/tier'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -43,6 +44,10 @@ export async function createConversation(
   const userClient = await createClient()
   const { data: { user } } = await userClient.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
+
+  // Tier gate — chat is a Pro feature
+  const chatAllowed = await canAccessChat(user.id)
+  if (!chatAllowed) return { error: 'chat_locked' }
 
   const { data: profile } = await userClient
     .from('profiles')

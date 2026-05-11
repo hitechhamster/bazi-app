@@ -1,5 +1,4 @@
-import BrandMark from '@/components/BrandMark'
-import { localePath } from '@/lib/i18n/path'
+import PageHeader from '@/components/PageHeader'
 
 export default async function LegalLayout({
   children,
@@ -12,11 +11,7 @@ export default async function LegalLayout({
 
   return (
     <>
-      <header className="border-b border-stone-200">
-        <div className="max-w-3xl mx-auto px-6 py-4">
-          <BrandMark variant="full" size="small" href={localePath(locale, '/dashboard')} />
-        </div>
-      </header>
+      <PageHeader locale={locale} />
       <article
         className="max-w-3xl mx-auto px-6 py-12"
         style={{ fontFamily: 'var(--font-ui)' }}

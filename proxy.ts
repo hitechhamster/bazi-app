@@ -15,6 +15,7 @@ const PUBLIC_PATHS = new Set(['/', '/demo', '/login'])
 function isPublicPath(logicalPath: string): boolean {
   return (
     PUBLIC_PATHS.has(logicalPath) ||
+    logicalPath === '/pricing' ||
     logicalPath.startsWith('/auth/') ||
     logicalPath.startsWith('/api/') ||
     logicalPath.startsWith('/legal/')

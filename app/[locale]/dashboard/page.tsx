@@ -1,12 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import LogoutButton from './logout-button'
 import ProfileListCard, { type ProfileListCardData } from './_components/ProfileListCard'
+import NewProfileButton from './_components/NewProfileButton'
 import LocaleSwitcher from '../_components/LocaleSwitcher'
 import BrandMark from '@/components/BrandMark'
 import { localePath } from '@/lib/i18n/path'
+import { canCreateProfile } from '@/lib/subscription/tier'
 
 const SELECT_FIELDS = [
   'id', 'name', 'relation', 'gender', 'birth_date', 'birth_city',
@@ -25,7 +26,15 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 500,
 }
 
-function EmptyState({ empty, createButton }: { empty: string; createButton: string }) {
+function EmptyState({
+  empty,
+  atCap,
+  locale,
+}: {
+  empty: string
+  atCap: boolean
+  locale: string
+}) {
   return (
     <div style={{ textAlign: 'center', padding: '80px 0' }}>
       <p style={{
@@ -36,22 +45,7 @@ function EmptyState({ empty, createButton }: { empty: string; createButton: stri
       }}>
         {empty}
       </p>
-      <Link
-        href="/profiles/new"
-        style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '13px',
-          color: 'var(--zen-gold)',
-          border: '1px solid var(--zen-gold)',
-          padding: '8px 16px',
-          borderRadius: '0',
-          letterSpacing: '0.1em',
-          textDecoration: 'none',
-          cursor: 'pointer',
-        }}
-      >
-        {createButton}
-      </Link>
+      <NewProfileButton atCap={atCap} locale={locale} />
     </div>
   )
 }
@@ -70,13 +64,17 @@ export default async function DashboardPage({
 
   const t = await getTranslations('dashboard')
 
-  const { data: profiles } = await supabase
-    .from('profiles')
-    .select(SELECT_FIELDS)
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
+  const [{ data: profiles }, profileQuota] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select(SELECT_FIELDS)
+      .eq('user_id', user!.id)
+      .order('created_at', { ascending: false }),
+    canCreateProfile(user!.id),
+  ])
 
   const list = (profiles ?? []) as unknown as ProfileListCardData[]
+  const atCap = !profileQuota.allowed
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -111,29 +109,14 @@ export default async function DashboardPage({
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <LocaleSwitcher />
-            <Link
-              href="/profiles/new"
-              style={{
-                fontFamily: 'var(--font-ui)',
-                fontSize: '13px',
-                color: 'var(--zen-gold)',
-                border: '1px solid var(--zen-gold)',
-                padding: '8px 16px',
-                borderRadius: '0',
-                letterSpacing: '0.1em',
-                textDecoration: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              {t('createButton')}
-            </Link>
+            <NewProfileButton atCap={atCap} locale={locale} />
             <LogoutButton />
           </div>
         </header>
 
         {/* Grid or empty */}
         {list.length === 0 ? (
-          <EmptyState empty={t('empty')} createButton={t('createButton')} />
+          <EmptyState empty={t('empty')} atCap={atCap} locale={locale} />
         ) : (
           <>
             <div style={{ ...labelStyle, marginBottom: '12px' }}>

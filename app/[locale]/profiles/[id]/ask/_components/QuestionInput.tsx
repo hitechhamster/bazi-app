@@ -11,6 +11,9 @@ export default function QuestionInput({
   submitting,
   error,
   onSubmit,
+  askUsed,
+  askLimit,
+  onUpgradeClick,
 }: {
   profileId: string
   text: string
@@ -18,22 +21,62 @@ export default function QuestionInput({
   submitting: boolean
   error: string | null
   onSubmit: () => void
+  askUsed: number
+  askLimit: number   // -1 means unlimited
+  onUpgradeClick: () => void
 }) {
   const t = useTranslations('ask.input')
-  const disabled = submitting || text.trim().length === 0
+  const tUsage = useTranslations('ask.usage')
+
+  const isUnlimited = askLimit === -1
+  const quotaExceeded = !isUnlimited && askUsed >= askLimit
+  const disabled = submitting || text.trim().length === 0 || quotaExceeded
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      {/* Quota badge — only show for free users */}
+      {!isUnlimited && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          {quotaExceeded ? (
+            <button
+              onClick={onUpgradeClick}
+              style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: '11px',
+                color: '#854F0B',
+                background: 'var(--zen-gold-pale, #fdf6ec)',
+                border: '1px solid #c9a96e',
+                padding: '3px 8px',
+                cursor: 'pointer',
+                letterSpacing: '0.03em',
+              }}
+            >
+              {tUsage('exceeded')}
+            </button>
+          ) : (
+            <span style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '11px',
+              color: 'var(--zen-text-muted, #78716c)',
+              letterSpacing: '0.03em',
+            }}>
+              {tUsage('remaining', { remaining: askLimit - askUsed, limit: askLimit })}
+            </span>
+          )}
+        </div>
+      )}
+
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder={t('placeholder')}
         rows={4}
         maxLength={MAX_LENGTH}
+        disabled={quotaExceeded}
         style={{
           width: '100%',
           minHeight: '96px',
-          background: 'white',
+          background: quotaExceeded ? '#f9f9f9' : 'white',
           border: '1px solid var(--zen-gold-pale)',
           borderRadius: '0',
           padding: '8px 12px',
@@ -45,8 +88,9 @@ export default function QuestionInput({
           outline: 'none',
           boxSizing: 'border-box',
           transition: 'border-color 0.15s ease',
+          opacity: quotaExceeded ? 0.6 : 1,
         }}
-        onFocus={(e) => { e.currentTarget.style.borderColor = '#854F0B' }}
+        onFocus={(e) => { if (!quotaExceeded) e.currentTarget.style.borderColor = '#854F0B' }}
         onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--zen-gold-pale)' }}
       />
 

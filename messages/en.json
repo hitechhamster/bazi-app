@@ -174,6 +174,11 @@
     },
     "error": {
       "generic": "Something went wrong. Please try again."
+    },
+    "usage": {
+      "remaining": "{remaining} of {limit} questions today",
+      "unlimited": "Unlimited questions",
+      "exceeded": "Daily limit reached. Upgrade for unlimited."
     }
   },
   "mobileNav": {
@@ -312,6 +317,48 @@
       "contact": "Contact",
       "copyright": "© 2026 Bazi Master"
     }
+  },
+  "pricing": {
+    "title": "Plans · 方案",
+    "subtitle": "Simple, transparent pricing.",
+    "currentPlan": "Current plan",
+    "note": "Questions? Contact us at contact@bazi-master.com",
+    "free": {
+      "name": "Free",
+      "price": "Free",
+      "features": [
+        "1 destiny chart",
+        "5 questions per day",
+        "Basic AI reading",
+        "Daily Almanac"
+      ],
+      "cta": "Get started"
+    },
+    "paid": {
+      "name": "Pro",
+      "price": "Contact us",
+      "badge": "Pro",
+      "features": [
+        "5 destiny charts",
+        "Unlimited questions",
+        "Premium AI reading",
+        "Daily Almanac",
+        "Multi-turn conversation"
+      ],
+      "cta": "Contact to upgrade",
+      "emailSubject": "Upgrade to Pro — Bazi Master"
+    }
+  },
+  "upgrade": {
+    "title": "Upgrade to Pro",
+    "reasons": {
+      "profile_cap": "You've reached the free plan limit of 1 profile. Upgrade to Pro to create up to 5.",
+      "ask_quota": "You've used all 5 daily questions on the free plan. Upgrade for unlimited questions.",
+      "chat_locked": "Multi-turn conversation is a Pro feature.",
+      "premium_report": "Premium AI reading is a Pro feature."
+    },
+    "cta": "View plans",
+    "cancel": "Not now"
   },
   "errors": {
     "generic": "Something went wrong.",
