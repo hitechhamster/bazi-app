@@ -29,6 +29,11 @@ export async function triggerPremiumReport(
   if (!profile) return { ok: false, error: 'Profile not found' }
   if ((profile.user_id as string) !== user.id) return { ok: false, error: 'Forbidden' }
 
+  // Already done — do not allow re-generation
+  if (profile.premium_report_status === 'done') {
+    return { ok: false, error: 'already_generated' }
+  }
+
   // Anti-double-trigger: if already generating, do nothing
   if (profile.premium_report_status === 'generating') {
     return { ok: true }

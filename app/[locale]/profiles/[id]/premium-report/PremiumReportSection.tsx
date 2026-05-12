@@ -6,7 +6,7 @@ import { renderBaziMarkdown } from '@/lib/markdown/renderer'
 import { triggerPremiumReport, getPremiumReportStatus } from './actions'
 import type { PremiumReportStatus } from './actions'
 
-const POLL_INTERVAL_MS = 5000
+const POLL_INTERVAL_MS = 10000   // 5–8 min generation; no need to hammer
 
 export default function PremiumReportSection({
   profileId,
@@ -41,8 +41,8 @@ export default function PremiumReportSection({
       try {
         const result = await getPremiumReportStatus(profileId)
         setStatus(result.status)
-        setReport(result.report)
-        setGeneratedAt(result.generatedAt)
+        if (result.report)      setReport(result.report)
+        if (result.generatedAt) setGeneratedAt(result.generatedAt)
       } catch {
         // non-fatal — retry on next tick
       }
@@ -126,16 +126,9 @@ export default function PremiumReportSection({
 
     return (
       <div className="zen-result-card">
-        {/* Meta bar */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '24px',
-          flexWrap: 'wrap',
-          gap: '8px',
-        }}>
-          {dateStr && (
+        {/* Meta bar — date only, no regenerate */}
+        {dateStr && (
+          <div style={{ marginBottom: '24px' }}>
             <span style={{
               fontFamily: 'var(--font-ui)',
               fontSize: '11px',
@@ -144,27 +137,8 @@ export default function PremiumReportSection({
             }}>
               {t('generated', { date: dateStr })}
             </span>
-          )}
-          <button
-            onClick={handleGenerate}
-            disabled={triggering}
-            style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: '11px',
-              fontWeight: 500,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              padding: '6px 12px',
-              border: '1px solid var(--zen-border)',
-              borderRadius: '0',
-              cursor: triggering ? 'default' : 'pointer',
-              background: 'transparent',
-              color: triggering ? 'var(--zen-text-muted)' : 'var(--zen-ink)',
-            }}
-          >
-            {triggering ? '…' : t('regenerate')}
-          </button>
-        </div>
+          </div>
+        )}
 
         {/* Report content */}
         <div

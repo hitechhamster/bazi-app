@@ -325,22 +325,21 @@
     "pageSubtitle": "10,000+ word in-depth Bazi analysis powered by Gemini Pro",
     "intro": {
       "title": "Premium Report",
-      "subtitle": "A comprehensive 10,000+ word analysis of your destiny chart — covering 14 dimensions from core pattern to annual forecasts.",
+      "subtitle": "A comprehensive 10,000+ word analysis in 4 deep chapters — Core Chart Soul, Career & Wealth, Love & Marriage, and a dynamic 24-month month-by-month forecast.",
       "cta": "Generate Premium Report",
-      "note": "Generation may take 1–2 minutes. You can leave this page — the report will be saved.",
+      "note": "Generation takes 5–8 minutes. You can close this page and come back — the report will be saved automatically.",
       "features": [
-        "14 in-depth sections",
-        "Luck Pillar deep-dive across all decades",
-        "5-year annual forecast with month-level timing",
-        "Career, wealth, marriage & health analysis",
-        "Core personality portrait",
-        "Auspicious directions, colors & benefactor types"
+        "Chapter 1: Core Chart Soul (Day Master · Pattern · Ten Gods · Five Elements)",
+        "Chapter 2: Career & Wealth (Wealth Stars · Useful God · Luck Cycle timeline)",
+        "Chapter 3: Love, Marriage & Health (gender-specific reading)",
+        "Chapter 4: Dynamic 24-month month-by-month forecast",
+        "Pre-computed clash and harmony months highlighted",
+        "Gender-specific relationship and marriage reading"
       ]
     },
     "generating": "Generating your Premium Report…",
-    "generatingHint": "Gemini Pro is analyzing your chart. This takes 1–2 minutes. You can leave — the report will be saved automatically.",
+    "generatingHint": "Gemini Pro is writing your report in 4 chapters. This takes 5–8 minutes. You can leave this page — the report saves automatically after each chapter.",
     "generated": "Generated on {date}",
-    "regenerate": "Regenerate",
     "failed": "Generation failed. Please try again.",
     "retry": "Try again"
   },
