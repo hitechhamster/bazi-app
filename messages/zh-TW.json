@@ -115,7 +115,9 @@
       "askQuestion": "一事一問",
       "askQuestionZh": "Ask a Question",
       "conversation": "多輪問答",
-      "conversationZh": "Conversation"
+      "conversationZh": "Conversation",
+      "premiumReport": "Premium 報告",
+      "premiumReportSub": "萬字深度解讀"
     },
     "status": {
       "done": "解讀已就緒",
@@ -317,6 +319,30 @@
       "contact": "聯繫",
       "copyright": "© 2026 Bazi Master"
     }
+  },
+  "premiumReport": {
+    "pageTitle": "Premium 報告 · 深度解讀",
+    "pageSubtitle": "Gemini Pro 驅動的萬字八字深度分析",
+    "intro": {
+      "title": "Premium 報告",
+      "subtitle": "涵蓋 14 個維度的萬字八字深度解讀——從格局到流年，從性格到婚財。",
+      "cta": "生成 Premium 報告",
+      "note": "生成約需 1–2 分鐘，可離開此頁——報告完成後自動儲存。",
+      "features": [
+        "14 個深度分析章節",
+        "全大運推演（歷史＋當前＋未來）",
+        "近 5 年流年逐年解析（含月份級時間窗）",
+        "事業、財富、婚姻、健康全維度分析",
+        "深度性格心理畫像",
+        "貴人方位、顏色、數字、行業"
+      ]
+    },
+    "generating": "正在生成 Premium 報告…",
+    "generatingHint": "Gemini Pro 正在分析您的命盤，約需 1–2 分鐘。您可以離開此頁，報告完成後自動儲存。",
+    "generated": "生成於 {date}",
+    "regenerate": "重新生成",
+    "failed": "生成失敗，請重試。",
+    "retry": "重試"
   },
   "pricing": {
     "title": "方案 · Plans",

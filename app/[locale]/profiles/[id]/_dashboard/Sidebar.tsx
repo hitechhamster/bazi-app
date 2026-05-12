@@ -19,10 +19,12 @@ export default function Sidebar({
 }) {
   const t = useTranslations('profileReport.sidebar')
   const pathname = usePathname()
-  const profileBase = pathname.replace(/\/(almanac|ask|chat(\/[^/]+)?)$/, '')
-  const [showChatModal, setShowChatModal] = useState(false)
+  const profileBase = pathname.replace(/\/(almanac|ask|premium-report|chat(\/[^/]+)?)$/, '')
+  const [showChatModal, setShowChatModal]       = useState(false)
+  const [showPremiumModal, setShowPremiumModal] = useState(false)
 
-  const chatLocked = tier === 'free'
+  const chatLocked    = tier === 'free'
+  const premiumLocked = tier === 'free'
 
   return (
     <aside style={{
@@ -74,10 +76,31 @@ export default function Sidebar({
         />
       )}
 
+      {premiumLocked ? (
+        <LockedNavButton
+          label={t('premiumReport')}
+          labelSub={t('premiumReportSub')}
+          onLockedClick={() => setShowPremiumModal(true)}
+        />
+      ) : (
+        <NavButton
+          active={pathname.includes('/premium-report')}
+          href={`${profileBase}/premium-report`}
+          label={t('premiumReport')}
+          labelSub={t('premiumReportSub')}
+        />
+      )}
+
       <UpgradeModal
         open={showChatModal}
         onClose={() => setShowChatModal(false)}
         reason="chat_locked"
+        locale={locale}
+      />
+      <UpgradeModal
+        open={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        reason="premium_report"
         locale={locale}
       />
     </aside>
