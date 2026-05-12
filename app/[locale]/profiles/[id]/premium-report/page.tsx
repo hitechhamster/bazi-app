@@ -1,3 +1,5 @@
+export const maxDuration = 800
+
 import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
