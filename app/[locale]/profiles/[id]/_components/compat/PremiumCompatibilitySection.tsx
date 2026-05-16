@@ -215,7 +215,11 @@ export default function PremiumCompatibilitySection({
             </div>
           )}
           {premiumStatus === 'failed' && completedCount < 6 && (
-            <RetryButton reportId={reportId} />
+            <RetryButton
+              reportId={reportId}
+              chapters={chapters}
+              setPremiumStatus={setPremiumStatus}
+            />
           )}
         </div>
 
@@ -246,19 +250,38 @@ export default function PremiumCompatibilitySection({
   )
 }
 
-function RetryButton({ reportId }: { reportId: string }) {
+function RetryButton({
+  reportId,
+  chapters,
+  setPremiumStatus,
+}: {
+  reportId:         string
+  chapters:         PremiumChapters
+  setPremiumStatus: (s: string) => void
+}) {
   const [loading, setLoading] = useState(false)
+
   async function handleRetry() {
     setLoading(true)
+    // Find the first section that is missing — resume from there
+    const firstMissing = CHAPTER_ORDER.find(k => !chapters[k]) ?? 'overview'
     try {
-      await fetch(`/api/compatibility/${reportId}/generate-premium-section`, {
+      const res = await fetch(`/api/compatibility/${reportId}/generate-premium-section`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ section: 'overview' }),
+        body: JSON.stringify({ section: firstMissing }),
       })
-      setTimeout(() => window.location.reload(), 1500)
-    } catch { setLoading(false) }
+      if (res.ok) {
+        // Switch status to 'generating' → restarts polling loop in parent
+        setPremiumStatus('generating')
+      } else {
+        setLoading(false)
+      }
+    } catch {
+      setLoading(false)
+    }
   }
+
   return (
     <button
       onClick={handleRetry}
