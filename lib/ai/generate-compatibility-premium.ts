@@ -24,7 +24,7 @@ export type CompatibilitySection =
   | 'love_marriage'
   | 'forecast'
 
-const SECTION_ORDER: CompatibilitySection[] = [
+export const SECTION_ORDER: readonly CompatibilitySection[] = [
   'overview',
   'compatibility',
   'communication',
@@ -33,14 +33,22 @@ const SECTION_ORDER: CompatibilitySection[] = [
   'forecast',
 ]
 
-// DB column name for each section
-const SECTION_COL: Record<CompatibilitySection, string> = {
+/** DB column name for each section */
+export const SECTION_COL: Record<CompatibilitySection, string> = {
   overview:      'premium_overview',
   compatibility: 'premium_compatibility',
   communication: 'premium_communication',
   wealth_career: 'premium_wealth_career',
   love_marriage: 'premium_love_marriage',
   forecast:      'premium_forecast',
+}
+
+/** Returns the next section in the chain, or null if this is the last */
+export function nextSection(section: CompatibilitySection): CompatibilitySection | null {
+  const idx = SECTION_ORDER.indexOf(section)
+  return idx >= 0 && idx < SECTION_ORDER.length - 1
+    ? SECTION_ORDER[idx + 1]
+    : null
 }
 
 // ── Gemini runner ─────────────────────────────────────────────────────────────
@@ -71,121 +79,77 @@ async function runChapterStage(
   throw new Error('Unreachable')
 }
 
-// ── Main export ───────────────────────────────────────────────────────────────
+// ── Build prompt context from DB row ─────────────────────────────────────────
 
-/**
- * Generates one or more premium compatibility sections sequentially,
- * starting from `startSection`. Each section is persisted immediately after
- * generation (fault-tolerant). Designed to be called via after() from the API.
- *
- * @param reportId   UUID of the compatibility_reports row
- * @param startSection  Which section to start from (for resume-from-failure)
- */
-export async function generateAndSaveCompatibilityPremiumSections(
-  reportId: string,
-  startSection: CompatibilitySection = 'overview',
-): Promise<void> {
-  const db = createAdminClient()
-
-  // Fetch the report row
-  const { data: report, error: fetchErr } = await db
-    .from('compatibility_reports')
-    .select('*')
-    .eq('id', reportId)
-    .single()
-
-  if (fetchErr || !report) {
-    console.error('[compat-premium] Failed to fetch report:', fetchErr)
-    return
-  }
-
-  // Mark as generating
-  await db
-    .from('compatibility_reports')
-    .update({ premium_status: 'generating' })
-    .eq('id', reportId)
-
-  // Reconstruct context from stored data
+function buildContext(report: Record<string, unknown>): CompatPremiumContext {
   const baziA  = report.bazi_a  as BaziPartnerData
   const baziB  = report.bazi_b  as BaziPartnerData
   const scores = report.scores  as CompatibilityScores
   const locale = (report.locale as string) || 'en'
 
-  // Determine reading mode — default to 'authentic' (not stored yet, can add later)
-  const mode: 'authentic' | 'gentle' = 'authentic'
-
-  // Build 24-month forecast
-  const forecast = buildCompatibilityForecast(baziA, baziB, 24)
-
-  const ctx: CompatPremiumContext = {
+  return {
     baziA,
     baziB,
     scores,
     nameA:    baziA.input.name,
     nameB:    baziB.input.name,
     locale,
-    mode,
-    forecast,
+    mode:     'authentic',
+    forecast: buildCompatibilityForecast(baziA, baziB, 24),
   }
+}
 
-  // Determine which sections to generate (startSection and everything after)
-  const startIdx = SECTION_ORDER.indexOf(startSection)
-  if (startIdx === -1) {
-    console.error('[compat-premium] Unknown startSection:', startSection)
-    await db.from('compatibility_reports').update({ premium_status: 'failed' }).eq('id', reportId)
-    return
-  }
-  const sectionsToRun = SECTION_ORDER.slice(startIdx)
+// ── Single-section export ─────────────────────────────────────────────────────
 
-  // Generation loop
-  for (const section of sectionsToRun) {
-    const col = SECTION_COL[section]
+/**
+ * Generates exactly ONE premium compatibility section and writes it to the DB.
+ * Does NOT manage premium_status — the calling route handles that.
+ * Throws on failure so the caller can set status='failed'.
+ *
+ * @param reportId  UUID of the compatibility_reports row
+ * @param section   Which section to generate
+ * @returns         The generated markdown text
+ */
+export async function generatePremiumSection(
+  reportId: string,
+  section:  CompatibilitySection,
+): Promise<string> {
+  const db = createAdminClient()
 
-    // Skip if already generated (idempotent)
-    const existing = report[col as keyof typeof report] as string | null
-    if (existing && existing.length > 200) {
-      console.log(`[compat-premium] Section ${section} already exists — skipping`)
-      continue
-    }
-
-    let chapterPrompt
-    switch (section) {
-      case 'overview':      chapterPrompt = buildChapterOverviewPrompt(ctx);      break
-      case 'compatibility': chapterPrompt = buildChapterCompatibilityPrompt(ctx); break
-      case 'communication': chapterPrompt = buildChapterCommunicationPrompt(ctx); break
-      case 'wealth_career': chapterPrompt = buildChapterWealthCareerPrompt(ctx);  break
-      case 'love_marriage': chapterPrompt = buildChapterLoveMarriagePrompt(ctx);  break
-      case 'forecast':      chapterPrompt = buildChapterForecastPrompt(ctx);      break
-    }
-
-    try {
-      const text = await runChapterStage(
-        chapterPrompt.systemPrompt,
-        chapterPrompt.userPrompt,
-        chapterPrompt.maxTokens,
-      )
-
-      await db
-        .from('compatibility_reports')
-        .update({ [col]: text })
-        .eq('id', reportId)
-
-      console.log(`[compat-premium] Section "${section}" done for report ${reportId}`)
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err)
-      console.error(`[compat-premium] Section "${section}" failed:`, message)
-      await db.from('compatibility_reports').update({ premium_status: 'failed' }).eq('id', reportId)
-      return
-    }
-  }
-
-  // All sections done
-  await db
+  const { data: report, error } = await db
     .from('compatibility_reports')
-    .update({
-      premium_status: 'completed',
-    })
+    .select('*')
+    .eq('id', reportId)
+    .single()
+
+  if (error || !report) throw new Error(`Report not found: ${reportId}`)
+
+  const ctx = buildContext(report as Record<string, unknown>)
+
+  let chapterPrompt
+  switch (section) {
+    case 'overview':      chapterPrompt = buildChapterOverviewPrompt(ctx);      break
+    case 'compatibility': chapterPrompt = buildChapterCompatibilityPrompt(ctx); break
+    case 'communication': chapterPrompt = buildChapterCommunicationPrompt(ctx); break
+    case 'wealth_career': chapterPrompt = buildChapterWealthCareerPrompt(ctx);  break
+    case 'love_marriage': chapterPrompt = buildChapterLoveMarriagePrompt(ctx);  break
+    case 'forecast':      chapterPrompt = buildChapterForecastPrompt(ctx);      break
+  }
+
+  const text = await runChapterStage(
+    chapterPrompt.systemPrompt,
+    chapterPrompt.userPrompt,
+    chapterPrompt.maxTokens,
+  )
+
+  const col = SECTION_COL[section]
+  const { error: writeErr } = await db
+    .from('compatibility_reports')
+    .update({ [col]: text })
     .eq('id', reportId)
 
-  console.log('[compat-premium] All sections complete for report', reportId)
+  if (writeErr) throw new Error(`DB write failed for section ${section}: ${writeErr.message}`)
+
+  console.log(`[compat-premium] Section "${section}" written for report ${reportId}`)
+  return text
 }

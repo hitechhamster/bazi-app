@@ -142,11 +142,20 @@ export async function POST(req: NextRequest) {
     const reportId = newReport.id as string
 
     if (isPremium) {
-      // Fire-and-forget premium section generation
-      after(async () => {
-        const { generateAndSaveCompatibilityPremiumSections } =
-          await import('@/lib/ai/generate-compatibility-premium')
-        await generateAndSaveCompatibilityPremiumSections(reportId, 'overview')
+      // Kick off section-by-section chained generation via HTTP
+      // Each route invocation has maxDuration=800 and chains to the next independently
+      after(() => {
+        const baseUrl = process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+        fetch(`${baseUrl}/api/compatibility/${reportId}/generate-premium-section`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-internal-secret': process.env.INTERNAL_GENERATE_SECRET ?? '',
+          },
+          body: JSON.stringify({ section: 'overview' }),
+        }).catch(err => console.error('[compat/create] Premium chain trigger failed:', err))
       })
     } else {
       // Fire-and-forget free report generation
