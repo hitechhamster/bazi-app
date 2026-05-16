@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
+import { localePath } from '@/lib/i18n/path'
 import { generateBaziReport } from '@/lib/bazi/bazi-calculator-logic'
 import BrandMark from '@/components/BrandMark'
 import LocaleSwitcher from '../../_components/LocaleSwitcher'
@@ -89,10 +90,10 @@ export default async function ProfileLayout({
       >
         {/* Desktop header — full width, above grid */}
         <div className="hidden lg:flex" style={{ marginBottom: '16px', justifyContent: 'space-between', alignItems: 'center' }}>
-          <BrandMark variant="full" size="small" href="/dashboard" />
+          <BrandMark variant="full" size="small" href={localePath(locale, '/dashboard')} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <Link
-              href="/dashboard"
+              href={localePath(locale, '/dashboard')}
               style={{
                 fontFamily: 'var(--font-ui)',
                 fontSize: '13px',
@@ -123,7 +124,7 @@ export default async function ProfileLayout({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
             {/* Mobile nav — hidden on desktop */}
             <div className="lg:hidden">
-              <MobileTopNav profileId={id} />
+              <MobileTopNav profileId={id} locale={locale} />
             </div>
             {children}
           </div>

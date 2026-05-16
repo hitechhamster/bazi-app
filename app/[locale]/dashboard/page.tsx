@@ -95,7 +95,7 @@ export default async function DashboardPage({
           gap: '12px',
         }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
-            <BrandMark variant="full" size="small" href="/dashboard" />
+            <BrandMark variant="full" size="small" href={localePath(locale, '/dashboard')} />
             <h1 style={{
               fontFamily: 'var(--font-main)',
               fontSize: '20px',

@@ -42,7 +42,7 @@ export default function Sidebar({
       <div style={{ ...labelStyle, marginTop: '-26px' }}>{t('subjects')}</div>
 
       {data.subjects.map(s => (
-        <SubjectCard key={s.id} subject={s} />
+        <SubjectCard key={s.id} subject={s} locale={locale} />
       ))}
 
       <div style={{
@@ -140,10 +140,10 @@ export default function Sidebar({
   )
 }
 
-function SubjectCard({ subject: s }: { subject: MockSubject }) {
+function SubjectCard({ subject: s, locale }: { subject: MockSubject; locale: string }) {
   return (
     <Link
-      href={`/profiles/${s.id}`}
+      href={localePath(locale, `/profiles/${s.id}`)}
       style={{
         padding: '8px',
         borderRadius: '0',

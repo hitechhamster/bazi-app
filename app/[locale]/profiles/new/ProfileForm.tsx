@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react'
 import { useActionState } from 'react'
 import Link from 'next/link'
 import { createProfile } from './actions'
+import { localePath } from '@/lib/i18n/path'
 import ProgressDots from './ProgressDots'
 import Step1Relation from './Step1Relation'
 import Step2Name from './Step2Name'
@@ -23,7 +24,7 @@ export type Fields = {
   timezone_offset_sec: string
 }
 
-export default function ProfileForm() {
+export default function ProfileForm({ locale }: { locale: string }) {
   const [state, formAction, isPending] = useActionState(createProfile, null)
   const [step, setStep] = useState(1)
   const [direction, setDirection] = useState<'forward' | 'back'>('forward')
@@ -60,7 +61,7 @@ export default function ProfileForm() {
       <div className="relative z-10 max-w-[640px] mx-auto px-6 py-12">
         {/* Top bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '56px' }}>
-          <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+          <Link href={localePath(locale, '/dashboard')} style={{ textDecoration: 'none' }}>
             <div
               className="zen-seal"
               style={{ width: '36px', height: '36px', fontSize: '1rem', cursor: 'pointer', flexShrink: 0 }}

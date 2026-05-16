@@ -179,7 +179,7 @@
       "generic": "出问题了，请重试。"
     },
     "usage": {
-      "remaining": "今日已用 {used} / {limit} 次",
+      "remaining": "今日剩余 {remaining} / {limit} 次",
       "unlimited": "无限次提问",
       "exceeded": "今日提问次数已用尽，升级可无限提问。"
     }

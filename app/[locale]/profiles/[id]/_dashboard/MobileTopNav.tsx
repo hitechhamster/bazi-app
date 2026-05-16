@@ -4,12 +4,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import LocaleSwitcher from '../../../_components/LocaleSwitcher'
+import { localePath } from '@/lib/i18n/path'
 
-export default function MobileTopNav({ profileId }: { profileId: string }) {
+export default function MobileTopNav({ profileId, locale }: { profileId: string; locale: string }) {
   const t = useTranslations('profileReport')
   const tNav = useTranslations('mobileNav')
   const pathname = usePathname()
-  const base = `/profiles/${profileId}`
+  const base = localePath(locale, `/profiles/${profileId}`)
 
   const segments = [
     { href: base,              label: tNav('report'),   active: pathname === base },
@@ -23,7 +24,7 @@ export default function MobileTopNav({ profileId }: { profileId: string }) {
       {/* Row 1: back link + locale switcher */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', paddingBottom: '8px' }}>
         <Link
-          href="/profiles"
+          href={localePath(locale, '/profiles')}
           style={{
             fontFamily: 'var(--font-ui)',
             fontSize: '11px',
