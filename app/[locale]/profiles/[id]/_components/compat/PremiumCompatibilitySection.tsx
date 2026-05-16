@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import { renderBaziMarkdown } from '@/lib/markdown/renderer'
+import ChapterCard from '../reading/ChapterCard'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -38,105 +38,6 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 500,
   marginBottom: '12px',
   display: 'block',
-}
-
-// ── Chapter card ──────────────────────────────────────────────────────────────
-
-function ChapterCard({
-  chapterKey,
-  index,
-  text,
-  isGenerating,
-  tChapters,
-  tStatus,
-}: {
-  chapterKey:   string
-  index:        number
-  text:         string | null
-  isGenerating: boolean
-  tChapters:    (key: string) => string
-  tStatus:      (key: string, values?: Record<string, string | number>) => string
-}) {
-  const [open, setOpen] = useState(index === 0)
-
-  useEffect(() => {
-    if (text && index === 0) setOpen(true)
-  }, [text, index])
-
-  return (
-    <div className="zen-result-card" style={{ padding: 0, overflow: 'hidden' }}>
-      <button
-        onClick={() => setOpen(o => !o)}
-        style={{
-          width: '100%',
-          textAlign: 'left',
-          padding: '16px 20px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          background: 'none',
-          border: 'none',
-          borderBottom: open ? '1px solid var(--zen-border)' : 'none',
-          cursor: 'pointer',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{
-            width: '22px', height: '22px', borderRadius: '50%',
-            background: text ? '#854F0B' : 'var(--zen-border)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-          }}>
-            {text ? (
-              <span style={{ color: 'white', fontSize: '11px', fontFamily: 'var(--font-ui)' }}>✓</span>
-            ) : (
-              <span style={{ color: 'var(--zen-text-muted)', fontSize: '10px', fontFamily: 'var(--font-ui)' }}>{index + 1}</span>
-            )}
-          </div>
-          <div>
-            <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--zen-text-muted)' }}>
-              Chapter {index + 1}
-            </div>
-            <div style={{ fontFamily: 'var(--font-main)', fontSize: '14px', fontWeight: 500, color: 'var(--zen-ink)', letterSpacing: '0.03em' }}>
-              {tChapters(chapterKey)}
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {isGenerating && !text && (
-            <span className="wizard-spinner" style={{ width: '14px', height: '14px' }} />
-          )}
-          {!text && !isGenerating && (
-            <span style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)' }}>{tStatus('pending')}</span>
-          )}
-          <span style={{ color: 'var(--zen-text-muted)', fontSize: '12px' }}>{open ? '▲' : '▼'}</span>
-        </div>
-      </button>
-
-      {open && (
-        <div style={{ padding: '28px 36px' }}>
-          {text ? (
-            <div
-              className="ai-content-box"
-              style={{ border: 'none', padding: 0 }}
-              dangerouslySetInnerHTML={{ __html: renderBaziMarkdown(text) }}
-            />
-          ) : isGenerating ? (
-            <div style={{ textAlign: 'center', padding: '40px 0' }}>
-              <span className="wizard-spinner" style={{ width: '20px', height: '20px', marginBottom: '12px' }} />
-              <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', margin: 0 }}>
-                {tStatus('generating')}
-              </p>
-            </div>
-          ) : (
-            <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', textAlign: 'center', padding: '24px 0' }}>
-              {tStatus('awaitingPrev')}
-            </p>
-          )}
-        </div>
-      )}
-    </div>
-  )
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -232,11 +133,10 @@ export default function PremiumCompatibilitySection({
         {CHAPTER_ORDER.map((key, idx) => (
           <ChapterCard
             key={key}
-            chapterKey={key}
             index={idx}
-            text={chapters[key]}
+            title={tChapters(key as Parameters<typeof tChapters>[0])}
+            content={chapters[key]}
             isGenerating={isActive && idx === currentlyGeneratingIndex}
-            tChapters={(k) => tChapters(k as Parameters<typeof tChapters>[0])}
             tStatus={(k, v) => tStatus(k as Parameters<typeof tStatus>[0], v)}
           />
         ))}

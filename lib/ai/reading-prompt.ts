@@ -217,6 +217,14 @@ Content mix: ${forecastYear} detailed forecast (45%), timing windows and action 
 
 ---
 
+## TEASER BLOCK (after section 6 — REQUIRED)
+
+After the last section (section 6), add exactly one teaser block on its own line:
+
+[[TEASER: ~50 words in the user's selected language, written in a mystical and inviting tone — hint at deeper hidden layers still to be revealed, unseen forces, hidden timing windows, and the deeper fate pattern beneath the surface. Do NOT summarize what was already written. Entice the reader to unlock the Master Reading. Write entirely in ${langInstructions[language] ? 'the user\'s selected language' : 'English'}.]]
+
+---
+
 ## FINAL SELF-CHECK
 - [ ] Output is pure markdown — no JSON, no fence, no preamble?
 - [ ] Section 1 opens with zodiac narrative AND explicitly states "${strengthDisplay}"?
