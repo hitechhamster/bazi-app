@@ -1,14 +1,11 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
-import Link from 'next/link'
 import { localePath } from '@/lib/i18n/path'
 import { getUserTier } from '@/lib/subscription/tier'
 import { renderBaziMarkdown } from '@/lib/markdown/renderer'
 import CompatibilityReportPending from './CompatibilityReportPending'
 import UpgradeCTA from './UpgradeCTA'
 import type { BaziPartnerData, CompatibilityScores } from '@/lib/bazi/compatibility'
-import BrandMark from '@/components/BrandMark'
-import LocaleSwitcher from '../../_components/LocaleSwitcher'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -92,7 +89,7 @@ function ScoreCircle({ total, level, locale }: { total: number; level: { key: st
 type BreakdownKey = keyof CompatibilityScores['breakdown']
 
 function ScoreBreakdown({ scores, locale }: { scores: CompatibilityScores; locale: string }) {
-  const dims: BreakdownKey[] = ['dayMaster','zodiac','elements','naYin','ganZhi','spousePalace']
+  const dims: BreakdownKey[] = ['dayMaster', 'zodiac', 'elements', 'naYin', 'ganZhi', 'spousePalace']
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '12px' }}>
       {dims.map(k => {
@@ -191,12 +188,23 @@ function BaziCard({ bazi, name }: { bazi: BaziPartnerData; name: string }) {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+const labelStyle: React.CSSProperties = {
+  fontFamily: 'var(--font-ui)',
+  fontSize: '11px',
+  letterSpacing: '0.2em',
+  color: 'var(--zen-text-muted)',
+  textTransform: 'uppercase',
+  fontWeight: 500,
+  marginBottom: '12px',
+  display: 'block',
+}
+
 export default async function CompatibilityReportPage({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>
+  params: Promise<{ locale: string; id: string; reportId: string }>
 }) {
-  const { locale, id } = await params
+  const { locale, id: profileId, reportId } = await params
 
   const userClient = await createClient()
   const { data: { user } } = await userClient.auth.getUser()
@@ -206,7 +214,7 @@ export default async function CompatibilityReportPage({
   const { data: report } = await admin
     .from('compatibility_reports')
     .select('*')
-    .eq('id', id)
+    .eq('id', reportId)
     .single()
 
   if (!report) notFound()
@@ -214,108 +222,80 @@ export default async function CompatibilityReportPage({
 
   const tier = await getUserTier(user.id)
 
-  const status  = report.free_report_status as string
-  const baziA   = report.bazi_a   as BaziPartnerData
-  const baziB   = report.bazi_b   as BaziPartnerData
-  const scores  = report.scores   as CompatibilityScores
-  const nameA   = (report.partner_a_data as { name?: string })?.name ?? 'Partner A'
-  const nameB   = (report.partner_b_data as { name?: string })?.name ?? 'Partner B'
+  const status     = report.free_report_status as string
+  const baziA      = report.bazi_a   as BaziPartnerData
+  const baziB      = report.bazi_b   as BaziPartnerData
+  const scores     = report.scores   as CompatibilityScores
+  const nameA      = (report.partner_a_data as { name?: string })?.name ?? 'Partner A'
+  const nameB      = (report.partner_b_data as { name?: string })?.name ?? 'Partner B'
   const reportText = (report.free_report_text as string | null) ?? null
 
-  const labelStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-ui)',
-    fontSize: '11px',
-    letterSpacing: '0.2em',
-    color: 'var(--zen-text-muted)',
-    textTransform: 'uppercase',
-    fontWeight: 500,
-    marginBottom: '12px',
-    display: 'block',
-  }
-
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <div className="zen-circle-bg" style={{ top: '-200px', right: '-200px', left: 'auto' }} />
-
-      <div className="max-w-[1320px] mx-auto px-4 lg:px-5 py-6" style={{ position: 'relative', zIndex: 10 }}>
-
-        {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <BrandMark variant="full" size="small" href="/dashboard" />
-            <Link href={localePath(locale, '/dashboard')} style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-ink)', textDecoration: 'none' }}>
-              ← Dashboard
-            </Link>
-          </div>
-          <LocaleSwitcher />
-        </div>
-
-        {/* Page title */}
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          <h2 style={{ fontFamily: 'var(--font-main)', fontSize: '18px', fontWeight: 500, color: 'var(--zen-ink)', letterSpacing: '0.05em', margin: '0 0 6px' }}>
-            {nameA} &amp; {nameB}
-          </h2>
-          <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', margin: 0 }}>
-            Compatibility Analysis · 合婚分析
-          </p>
-        </div>
-
-        {/* Pending / generating */}
-        {(status === 'pending' || status === 'generating') && (
-          <CompatibilityReportPending reportId={id} locale={locale} />
-        )}
-
-        {/* Failed */}
-        {status === 'failed' && (
-          <div className="zen-result-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
-            <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-text-muted)', marginBottom: '20px' }}>
-              Generation failed. Please try again.
-            </p>
-            <form action={`/api/compatibility/${id}/generate-free`} method="POST">
-              <button type="submit" style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '10px 20px', border: 'none', cursor: 'pointer', background: '#854F0B', color: 'white' }}>
-                Try Again
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* Completed — full report */}
-        {status === 'completed' && reportText && (
-          <>
-            {/* 1. Score section */}
-            <div className="zen-result-card">
-              <span style={labelStyle}>Compatibility Score · 合婚评分</span>
-              <ScoreCircle total={scores.total} level={scores.level} locale={locale} />
-              <ScoreBreakdown scores={scores} locale={locale} />
-            </div>
-
-            {/* 2. Dual bazi */}
-            <div className="zen-result-card">
-              <span style={labelStyle}>Bazi Charts · 双人命盘</span>
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                <BaziCard bazi={baziA} name={nameA} />
-                <BaziCard bazi={baziB} name={nameB} />
-              </div>
-            </div>
-
-            {/* 3. AI report */}
-            <div className="zen-result-card" style={{ padding: 0, overflow: 'hidden' }}>
-              <div style={{ padding: '20px 24px 8px', borderBottom: '1px solid var(--zen-border)' }}>
-                <span style={labelStyle}>Compatibility Reading · AI 解读</span>
-              </div>
-              <div
-                className="ai-content-box"
-                style={{ border: 'none', padding: '28px 36px' }}
-                dangerouslySetInnerHTML={{ __html: renderBaziMarkdown(reportText) }}
-              />
-            </div>
-
-            {/* 4. Upgrade CTA */}
-            <UpgradeCTA tier={tier} locale={locale} />
-          </>
-        )}
-
+    <div>
+      {/* Page title */}
+      <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+        <h2 style={{ fontFamily: 'var(--font-main)', fontSize: '18px', fontWeight: 500, color: 'var(--zen-ink)', letterSpacing: '0.05em', margin: '0 0 6px' }}>
+          {nameA} &amp; {nameB}
+        </h2>
+        <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', margin: 0 }}>
+          Compatibility Analysis · 合婚分析
+        </p>
       </div>
+
+      {/* Pending / generating */}
+      {(status === 'pending' || status === 'generating') && (
+        <CompatibilityReportPending reportId={reportId} locale={locale} />
+      )}
+
+      {/* Failed */}
+      {status === 'failed' && (
+        <div className="zen-result-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+          <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-text-muted)', marginBottom: '20px' }}>
+            Generation failed. Please try again.
+          </p>
+          <form action={`/api/compatibility/${reportId}/generate-free`} method="POST">
+            <button type="submit" style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '10px 20px', border: 'none', cursor: 'pointer', background: '#854F0B', color: 'white' }}>
+              Try Again
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Completed — full report */}
+      {status === 'completed' && reportText && (
+        <>
+          {/* 1. Score section */}
+          <div className="zen-result-card">
+            <span style={labelStyle}>Compatibility Score · 合婚评分</span>
+            <ScoreCircle total={scores.total} level={scores.level} locale={locale} />
+            <ScoreBreakdown scores={scores} locale={locale} />
+          </div>
+
+          {/* 2. Dual bazi */}
+          <div className="zen-result-card">
+            <span style={labelStyle}>Bazi Charts · 双人命盘</span>
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+              <BaziCard bazi={baziA} name={nameA} />
+              <BaziCard bazi={baziB} name={nameB} />
+            </div>
+          </div>
+
+          {/* 3. AI report */}
+          <div className="zen-result-card" style={{ padding: 0, overflow: 'hidden' }}>
+            <div style={{ padding: '20px 24px 8px', borderBottom: '1px solid var(--zen-border)' }}>
+              <span style={labelStyle}>Compatibility Reading · AI 解读</span>
+            </div>
+            <div
+              className="ai-content-box"
+              style={{ border: 'none', padding: '28px 36px' }}
+              dangerouslySetInnerHTML={{ __html: renderBaziMarkdown(reportText) }}
+            />
+          </div>
+
+          {/* 4. Upgrade CTA */}
+          <UpgradeCTA tier={tier} locale={locale} />
+        </>
+      )}
     </div>
   )
 }

@@ -13,10 +13,12 @@ export default function Sidebar({
   data,
   tier,
   locale,
+  profileId,
 }: {
   data: MockData
   tier: Tier
   locale: string
+  profileId: string
 }) {
   const t = useTranslations('profileReport.sidebar')
   const pathname = usePathname()
@@ -63,8 +65,8 @@ export default function Sidebar({
       <NavButton active={pathname === `${profileBase}/ask`} href={`${profileBase}/ask`} label={t('askQuestion')} labelSub={t('askQuestionZh')} />
 
       <NavButton
-        active={false}
-        href={localePath(locale, '/compatibility/new')}
+        active={pathname.includes('/compatibility')}
+        href={localePath(locale, `/profiles/${profileId}/compatibility`)}
         label="Compatibility Analysis"
         labelSub="合婚分析"
       />

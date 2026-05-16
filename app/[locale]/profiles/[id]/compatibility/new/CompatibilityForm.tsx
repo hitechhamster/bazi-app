@@ -21,32 +21,32 @@ type PartnerSource = 'profile' | 'manual'
 type Gender = 'male' | 'female' | 'non-binary'
 
 interface PartnerState {
-  source:           PartnerSource
-  profileId:        string
-  name:             string
-  gender:           Gender
-  birthDate:        string
-  birthTime:        string
-  isTimeUnknown:    boolean
-  longitude:        string
+  source:            PartnerSource
+  profileId:         string
+  name:              string
+  gender:            Gender
+  birthDate:         string
+  birthTime:         string
+  isTimeUnknown:     boolean
+  longitude:         string
   timezoneOffsetSec: string
-  locationName:     string
-  cityQuery:        string
+  locationName:      string
+  cityQuery:         string
 }
 
 function emptyPartner(source: PartnerSource = 'manual'): PartnerState {
   return {
     source,
-    profileId:        '',
-    name:             '',
-    gender:           'male',
-    birthDate:        '',
-    birthTime:        '',
-    isTimeUnknown:    false,
-    longitude:        '',
+    profileId:         '',
+    name:              '',
+    gender:            'male',
+    birthDate:         '',
+    birthTime:         '',
+    isTimeUnknown:     false,
+    longitude:         '',
     timezoneOffsetSec: '',
-    locationName:     '',
-    cityQuery:        '',
+    locationName:      '',
+    cityQuery:         '',
   }
 }
 
@@ -273,11 +273,11 @@ function PartnerPanel({
             <CityInput
               value={state.cityQuery}
               locationName={state.locationName}
-              onChange={(_, lng, tzSec, label) => onChange({
+              onChange={(_, lng, tzSec, lbl) => onChange({
                 longitude:         String(lng),
                 timezoneOffsetSec: String(tzSec),
-                locationName:      label,
-                cityQuery:         label,
+                locationName:      lbl,
+                cityQuery:         lbl,
               })}
             />
           </div>
@@ -293,10 +293,12 @@ export default function CompatibilityForm({
   profiles,
   quota,
   locale,
+  profileId,
 }: {
   profiles:  ProfileOption[]
   quota:     QuotaInfo
   locale:    string
+  profileId: string
 }) {
   const router = useRouter()
 
@@ -338,15 +340,15 @@ export default function CompatibilityForm({
         return { source: 'profile' as const, profileId: p.profileId }
       }
       return {
-        source:           'manual' as const,
-        name:             p.name.trim(),
-        gender:           p.gender,
-        birthDate:        p.birthDate,
-        birthTime:        p.isTimeUnknown ? undefined : (p.birthTime || undefined),
-        isTimeUnknown:    p.isTimeUnknown,
-        longitude:        p.longitude ? Number(p.longitude) : undefined,
+        source:            'manual' as const,
+        name:              p.name.trim(),
+        gender:            p.gender,
+        birthDate:         p.birthDate,
+        birthTime:         p.isTimeUnknown ? undefined : (p.birthTime || undefined),
+        isTimeUnknown:     p.isTimeUnknown,
+        longitude:         p.longitude ? Number(p.longitude) : undefined,
         timezoneOffsetSec: p.timezoneOffsetSec ? Number(p.timezoneOffsetSec) : undefined,
-        locationName:     p.locationName || undefined,
+        locationName:      p.locationName || undefined,
       }
     }
 
@@ -357,8 +359,8 @@ export default function CompatibilityForm({
         body: JSON.stringify({
           partnerA: buildInput(partnerA),
           partnerB: buildInput(partnerB),
-          tier:   'free',
-          locale: selectedLocale,
+          tier:     'free',
+          locale:   selectedLocale,
         }),
       })
 
@@ -374,7 +376,8 @@ export default function CompatibilityForm({
         return
       }
 
-      router.push(localePath(selectedLocale, `/compatibility/${json.id}`))
+      // Redirect into the profile-scoped report URL
+      router.push(localePath(selectedLocale, `/profiles/${profileId}/compatibility/${json.id}`))
     } catch {
       setError('Network error. Please try again.')
       setSubmitting(false)
@@ -425,10 +428,10 @@ export default function CompatibilityForm({
         disabled={!canSubmit}
         className="zen-btn-primary"
         style={{
-          opacity: canSubmit ? 1 : 0.5,
-          cursor:  canSubmit ? 'pointer' : 'not-allowed',
+          opacity:  canSubmit ? 1 : 0.5,
+          cursor:   canSubmit ? 'pointer' : 'not-allowed',
           minWidth: '220px',
-          display: 'inline-flex',
+          display:  'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
           gap: '10px',
@@ -444,7 +447,7 @@ export default function CompatibilityForm({
         )}
       </button>
 
-      {/* Upgrade nudge for free users */}
+      {/* Upgrade nudge */}
       <p style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', marginTop: '10px' }}>
         Want a 15,000+ word in-depth premium report?{' '}
         <a href={localePath(locale, '/pricing')} style={{ color: '#854F0B', textDecoration: 'underline' }}>

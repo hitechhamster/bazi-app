@@ -116,7 +116,7 @@ export default async function ProfileLayout({
             className="hidden lg:block"
             style={{ position: 'sticky', top: '16px', maxHeight: 'calc(100vh - 32px)', overflowY: 'auto' }}
           >
-            <Sidebar data={dashboardData} tier={tier} locale={locale} />
+            <Sidebar data={dashboardData} tier={tier} locale={locale} profileId={id} />
           </div>
 
           {/* Main column */}
