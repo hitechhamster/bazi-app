@@ -380,7 +380,8 @@
       "profile_cap": "You've reached the free plan limit of 1 profile. Upgrade to Pro to create up to 5.",
       "ask_quota": "You've used all 5 daily questions on the free plan. Upgrade for unlimited questions.",
       "chat_locked": "Multi-turn conversation is a Pro feature.",
-      "premium_report": "Premium AI reading is a Pro feature."
+      "premium_report": "Premium AI reading is a Pro feature.",
+      "compatibility_premium_required": "The 15,000+ word Premium Compatibility Report is a Pro feature. Upgrade to generate a deep 6-chapter analysis for any couple."
     },
     "cta": "View plans",
     "cancel": "Not now"

@@ -380,7 +380,8 @@
       "profile_cap": "免費版最多只能建立 1 個命盤，升級專業版可建立最多 5 個。",
       "ask_quota": "今日免費提問次數（5 次）已用盡，升級可無限提問。",
       "chat_locked": "多輪問答是專業版功能。",
-      "premium_report": "深度 AI 解讀是專業版功能。"
+      "premium_report": "深度 AI 解讀是專業版功能。",
+      "compatibility_premium_required": "15000+ 字高級合婚報告（6 章節深度分析）是專業版功能，升級即可為任意一對解鎖。"
     },
     "cta": "查看方案",
     "cancel": "暫不升級"

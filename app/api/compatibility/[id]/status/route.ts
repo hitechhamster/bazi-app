@@ -15,7 +15,7 @@ export async function GET(
     const admin = createAdminClient()
     const { data: report } = await admin
       .from('compatibility_reports')
-      .select('id, user_id, free_report_status, free_report_text, scores, bazi_a, bazi_b, partner_a_data, partner_b_data, locale')
+      .select('*')
       .eq('id', id)
       .single()
 
@@ -23,14 +23,27 @@ export async function GET(
     if ((report.user_id as string) !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
     return NextResponse.json({
+      // Free report fields
       status:          report.free_report_status,
       freeReportText:  report.free_report_text ?? null,
-      scores:          report.scores ?? null,
-      baziA:           report.bazi_a ?? null,
-      baziB:           report.bazi_b ?? null,
-      partnerAData:    report.partner_a_data ?? null,
-      partnerBData:    report.partner_b_data ?? null,
-      locale:          report.locale ?? 'en',
+      // Premium report fields
+      tier:            report.tier ?? 'free',
+      premiumStatus:   report.premium_status ?? 'pending',
+      premiumChapters: {
+        overview:      report.premium_overview      ?? null,
+        compatibility: report.premium_compatibility ?? null,
+        communication: report.premium_communication ?? null,
+        wealth_career: report.premium_wealth_career ?? null,
+        love_marriage: report.premium_love_marriage ?? null,
+        forecast:      report.premium_forecast      ?? null,
+      },
+      // Shared
+      scores:          report.scores          ?? null,
+      baziA:           report.bazi_a          ?? null,
+      baziB:           report.bazi_b          ?? null,
+      partnerAData:    report.partner_a_data  ?? null,
+      partnerBData:    report.partner_b_data  ?? null,
+      locale:          report.locale          ?? 'en',
     })
   } catch (err) {
     console.error('[compat/status] Error:', err)

@@ -14,7 +14,8 @@ export interface ProfileOption {
 }
 
 export interface QuotaInfo {
-  free: { used: number; cap: number; remaining: number }
+  free:    { used: number; cap: number; remaining: number }
+  premium: { used: number; cap: number; remaining: number }
 }
 
 type PartnerSource = 'profile' | 'manual'
@@ -294,24 +295,30 @@ export default function CompatibilityForm({
   quota,
   locale,
   profileId,
+  userTier,
 }: {
   profiles:  ProfileOption[]
   quota:     QuotaInfo
   locale:    string
   profileId: string
+  userTier:  string
 }) {
   const router = useRouter()
+
+  const isPaidUser = userTier !== 'free'
 
   const [partnerA, setPartnerA] = useState<PartnerState>(emptyPartner('manual'))
   const [partnerB, setPartnerB] = useState<PartnerState>(emptyPartner('manual'))
   const [selectedLocale, setSelectedLocale] = useState(locale)
+  const [reportTier, setReportTier] = useState<'free' | 'premium'>('free')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const patchA = (patch: Partial<PartnerState>) => setPartnerA(s => ({ ...s, ...patch }))
   const patchB = (patch: Partial<PartnerState>) => setPartnerB(s => ({ ...s, ...patch }))
 
-  const canSubmit = !submitting && quota.free.remaining > 0
+  const activeTierQuota = reportTier === 'premium' ? quota.premium : quota.free
+  const canSubmit = !submitting && activeTierQuota.remaining > 0
 
   function validatePartner(p: PartnerState, which: 'A' | 'B'): string | null {
     if (p.source === 'profile') {
@@ -359,7 +366,7 @@ export default function CompatibilityForm({
         body: JSON.stringify({
           partnerA: buildInput(partnerA),
           partnerB: buildInput(partnerB),
-          tier:     'free',
+          tier:     reportTier,
           locale:   selectedLocale,
         }),
       })
@@ -369,6 +376,8 @@ export default function CompatibilityForm({
       if (!res.ok) {
         if (json.error === 'free_daily_cap') {
           setError("Today's free analysis limit reached. Try again tomorrow.")
+        } else if (json.error === 'premium_monthly_cap') {
+          setError("Monthly premium report limit reached.")
         } else {
           setError(json.error ?? 'Something went wrong. Please try again.')
         }
@@ -407,12 +416,53 @@ export default function CompatibilityForm({
         </select>
       </div>
 
-      {/* Quota info */}
-      <div style={{ marginBottom: '20px', fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)' }}>
-        Free analysis today: {quota.free.remaining} of {quota.free.cap} remaining
-        {quota.free.remaining === 0 && (
-          <span style={{ color: 'var(--zen-red)', marginLeft: '8px' }}>Daily limit reached</span>
-        )}
+      {/* Report tier selector */}
+      <div className="zen-result-card" style={{ marginBottom: '16px', padding: '16px 20px' }}>
+        <label style={labelStyle}>Report Type</label>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          {/* Free option */}
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer' }}>
+            <input
+              type="radio"
+              name="report-tier"
+              value="free"
+              checked={reportTier === 'free'}
+              onChange={() => setReportTier('free')}
+              style={{ accentColor: 'var(--zen-red)', marginTop: '2px' }}
+            />
+            <div>
+              <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', fontWeight: 500, color: 'var(--zen-ink)' }}>
+                Free Analysis
+              </div>
+              <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+                AI overview · {quota.free.remaining}/{quota.free.cap} remaining today
+              </div>
+            </div>
+          </label>
+
+          {/* Premium option */}
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: isPaidUser ? 'pointer' : 'not-allowed', opacity: isPaidUser ? 1 : 0.5 }}>
+            <input
+              type="radio"
+              name="report-tier"
+              value="premium"
+              checked={reportTier === 'premium'}
+              disabled={!isPaidUser}
+              onChange={() => isPaidUser && setReportTier('premium')}
+              style={{ accentColor: 'var(--zen-red)', marginTop: '2px' }}
+            />
+            <div>
+              <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', fontWeight: 500, color: 'var(--zen-ink)' }}>
+                Premium Report {!isPaidUser && '🔒'}
+              </div>
+              <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+                {isPaidUser
+                  ? `15,000+ words · 6 chapters · ${quota.premium.remaining}/${quota.premium.cap} remaining this month`
+                  : 'Upgrade to Pro to unlock'}
+              </div>
+            </div>
+          </label>
+        </div>
       </div>
 
       {/* Error */}
@@ -440,20 +490,22 @@ export default function CompatibilityForm({
         {submitting ? (
           <>
             <span className="wizard-spinner" />
-            Analyzing…
+            {reportTier === 'premium' ? 'Creating…' : 'Analyzing…'}
           </>
         ) : (
-          'Analyze Compatibility'
+          reportTier === 'premium' ? 'Generate Premium Report' : 'Analyze Compatibility'
         )}
       </button>
 
-      {/* Upgrade nudge */}
-      <p style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', marginTop: '10px' }}>
-        Want a 15,000+ word in-depth premium report?{' '}
-        <a href={localePath(locale, '/pricing')} style={{ color: '#854F0B', textDecoration: 'underline' }}>
-          Upgrade to Pro →
-        </a>
-      </p>
+      {/* Upgrade nudge for free users */}
+      {!isPaidUser && (
+        <p style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', marginTop: '10px' }}>
+          Want a 15,000+ word in-depth premium report?{' '}
+          <a href={localePath(locale, '/pricing')} style={{ color: '#854F0B', textDecoration: 'underline' }}>
+            Upgrade to Pro →
+          </a>
+        </p>
+      )}
     </form>
   )
 }

@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { localePath } from '@/lib/i18n/path'
-import { getCompatibilityQuotaStatus } from '@/lib/subscription/tier'
+import { getCompatibilityQuotaStatus, getUserTier } from '@/lib/subscription/tier'
+import type { Tier } from '@/lib/subscription/tier'
 import CompatibilityForm, { type ProfileOption } from './CompatibilityForm'
 
 export default async function NewCompatibilityPage({
@@ -38,7 +39,10 @@ export default async function NewCompatibilityPage({
     birthDate: p.birth_date as string,
   }))
 
-  const quota = await getCompatibilityQuotaStatus(user.id)
+  const [quota, userTier] = await Promise.all([
+    getCompatibilityQuotaStatus(user.id),
+    getUserTier(user.id) as Promise<Tier>,
+  ])
 
   return (
     <div>
@@ -54,9 +58,10 @@ export default async function NewCompatibilityPage({
 
       <CompatibilityForm
         profiles={profiles}
-        quota={{ free: quota.free }}
+        quota={quota}
         locale={locale}
         profileId={profileId}
+        userTier={userTier}
       />
     </div>
   )

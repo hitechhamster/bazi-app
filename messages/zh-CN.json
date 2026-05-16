@@ -380,7 +380,8 @@
       "profile_cap": "免费版最多只能创建 1 个命盘，升级专业版可创建最多 5 个。",
       "ask_quota": "今日免费提问次数（5 次）已用尽，升级可无限提问。",
       "chat_locked": "多轮问答是专业版功能。",
-      "premium_report": "深度 AI 解读是专业版功能。"
+      "premium_report": "深度 AI 解读是专业版功能。",
+      "compatibility_premium_required": "15000+ 字高级合婚报告（6 章节深度分析）是专业版功能，升级即可为任意一对解锁。"
     },
     "cta": "查看方案",
     "cancel": "暂不升级"

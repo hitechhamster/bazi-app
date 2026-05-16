@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { localePath } from '@/lib/i18n/path'
 
-export type UpgradeReason = 'profile_cap' | 'ask_quota' | 'chat_locked' | 'premium_report'
+export type UpgradeReason = 'profile_cap' | 'ask_quota' | 'chat_locked' | 'premium_report' | 'compatibility_premium_required'
 
 export default function UpgradeModal({
   open,

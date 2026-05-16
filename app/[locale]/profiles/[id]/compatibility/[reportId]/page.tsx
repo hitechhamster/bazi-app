@@ -4,6 +4,7 @@ import { localePath } from '@/lib/i18n/path'
 import { getUserTier } from '@/lib/subscription/tier'
 import { renderBaziMarkdown } from '@/lib/markdown/renderer'
 import CompatibilityReportPending from './CompatibilityReportPending'
+import PremiumCompatibilitySection from './PremiumCompatibilitySection'
 import UpgradeCTA from './UpgradeCTA'
 import type { BaziPartnerData, CompatibilityScores } from '@/lib/bazi/compatibility'
 
@@ -220,15 +221,28 @@ export default async function CompatibilityReportPage({
   if (!report) notFound()
   if ((report.user_id as string) !== user.id) notFound()
 
-  const tier = await getUserTier(user.id)
+  const userTier = await getUserTier(user.id)
 
-  const status     = report.free_report_status as string
-  const baziA      = report.bazi_a   as BaziPartnerData
-  const baziB      = report.bazi_b   as BaziPartnerData
-  const scores     = report.scores   as CompatibilityScores
-  const nameA      = (report.partner_a_data as { name?: string })?.name ?? 'Partner A'
-  const nameB      = (report.partner_b_data as { name?: string })?.name ?? 'Partner B'
-  const reportText = (report.free_report_text as string | null) ?? null
+  const reportTier   = (report.tier as string) ?? 'free'
+  const status       = report.free_report_status as string
+  const premiumStatus = (report.premium_status as string) ?? 'pending'
+  const baziA        = report.bazi_a   as BaziPartnerData
+  const baziB        = report.bazi_b   as BaziPartnerData
+  const scores       = report.scores   as CompatibilityScores
+  const nameA        = (report.partner_a_data as { name?: string })?.name ?? 'Partner A'
+  const nameB        = (report.partner_b_data as { name?: string })?.name ?? 'Partner B'
+  const reportText   = (report.free_report_text as string | null) ?? null
+
+  const premiumChapters = {
+    overview:      (report.premium_overview      as string | null) ?? null,
+    compatibility: (report.premium_compatibility as string | null) ?? null,
+    communication: (report.premium_communication as string | null) ?? null,
+    wealth_career: (report.premium_wealth_career as string | null) ?? null,
+    love_marriage: (report.premium_love_marriage as string | null) ?? null,
+    forecast:      (report.premium_forecast      as string | null) ?? null,
+  }
+
+  const hasPremiumContent = Object.values(premiumChapters).some(v => !!v)
 
   return (
     <div>
@@ -238,16 +252,18 @@ export default async function CompatibilityReportPage({
           {nameA} &amp; {nameB}
         </h2>
         <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', margin: 0 }}>
-          Compatibility Analysis · 合婚分析
+          {reportTier === 'premium' ? 'Premium Compatibility Report · 高级合婚报告' : 'Compatibility Analysis · 合婚分析'}
         </p>
       </div>
 
-      {/* Pending / generating */}
+      {/* ── FREE REPORT SECTION ─────────────────────────────────────────── */}
+
+      {/* Pending / generating free report */}
       {(status === 'pending' || status === 'generating') && (
         <CompatibilityReportPending reportId={reportId} locale={locale} />
       )}
 
-      {/* Failed */}
+      {/* Free report failed */}
       {status === 'failed' && (
         <div className="zen-result-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
           <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-text-muted)', marginBottom: '20px' }}>
@@ -261,8 +277,8 @@ export default async function CompatibilityReportPage({
         </div>
       )}
 
-      {/* Completed — full report */}
-      {status === 'completed' && reportText && (
+      {/* Free report completed — show scores, charts, free AI text */}
+      {status === 'completed' && (
         <>
           {/* 1. Score section */}
           <div className="zen-result-card">
@@ -280,21 +296,42 @@ export default async function CompatibilityReportPage({
             </div>
           </div>
 
-          {/* 3. AI report */}
-          <div className="zen-result-card" style={{ padding: 0, overflow: 'hidden' }}>
-            <div style={{ padding: '20px 24px 8px', borderBottom: '1px solid var(--zen-border)' }}>
-              <span style={labelStyle}>Compatibility Reading · AI 解读</span>
+          {/* 3. Free AI report (if present) */}
+          {reportText && (
+            <div className="zen-result-card" style={{ padding: 0, overflow: 'hidden' }}>
+              <div style={{ padding: '20px 24px 8px', borderBottom: '1px solid var(--zen-border)' }}>
+                <span style={labelStyle}>Compatibility Reading · AI 解读</span>
+              </div>
+              <div
+                className="ai-content-box"
+                style={{ border: 'none', padding: '28px 36px' }}
+                dangerouslySetInnerHTML={{ __html: renderBaziMarkdown(reportText) }}
+              />
             </div>
-            <div
-              className="ai-content-box"
-              style={{ border: 'none', padding: '28px 36px' }}
-              dangerouslySetInnerHTML={{ __html: renderBaziMarkdown(reportText) }}
-            />
-          </div>
-
-          {/* 4. Upgrade CTA */}
-          <UpgradeCTA tier={tier} locale={locale} />
+          )}
         </>
+      )}
+
+      {/* ── PREMIUM SECTION ─────────────────────────────────────────────── */}
+
+      {/* Premium report: active generation or completed chapters */}
+      {(hasPremiumContent || premiumStatus === 'generating' || (reportTier === 'premium' && premiumStatus === 'pending')) && (
+        <PremiumCompatibilitySection
+          reportId={reportId}
+          locale={locale}
+          initialStatus={premiumStatus}
+          initialChapters={premiumChapters}
+        />
+      )}
+
+      {/* Upgrade CTA — show only when free report is done and premium not yet started */}
+      {status === 'completed' && !hasPremiumContent && premiumStatus === 'pending' && reportTier === 'free' && (
+        <UpgradeCTA
+          tier={userTier}
+          locale={locale}
+          reportId={reportId}
+          profileId={profileId}
+        />
       )}
     </div>
   )

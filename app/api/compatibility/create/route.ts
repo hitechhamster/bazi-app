@@ -90,13 +90,8 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json() as CreateBody
 
-    // Premium not implemented yet
-    if (body.tier === 'premium') {
-      return NextResponse.json({ error: 'Premium compatibility not yet available' }, { status: 501 })
-    }
-
-    // Quota gate
-    const gate = await canCreateCompatibility(user.id, 'free')
+    // Quota gate — uses tier from body
+    const gate = await canCreateCompatibility(user.id, body.tier ?? 'free')
     if (!gate.ok) {
       return NextResponse.json({ error: gate.reason }, { status: 403 })
     }
@@ -117,12 +112,14 @@ export async function POST(req: NextRequest) {
     const baziB  = calculateBaziPartnerData(inputB)
     const scores = calculateCompatibilityScores(baziA, baziB)
 
+    const isPremium = body.tier === 'premium'
+
     // Insert report row
     const { data: newReport, error: insertErr } = await admin
       .from('compatibility_reports')
       .insert({
         user_id:              user.id,
-        tier:                 'free',
+        tier:                 isPremium ? 'premium' : 'free',
         partner_a_profile_id: profileAId,
         partner_b_profile_id: profileBId,
         partner_a_data:       inputA as object,
@@ -131,7 +128,7 @@ export async function POST(req: NextRequest) {
         bazi_b:               baziB  as object,
         scores:               scores as object,
         locale:               body.locale ?? 'en',
-        free_report_status:   'pending',
+        free_report_status:   isPremium ? 'pending' : 'pending',
         premium_status:       'pending',
       })
       .select('id')
@@ -144,12 +141,21 @@ export async function POST(req: NextRequest) {
 
     const reportId = newReport.id as string
 
-    // Fire-and-forget generation (same pattern as single-person premium)
-    after(async () => {
-      const { generateAndSaveFreeCompatibilityReport } =
-        await import('@/lib/ai/generate-compatibility-free')
-      await generateAndSaveFreeCompatibilityReport(reportId)
-    })
+    if (isPremium) {
+      // Fire-and-forget premium section generation
+      after(async () => {
+        const { generateAndSaveCompatibilityPremiumSections } =
+          await import('@/lib/ai/generate-compatibility-premium')
+        await generateAndSaveCompatibilityPremiumSections(reportId, 'overview')
+      })
+    } else {
+      // Fire-and-forget free report generation
+      after(async () => {
+        const { generateAndSaveFreeCompatibilityReport } =
+          await import('@/lib/ai/generate-compatibility-free')
+        await generateAndSaveFreeCompatibilityReport(reportId)
+      })
+    }
 
     return NextResponse.json({ id: reportId })
   } catch (err) {
