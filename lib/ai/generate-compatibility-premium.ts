@@ -43,14 +43,6 @@ export const SECTION_COL: Record<CompatibilitySection, string> = {
   forecast:      'premium_forecast',
 }
 
-/** Returns the next section in the chain, or null if this is the last */
-export function nextSection(section: CompatibilitySection): CompatibilitySection | null {
-  const idx = SECTION_ORDER.indexOf(section)
-  return idx >= 0 && idx < SECTION_ORDER.length - 1
-    ? SECTION_ORDER[idx + 1]
-    : null
-}
-
 // ── Gemini runner ─────────────────────────────────────────────────────────────
 
 async function runChapterStage(
