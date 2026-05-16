@@ -13,12 +13,10 @@ export default function Sidebar({
   data,
   tier,
   locale,
-  profileId,
 }: {
   data: MockData
   tier: Tier
   locale: string
-  profileId: string
 }) {
   const t = useTranslations('profileReport.sidebar')
   const pathname = usePathname()
@@ -66,7 +64,7 @@ export default function Sidebar({
 
       <NavButton
         active={false}
-        href={`${localePath(locale, '/compatibility/new')}?asA=${profileId}`}
+        href={localePath(locale, '/compatibility/new')}
         label="Compatibility Analysis"
         labelSub="合婚分析"
       />

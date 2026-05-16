@@ -141,68 +141,6 @@ function CityInput({
   )
 }
 
-// ── Locked Partner A card ─────────────────────────────────────────────────────
-
-function LockedPartnerACard({ p }: { p: ProfileOption }) {
-  return (
-    <div style={{
-      flex: 1,
-      minWidth: '280px',
-      border: '1px solid var(--zen-border)',
-      padding: '20px',
-      background: 'var(--zen-paper)',
-    }}>
-      <div style={{
-        fontFamily: 'var(--font-main)',
-        fontSize: '13px',
-        fontWeight: 500,
-        color: 'var(--zen-ink)',
-        marginBottom: '16px',
-        letterSpacing: '0.05em',
-        borderBottom: '1px solid var(--zen-border)',
-        paddingBottom: '8px',
-      }}>
-        Partner A
-      </div>
-      <div style={{
-        background: 'var(--zen-gold-pale)',
-        border: '1px solid var(--zen-border)',
-        padding: '14px 16px',
-      }}>
-        <div style={{
-          fontFamily: 'var(--font-main)',
-          fontSize: '14px',
-          fontWeight: 500,
-          color: 'var(--zen-ink)',
-          marginBottom: '6px',
-        }}>
-          {p.name}
-        </div>
-        <div style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '11px',
-          color: 'var(--zen-text-muted)',
-          display: 'flex',
-          gap: '12px',
-          flexWrap: 'wrap',
-        }}>
-          <span>日主 · <span style={{ color: '#854F0B', fontWeight: 500 }}>{p.dayMaster}</span></span>
-          <span>{p.birthDate}</span>
-        </div>
-        <p style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '11px',
-          color: 'var(--zen-text-muted)',
-          margin: '10px 0 0',
-          fontStyle: 'italic',
-        }}>
-          Prefilled from your profile
-        </p>
-      </div>
-    </div>
-  )
-}
-
 // ── Partner panel ─────────────────────────────────────────────────────────────
 
 function PartnerPanel({
@@ -355,12 +293,10 @@ export default function CompatibilityForm({
   profiles,
   quota,
   locale,
-  lockedPartnerA,
 }: {
-  profiles:       ProfileOption[]
-  quota:          QuotaInfo
-  locale:         string
-  lockedPartnerA?: ProfileOption
+  profiles:  ProfileOption[]
+  quota:     QuotaInfo
+  locale:    string
 }) {
   const router = useRouter()
 
@@ -390,11 +326,8 @@ export default function CompatibilityForm({
     e.preventDefault()
     setError(null)
 
-    // If Partner A is locked via profile, skip free-field validation for A
-    if (!lockedPartnerA) {
-      const errA = validatePartner(partnerA, 'A')
-      if (errA) { setError(errA); return }
-    }
+    const errA = validatePartner(partnerA, 'A')
+    if (errA) { setError(errA); return }
     const errB = validatePartner(partnerB, 'B')
     if (errB) { setError(errB); return }
 
@@ -417,17 +350,12 @@ export default function CompatibilityForm({
       }
     }
 
-    // Partner A: use locked profile if provided, otherwise use form state
-    const partnerAInput = lockedPartnerA
-      ? { source: 'profile' as const, profileId: lockedPartnerA.id }
-      : buildInput(partnerA)
-
     try {
       const res = await fetch('/api/compatibility/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          partnerA: partnerAInput,
+          partnerA: buildInput(partnerA),
           partnerB: buildInput(partnerB),
           tier:   'free',
           locale: selectedLocale,
@@ -457,10 +385,7 @@ export default function CompatibilityForm({
     <form onSubmit={handleSubmit}>
       {/* Partner panels */}
       <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '24px' }}>
-        {lockedPartnerA
-          ? <LockedPartnerACard p={lockedPartnerA} />
-          : <PartnerPanel label="Partner A" state={partnerA} profiles={profiles} onChange={patchA} />
-        }
+        <PartnerPanel label="Partner A" state={partnerA} profiles={profiles} onChange={patchA} />
         <PartnerPanel label="Partner B" state={partnerB} profiles={profiles} onChange={patchB} />
       </div>
 
