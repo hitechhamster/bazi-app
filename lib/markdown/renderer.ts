@@ -82,6 +82,8 @@ export function renderBaziMarkdown(md: string): string {
   let html = parts.join('\n')
 
   // Step 3: inline replacements
+  // TEASER blocks: [[TEASER: text]] → styled block (must run before generic [[term]])
+  html = html.replace(/<p>\[\[TEASER: (.+?)\]\]<\/p>/g, '<div class="compatibility-teaser">$1</div>')
   html = html.replace(/\[\[(.+?)\]\]/g, '<span class="pro-term">$1</span>')
   html = html.replace(/\*\*(.+?)\*\*/g, '<span class="ai-keyword">$1</span>')
 

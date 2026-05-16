@@ -567,3 +567,30 @@ body {
   font-size: 0.85rem;
   margin-top: 0.5rem;
 }
+
+/* ── Compatibility report ─────────────────────────────── */
+
+.compatibility-teaser {
+  border-left: 3px solid var(--zen-red, #BC2D2D);
+  padding: 10px 16px;
+  margin: 24px 0 12px;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--zen-text-muted);
+  font-family: var(--font-ui);
+  background: rgba(188, 45, 45, 0.04);
+  line-height: 1.6;
+}
+
+.compat-score-bar-track {
+  background: var(--zen-border, #e5e0d8);
+  height: 4px;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.compat-score-bar-fill {
+  height: 4px;
+  background: #854F0B;
+  transition: width 0.4s ease;
+}
