@@ -1,10 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { localePath } from '@/lib/i18n/path'
-import { getCompatibilityQuotaStatus } from '@/lib/subscription/tier'
+import { getCompatibilityQuotaStatus, getUserTier } from '@/lib/subscription/tier'
 import CompatibilityForm, { type ProfileOption } from '../../_components/compat/CompatibilityForm'
 
-export default async function NewCompatibilityPage({
+export default async function NewPremiumCompatibilityPage({
   params,
 }: {
   params: Promise<{ locale: string; id: string }>
@@ -22,6 +22,12 @@ export default async function NewCompatibilityPage({
     .single()
   if (!profile) notFound()
   if ((profile.user_id as string) !== user.id) notFound()
+
+  // Free users cannot access premium compat — redirect to pricing
+  const tier = await getUserTier(user.id)
+  if (tier === 'free') {
+    redirect(localePath(locale, '/pricing'))
+  }
 
   const { data: profileRows } = await supabase
     .from('profiles')
@@ -42,19 +48,19 @@ export default async function NewCompatibilityPage({
     <div>
       <div style={{ marginBottom: '24px' }}>
         <div style={{ fontFamily: 'var(--font-main)', fontSize: '18px', fontWeight: 500, color: 'var(--zen-ink)', letterSpacing: '0.05em', marginBottom: '4px' }}>
-          新建合婚分析 / New Compatibility Analysis
+          新建付费合婚 / New Premium Compatibility Report
         </div>
         <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', margin: 0 }}>
-          Six-dimension Bazi compatibility scoring + AI reading
+          15,000+ word · 6 chapters · Gemini Pro · Six-dimension scoring
         </p>
       </div>
 
       <CompatibilityForm
         profiles={profiles}
-        quota={quotaStatus.free}
+        quota={quotaStatus.premium}
         locale={locale}
         profileId={profileId}
-        fixedTier="free"
+        fixedTier="premium"
       />
     </div>
   )

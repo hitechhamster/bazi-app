@@ -117,7 +117,8 @@
       "conversation": "Conversation",
       "conversationZh": "多轮问答",
       "premiumReport": "Premium Report",
-      "premiumReportSub": "万字深度解读"
+      "premiumReportSub": "万字深度解读",
+      "compatibility_premium": "Premium Compatibility"
     },
     "status": {
       "done": "Reading ready",

@@ -1,13 +1,10 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
 import { localePath } from '@/lib/i18n/path'
-import { getUserTier } from '@/lib/subscription/tier'
-import { renderBaziMarkdown } from '@/lib/markdown/renderer'
-import CompatibilityReportPending from './CompatibilityReportPending'
-import UpgradeCTA from './UpgradeCTA'
+import PremiumCompatibilitySection from '../../_components/compat/PremiumCompatibilitySection'
 import type { BaziPartnerData, CompatibilityScores } from '@/lib/bazi/compatibility'
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Helpers (score display) ───────────────────────────────────────────────────
 
 const STAR_COLORS: Record<string, string> = {
   excellent: '#854F0B',
@@ -32,12 +29,12 @@ function stars(n: number): string {
 }
 
 const DIM_LABELS: Record<string, Record<string, string>> = {
-  dayMaster:    { en: 'Day Master',     'zh-CN': '日主',   'zh-TW': '日主'   },
-  zodiac:       { en: 'Zodiac',         'zh-CN': '生肖',   'zh-TW': '生肖'   },
-  elements:     { en: 'Five Elements',  'zh-CN': '五行',   'zh-TW': '五行'   },
-  naYin:        { en: 'NaYin',          'zh-CN': '纳音',   'zh-TW': '納音'   },
-  ganZhi:       { en: 'Pillars',        'zh-CN': '柱',     'zh-TW': '柱'     },
-  spousePalace: { en: 'Spouse Palace',  'zh-CN': '夫妻宫', 'zh-TW': '夫妻宮' },
+  dayMaster:    { en: 'Day Master',    'zh-CN': '日主',   'zh-TW': '日主'   },
+  zodiac:       { en: 'Zodiac',        'zh-CN': '生肖',   'zh-TW': '生肖'   },
+  elements:     { en: 'Five Elements', 'zh-CN': '五行',   'zh-TW': '五行'   },
+  naYin:        { en: 'NaYin',         'zh-CN': '纳音',   'zh-TW': '納音'   },
+  ganZhi:       { en: 'Pillars',       'zh-CN': '柱',     'zh-TW': '柱'     },
+  spousePalace: { en: 'Spouse Palace', 'zh-CN': '夫妻宫', 'zh-TW': '夫妻宮' },
 }
 
 function dimLabel(key: string, locale: string): string {
@@ -53,30 +50,17 @@ function ScoreCircle({ total, level, locale }: { total: number; level: { key: st
   return (
     <div style={{ textAlign: 'center', marginBottom: '24px' }}>
       <div style={{
-        display: 'inline-flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '120px',
-        height: '120px',
-        borderRadius: '50%',
-        border: `4px solid ${color}`,
-        marginBottom: '12px',
+        display: 'inline-flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        width: '120px', height: '120px', borderRadius: '50%', border: `4px solid ${color}`, marginBottom: '12px',
       }}>
-        <span style={{ fontFamily: 'var(--font-main)', fontSize: '36px', fontWeight: 500, color, lineHeight: 1 }}>
-          {total}
-        </span>
-        <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', marginTop: '2px' }}>
-          / 99
-        </span>
+        <span style={{ fontFamily: 'var(--font-main)', fontSize: '36px', fontWeight: 500, color, lineHeight: 1 }}>{total}</span>
+        <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', marginTop: '2px' }}>/ 99</span>
       </div>
       <div>
         <div style={{ fontFamily: 'var(--font-main)', fontSize: '16px', fontWeight: 500, color, letterSpacing: '0.05em' }}>
           {levelLabel(level.key, locale)}
         </div>
-        <div style={{ fontSize: '18px', color, marginTop: '4px', letterSpacing: '3px' }}>
-          {stars(level.stars)}
-        </div>
+        <div style={{ fontSize: '18px', color, marginTop: '4px', letterSpacing: '3px' }}>{stars(level.stars)}</div>
       </div>
     </div>
   )
@@ -107,9 +91,6 @@ function ScoreBreakdown({ scores, locale }: { scores: CompatibilityScores; local
             <p style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', margin: '8px 0 0', lineHeight: 1.5 }}>
               {d.description}
             </p>
-            {('notes' in d) && (d as { notes?: string[] }).notes?.map((n, i) => (
-              <p key={i} style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)', margin: '2px 0 0', fontStyle: 'italic' }}>• {n}</p>
-            ))}
           </div>
         )
       })}
@@ -183,7 +164,7 @@ const labelStyle: React.CSSProperties = {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-export default async function CompatibilityReportPage({
+export default async function PremiumCompatibilityReportPage({
   params,
 }: {
   params: Promise<{ locale: string; id: string; reportId: string }>
@@ -197,87 +178,69 @@ export default async function CompatibilityReportPage({
   const admin = createAdminClient()
   const { data: report } = await admin
     .from('compatibility_reports')
-    .select('id, user_id, tier, free_report_status, free_report_text, scores, bazi_a, bazi_b, partner_a_data, partner_b_data, locale')
+    .select('*')
     .eq('id', reportId)
     .single()
 
   if (!report) notFound()
   if ((report.user_id as string) !== user.id) notFound()
 
-  // If this is a premium report, redirect to the premium route
-  if ((report.tier as string) === 'premium') {
-    redirect(localePath(locale, `/profiles/${profileId}/compatibility-premium/${reportId}`))
+  // If this is a free report, redirect to the free route
+  if ((report.tier as string) !== 'premium') {
+    redirect(localePath(locale, `/profiles/${profileId}/compatibility/${reportId}`))
   }
 
-  const userTier   = await getUserTier(user.id)
-  const status     = report.free_report_status as string
-  const baziA      = report.bazi_a   as BaziPartnerData
-  const baziB      = report.bazi_b   as BaziPartnerData
-  const scores     = report.scores   as CompatibilityScores
-  const nameA      = (report.partner_a_data as { name?: string })?.name ?? 'Partner A'
-  const nameB      = (report.partner_b_data as { name?: string })?.name ?? 'Partner B'
-  const reportText = (report.free_report_text as string | null) ?? null
+  const premiumStatus = (report.premium_status as string) ?? 'pending'
+  const baziA         = report.bazi_a   as BaziPartnerData
+  const baziB         = report.bazi_b   as BaziPartnerData
+  const scores        = report.scores   as CompatibilityScores
+  const nameA         = (report.partner_a_data as { name?: string })?.name ?? 'Partner A'
+  const nameB         = (report.partner_b_data as { name?: string })?.name ?? 'Partner B'
+
+  const premiumChapters = {
+    overview:      (report.premium_overview      as string | null) ?? null,
+    compatibility: (report.premium_compatibility as string | null) ?? null,
+    communication: (report.premium_communication as string | null) ?? null,
+    wealth_career: (report.premium_wealth_career as string | null) ?? null,
+    love_marriage: (report.premium_love_marriage as string | null) ?? null,
+    forecast:      (report.premium_forecast      as string | null) ?? null,
+  }
 
   return (
     <div>
+      {/* Page title */}
       <div style={{ textAlign: 'center', marginBottom: '28px' }}>
         <h2 style={{ fontFamily: 'var(--font-main)', fontSize: '18px', fontWeight: 500, color: 'var(--zen-ink)', letterSpacing: '0.05em', margin: '0 0 6px' }}>
           {nameA} &amp; {nameB}
         </h2>
         <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', margin: 0 }}>
-          Compatibility Analysis · 合婚分析
+          Premium Compatibility Report · 付费合婚报告
         </p>
       </div>
 
-      {(status === 'pending' || status === 'generating') && (
-        <CompatibilityReportPending reportId={reportId} locale={locale} />
-      )}
+      {/* Score */}
+      <div className="zen-result-card">
+        <span style={labelStyle}>Compatibility Score · 合婚评分</span>
+        <ScoreCircle total={scores.total} level={scores.level} locale={locale} />
+        <ScoreBreakdown scores={scores} locale={locale} />
+      </div>
 
-      {status === 'failed' && (
-        <div className="zen-result-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
-          <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-text-muted)', marginBottom: '20px' }}>
-            Generation failed. Please try again.
-          </p>
-          <form action={`/api/compatibility/${reportId}/generate-free`} method="POST">
-            <button type="submit" style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '10px 20px', border: 'none', cursor: 'pointer', background: '#854F0B', color: 'white' }}>
-              Try Again
-            </button>
-          </form>
+      {/* Dual bazi */}
+      <div className="zen-result-card">
+        <span style={labelStyle}>Bazi Charts · 双人命盘</span>
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+          <BaziCard bazi={baziA} name={nameA} />
+          <BaziCard bazi={baziB} name={nameB} />
         </div>
-      )}
+      </div>
 
-      {status === 'completed' && (
-        <>
-          <div className="zen-result-card">
-            <span style={labelStyle}>Compatibility Score · 合婚评分</span>
-            <ScoreCircle total={scores.total} level={scores.level} locale={locale} />
-            <ScoreBreakdown scores={scores} locale={locale} />
-          </div>
-
-          <div className="zen-result-card">
-            <span style={labelStyle}>Bazi Charts · 双人命盘</span>
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-              <BaziCard bazi={baziA} name={nameA} />
-              <BaziCard bazi={baziB} name={nameB} />
-            </div>
-          </div>
-
-          {reportText && (
-            <div className="zen-result-card" style={{ padding: 0, overflow: 'hidden' }}>
-              <div style={{ padding: '20px 24px 8px', borderBottom: '1px solid var(--zen-border)' }}>
-                <span style={labelStyle}>Compatibility Reading · AI 解读</span>
-              </div>
-              <div
-                className="ai-content-box"
-                style={{ border: 'none', padding: '28px 36px' }}
-                dangerouslySetInnerHTML={{ __html: renderBaziMarkdown(reportText) }}
-              />
-            </div>
-          )}
-
-          <UpgradeCTA tier={userTier} locale={locale} />
-        </>
-      )}
+      {/* 6-chapter premium content */}
+      <PremiumCompatibilitySection
+        reportId={reportId}
+        locale={locale}
+        initialStatus={premiumStatus}
+        initialChapters={premiumChapters}
+      />
     </div>
   )
 }

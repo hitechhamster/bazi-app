@@ -117,7 +117,8 @@
       "conversation": "多輪問答",
       "conversationZh": "Conversation",
       "premiumReport": "Premium 報告",
-      "premiumReportSub": "萬字深度解讀"
+      "premiumReportSub": "萬字深度解讀",
+      "compatibility_premium": "付費合婚"
     },
     "status": {
       "done": "解讀已就緒",

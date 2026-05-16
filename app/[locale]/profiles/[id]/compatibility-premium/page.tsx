@@ -35,7 +35,7 @@ function formatDate(iso: string): string {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-export default async function CompatibilityListPage({
+export default async function PremiumCompatibilityListPage({
   params,
 }: {
   params: Promise<{ locale: string; id: string }>
@@ -55,18 +55,18 @@ export default async function CompatibilityListPage({
   if ((profile.user_id as string) !== user.id) notFound()
 
   const admin = createAdminClient()
-  // Only free-tier reports on this page
+  // Only premium-tier reports on this page
   const { data: reports } = await admin
     .from('compatibility_reports')
-    .select('id, partner_a_data, partner_b_data, scores, free_report_status, created_at')
+    .select('id, partner_a_data, partner_b_data, scores, premium_status, created_at')
     .eq('user_id', user.id)
-    .eq('tier', 'free')
+    .eq('tier', 'premium')
     .order('created_at', { ascending: false })
 
   const quota = await getCompatibilityQuotaStatus(user.id)
   const rows  = reports ?? []
 
-  const newHref = localePath(locale, `/profiles/${profileId}/compatibility/new`)
+  const newHref = localePath(locale, `/profiles/${profileId}/compatibility-premium/new`)
 
   return (
     <div>
@@ -80,10 +80,10 @@ export default async function CompatibilityListPage({
       }}>
         <div>
           <div style={{ fontFamily: 'var(--font-main)', fontSize: '18px', fontWeight: 500, color: 'var(--zen-ink)', letterSpacing: '0.05em', marginBottom: '4px' }}>
-            合婚分析 / Compatibility Analysis
+            付费合婚 / Premium Compatibility
           </div>
           <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
-            今日免费版剩余 {quota.free.remaining} / {quota.free.cap}
+            本月深度报告剩余 {quota.premium.remaining} / {quota.premium.cap}
           </div>
         </div>
         <Link
@@ -101,14 +101,14 @@ export default async function CompatibilityListPage({
             textDecoration: 'none',
           }}
         >
-          新建分析
+          新建深度报告
         </Link>
       </div>
 
       {rows.length === 0 ? (
         <div className="zen-result-card" style={{ textAlign: 'center', padding: '64px 24px' }}>
           <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-text-muted)', marginBottom: '20px' }}>
-            尚无免费合婚记录
+            尚无付费合婚记录
           </p>
           <Link
             href={newHref}
@@ -125,21 +125,21 @@ export default async function CompatibilityListPage({
               textDecoration: 'none',
             }}
           >
-            新建分析
+            新建深度报告
           </Link>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {rows.map(r => {
-            const nameA  = (r.partner_a_data as { name?: string })?.name ?? 'Partner A'
-            const nameB  = (r.partner_b_data as { name?: string })?.name ?? 'Partner B'
-            const scores = r.scores as CompatibilityScores | null
-            const status = (r.free_report_status as string) ?? 'pending'
+            const nameA       = (r.partner_a_data as { name?: string })?.name ?? 'Partner A'
+            const nameB       = (r.partner_b_data as { name?: string })?.name ?? 'Partner B'
+            const scores      = r.scores as CompatibilityScores | null
+            const premStatus  = (r.premium_status as string) ?? 'pending'
 
             return (
               <Link
                 key={r.id as string}
-                href={localePath(locale, `/profiles/${profileId}/compatibility/${r.id}`)}
+                href={localePath(locale, `/profiles/${profileId}/compatibility-premium/${r.id}`)}
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
                 <div style={{
@@ -157,8 +157,16 @@ export default async function CompatibilityListPage({
                     <div style={{ fontFamily: 'var(--font-main)', fontSize: '14px', fontWeight: 500, color: 'var(--zen-ink)', marginBottom: '4px' }}>
                       {nameA} ↔ {nameB}
                     </div>
-                    <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
-                      {formatDate(r.created_at as string)}
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <span style={{
+                        fontFamily: 'var(--font-ui)', fontSize: '10px', letterSpacing: '0.1em',
+                        textTransform: 'uppercase', color: '#854F0B', border: '1px solid #854F0B', padding: '1px 6px',
+                      }}>
+                        Premium
+                      </span>
+                      <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
+                        {formatDate(r.created_at as string)}
+                      </span>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
@@ -174,12 +182,10 @@ export default async function CompatibilityListPage({
                       </div>
                     )}
                     <span style={{
-                      fontFamily: 'var(--font-ui)',
-                      fontSize: '10px',
-                      letterSpacing: '0.08em',
-                      color: STATUS_COLOR[status] ?? 'var(--zen-text-muted)',
+                      fontFamily: 'var(--font-ui)', fontSize: '10px', letterSpacing: '0.08em',
+                      color: STATUS_COLOR[premStatus] ?? 'var(--zen-text-muted)',
                     }}>
-                      {STATUS_LABEL[status] ?? status}
+                      {STATUS_LABEL[premStatus] ?? premStatus}
                     </span>
                   </div>
                 </div>

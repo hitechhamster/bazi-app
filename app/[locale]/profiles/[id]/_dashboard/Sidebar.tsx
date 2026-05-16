@@ -22,12 +22,14 @@ export default function Sidebar({
 }) {
   const t = useTranslations('profileReport.sidebar')
   const pathname = usePathname()
-  const profileBase = pathname.replace(/\/(almanac|ask|premium-report|chat(\/[^/]+)?)$/, '')
-  const [showChatModal, setShowChatModal]       = useState(false)
-  const [showPremiumModal, setShowPremiumModal] = useState(false)
+  const profileBase = pathname.replace(/\/(almanac|ask|premium-report|compatibility(-premium)?(\/.*)?|chat(\/[^/]+)?)$/, '')
+  const [showChatModal, setShowChatModal]           = useState(false)
+  const [showPremiumModal, setShowPremiumModal]     = useState(false)
+  const [showCompatPremiumModal, setShowCompatPremiumModal] = useState(false)
 
-  const chatLocked    = tier === 'free'
-  const premiumLocked = tier === 'free'
+  const chatLocked           = tier === 'free'
+  const premiumLocked        = tier === 'free'
+  const compatPremiumLocked  = tier === 'free'
 
   return (
     <aside style={{
@@ -65,7 +67,7 @@ export default function Sidebar({
       <NavButton active={pathname === `${profileBase}/ask`} href={`${profileBase}/ask`} label={t('askQuestion')} labelSub={t('askQuestionZh')} />
 
       <NavButton
-        active={pathname.includes('/compatibility')}
+        active={pathname.includes('/compatibility') && !pathname.includes('/compatibility-premium')}
         href={localePath(locale, `/profiles/${profileId}/compatibility`)}
         label="Compatibility Analysis"
         labelSub="合婚分析"
@@ -101,6 +103,21 @@ export default function Sidebar({
         />
       )}
 
+      {compatPremiumLocked ? (
+        <LockedNavButton
+          label={t('compatibility_premium')}
+          labelSub="付费合婚"
+          onLockedClick={() => setShowCompatPremiumModal(true)}
+        />
+      ) : (
+        <NavButton
+          active={pathname.includes('/compatibility-premium')}
+          href={localePath(locale, `/profiles/${profileId}/compatibility-premium`)}
+          label={t('compatibility_premium')}
+          labelSub="付费合婚"
+        />
+      )}
+
       <UpgradeModal
         open={showChatModal}
         onClose={() => setShowChatModal(false)}
@@ -111,6 +128,12 @@ export default function Sidebar({
         open={showPremiumModal}
         onClose={() => setShowPremiumModal(false)}
         reason="premium_report"
+        locale={locale}
+      />
+      <UpgradeModal
+        open={showCompatPremiumModal}
+        onClose={() => setShowCompatPremiumModal(false)}
+        reason="compatibility_premium_required"
         locale={locale}
       />
     </aside>
