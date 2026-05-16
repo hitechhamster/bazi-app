@@ -70,8 +70,8 @@ function fillTeaser(tpl: string, nameA: string, nameB: string): string {
 
 const langInstructions: Record<string, string> = {
   'en': 'Write entirely in English. Use clear, warm, and insightful prose.',
-  'zh-CN': '请完全用简体中文写作。使用温暖、有洞见的文风，专业术语用【】标注后附英文。',
-  'zh-TW': '請完全用繁體中文寫作。使用溫暖、有洞見的文風，專業術語用【】標注後附英文。',
+  'zh-CN': '请完全用简体中文写作。使用温暖、有洞见的文风。所有命理术语严格使用 [[术语]] 双方括号标注，不要用【】或括号。',
+  'zh-TW': '請完全用繁體中文寫作。使用溫暖、有洞見的文風。所有命理術語嚴格使用 [[術語]] 雙方括號標註，不要用【】或括號。',
 }
 
 function getLangInstruction(locale: string): string {
