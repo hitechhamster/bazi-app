@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { localePath } from '@/lib/i18n/path'
 import { getCompatibilityQuotaStatus } from '@/lib/subscription/tier'
@@ -9,10 +9,13 @@ import CompatibilityForm, { type ProfileOption } from './CompatibilityForm'
 
 export default async function NewCompatibilityPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>
+  searchParams: Promise<{ asA?: string }>
 }) {
   const { locale } = await params
+  const { asA } = await searchParams
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -31,6 +34,26 @@ export default async function NewCompatibilityPage({
     dayMaster:  p.day_master as string,
     birthDate:  p.birth_date as string,
   }))
+
+  // Resolve optional locked Partner A from ?asA=<profileId>
+  let lockedPartnerA: ProfileOption | null = null
+  if (asA) {
+    const { data: lockedProfile } = await supabase
+      .from('profiles')
+      .select('id, name, day_master, birth_date')
+      .eq('id', asA)
+      .eq('user_id', user.id)
+      .single()
+
+    if (!lockedProfile) notFound()
+
+    lockedPartnerA = {
+      id:        lockedProfile.id as string,
+      name:      lockedProfile.name as string,
+      dayMaster: lockedProfile.day_master as string,
+      birthDate: lockedProfile.birth_date as string,
+    }
+  }
 
   // Quota status
   const quota = await getCompatibilityQuotaStatus(user.id)
@@ -66,6 +89,7 @@ export default async function NewCompatibilityPage({
           profiles={profiles}
           quota={{ free: quota.free }}
           locale={locale}
+          lockedPartnerA={lockedPartnerA ?? undefined}
         />
 
       </div>

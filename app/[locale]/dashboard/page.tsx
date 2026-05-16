@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import LogoutButton from './logout-button'
 import ProfileListCard, { type ProfileListCardData } from './_components/ProfileListCard'
@@ -8,7 +7,7 @@ import NewProfileButton from './_components/NewProfileButton'
 import LocaleSwitcher from '../_components/LocaleSwitcher'
 import BrandMark from '@/components/BrandMark'
 import { localePath } from '@/lib/i18n/path'
-import { canCreateProfile, getCompatibilityQuotaStatus } from '@/lib/subscription/tier'
+import { canCreateProfile } from '@/lib/subscription/tier'
 
 const SELECT_FIELDS = [
   'id', 'name', 'relation', 'gender', 'birth_date', 'birth_city',
@@ -65,14 +64,13 @@ export default async function DashboardPage({
 
   const t = await getTranslations('dashboard')
 
-  const [{ data: profiles }, profileQuota, compatQuota] = await Promise.all([
+  const [{ data: profiles }, profileQuota] = await Promise.all([
     supabase
       .from('profiles')
       .select(SELECT_FIELDS)
       .eq('user_id', user!.id)
       .order('created_at', { ascending: false }),
     canCreateProfile(user!.id),
-    getCompatibilityQuotaStatus(user!.id),
   ])
 
   const list = (profiles ?? []) as unknown as ProfileListCardData[]
@@ -134,60 +132,6 @@ export default async function DashboardPage({
             </div>
           </>
         )}
-
-        {/* ── Compatibility Analysis card ── */}
-        <div style={{ ...labelStyle, marginBottom: '12px' }}>TOOLS · 功能</div>
-        <div style={{
-          border: '1px solid var(--zen-border)',
-          padding: '24px',
-          background: 'var(--zen-paper)',
-          maxWidth: '480px',
-        }}>
-          <div style={{
-            fontFamily: 'var(--font-main)',
-            fontSize: '15px',
-            fontWeight: 500,
-            color: 'var(--zen-ink)',
-            letterSpacing: '0.05em',
-            marginBottom: '6px',
-          }}>
-            合婚分析 / Compatibility Analysis
-          </div>
-          <p style={{
-            fontFamily: 'var(--font-ui)',
-            fontSize: '12px',
-            color: 'var(--zen-text-muted)',
-            margin: '0 0 14px',
-            lineHeight: 1.6,
-          }}>
-            双人八字配对，6 维评分 + AI 深度解读
-          </p>
-          <div style={{
-            fontFamily: 'var(--font-ui)',
-            fontSize: '11px',
-            color: 'var(--zen-text-muted)',
-            marginBottom: '16px',
-          }}>
-            今日免费版剩余: {compatQuota.free.remaining} / {compatQuota.free.cap}
-          </div>
-          <Link
-            href={localePath(locale, '/compatibility/new')}
-            style={{
-              display: 'inline-block',
-              fontFamily: 'var(--font-ui)',
-              fontSize: '12px',
-              fontWeight: 500,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'white',
-              background: '#854F0B',
-              padding: '10px 22px',
-              textDecoration: 'none',
-            }}
-          >
-            新建分析
-          </Link>
-        </div>
 
       </div>
     </div>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import UpgradeModal from '@/components/UpgradeModal'
+import { localePath } from '@/lib/i18n/path'
 import type { MockData, MockSubject } from './mock-data'
 import type { Tier } from '@/lib/subscription/tier'
 
@@ -12,10 +13,12 @@ export default function Sidebar({
   data,
   tier,
   locale,
+  profileId,
 }: {
   data: MockData
   tier: Tier
   locale: string
+  profileId: string
 }) {
   const t = useTranslations('profileReport.sidebar')
   const pathname = usePathname()
@@ -60,6 +63,13 @@ export default function Sidebar({
       <NavButton active={pathname === profileBase} href={profileBase} label={t('basicReport')} labelSub={t('basicReportZh')} />
       <NavButton active={pathname === `${profileBase}/almanac`} href={`${profileBase}/almanac`} label={t('todaysAlmanac')} labelSub={t('todaysAlmanacZh')} />
       <NavButton active={pathname === `${profileBase}/ask`} href={`${profileBase}/ask`} label={t('askQuestion')} labelSub={t('askQuestionZh')} />
+
+      <NavButton
+        active={false}
+        href={`${localePath(locale, '/compatibility/new')}?asA=${profileId}`}
+        label="Compatibility Analysis"
+        labelSub="合婚分析"
+      />
 
       {chatLocked ? (
         <LockedNavButton
