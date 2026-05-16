@@ -10,41 +10,55 @@ const POLL_INTERVAL_MS = 4000
 
 // ── Chapter parsing ───────────────────────────────────────────────────────────
 
-const CHAPTER_KEYS = ['core', 'career', 'love', 'forecast'] as const
-type ChapterKey = typeof CHAPTER_KEYS[number]
-
 interface ParsedChapter {
-  key:     ChapterKey
   title:   string
   content: string
 }
 
+/** Strip trailing [[TEASER: ...]] blocks (free-report artifact, not shown for paid users) */
+function stripTeaser(text: string): string {
+  return text.replace(/\n*\[\[TEASER:[\s\S]*?\]\]\s*$/, '').trimEnd()
+}
+
 /**
- * Split a full premium report blob into up to 4 chapters by ## headings.
- * Returns an array of up to 4 { key, title, content } objects.
+ * Dynamically parse a premium_report blob into chapters by ## headings.
+ *
+ * Rules:
+ * - Any content before the first ## heading → prepended as an "Introduction" chapter
+ * - Each ## heading becomes a chapter; title is extracted from the heading line
+ * - Trailing [[TEASER:...]] blocks are stripped before parsing
+ * - If the blob has no ## headings at all → treat entire text as single intro chapter
  */
-function parseReportChapters(text: string, fallbackTitles: Record<ChapterKey, string>): ParsedChapter[] {
-  // Split on every newline that is followed by "## "
-  const chunks = text.split(/\n(?=## )/)
-  return CHAPTER_KEYS.map((key, i) => {
-    const chunk = chunks[i] ?? ''
-    const firstNewline = chunk.indexOf('\n')
-    let title   = fallbackTitles[key]
-    let content = chunk
+function parseReportChapters(text: string, introTitle: string): ParsedChapter[] {
+  const cleaned = stripTeaser(text)
+  if (!cleaned.trim()) return []
 
-    if (firstNewline !== -1) {
-      const headingLine = chunk.slice(0, firstNewline).trim()
-      if (headingLine.startsWith('## ')) {
-        title   = headingLine.slice(3).trim() || fallbackTitles[key]
-        content = chunk.slice(firstNewline + 1).trimStart()
-      }
-    } else if (chunk.startsWith('## ')) {
-      title   = chunk.slice(3).trim() || fallbackTitles[key]
-      content = ''
+  // Split on every newline that is immediately followed by ##
+  const parts = cleaned.split(/\n(?=## )/)
+  const chapters: ParsedChapter[] = []
+
+  for (const part of parts) {
+    const trimmed = part.trimStart()
+    if (!trimmed) continue
+
+    if (trimmed.startsWith('## ')) {
+      const firstNL = trimmed.indexOf('\n')
+      const heading = firstNL === -1 ? trimmed : trimmed.slice(0, firstNL)
+      const body    = firstNL === -1 ? '' : trimmed.slice(firstNL + 1).trimStart()
+      const title   = heading.slice(3).trim() || introTitle
+      chapters.push({ title, content: body })
+    } else {
+      // Pre-heading preamble → intro chapter
+      chapters.push({ title: introTitle, content: trimmed })
     }
+  }
 
-    return { key, title, content: content || '' }
-  })
+  // Fallback: no ## headings found at all
+  if (chapters.length === 0) {
+    chapters.push({ title: introTitle, content: cleaned.trim() })
+  }
+
+  return chapters
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -160,42 +174,46 @@ export default function PremiumReportSection({
     )
   }
 
-  // ── Done: parse into chapter cards ────────────────────────────────────────
+  // ── Done: parse blob into dynamic chapter cards ───────────────────────────
   if (isDone) {
     const dateStr = generatedAt
       ? new Date(generatedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
       : null
 
-    const fallbackTitles: Record<ChapterKey, string> = {
-      core:     t('chapters.core'),
-      career:   t('chapters.career'),
-      love:     t('chapters.love'),
-      forecast: t('chapters.forecast'),
-    }
-
-    const chapters = parseReportChapters(report!, fallbackTitles)
+    const chapters      = parseReportChapters(report!, t('introSectionTitle'))
+    const filledCount   = chapters.filter(ch => !!ch.content).length
+    const totalCount    = chapters.length
 
     return (
       <div>
         {/* Meta bar */}
-        {dateStr && (
-          <div style={{ marginBottom: '8px' }}>
+        <div className="zen-result-card" style={{ padding: '14px 20px', marginBottom: '2px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            {dateStr && (
+              <span style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: '11px',
+                color: 'var(--zen-text-muted)',
+                letterSpacing: '0.05em',
+              }}>
+                {t('generated', { date: dateStr })}
+              </span>
+            )}
             <span style={{
               fontFamily: 'var(--font-ui)',
               fontSize: '11px',
               color: 'var(--zen-text-muted)',
-              letterSpacing: '0.05em',
             }}>
-              {t('generated', { date: dateStr })}
+              {tStatus('progress', { n: filledCount, total: totalCount })}
             </span>
           </div>
-        )}
+        </div>
 
-        {/* Chapter cards */}
+        {/* Dynamic chapter cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
           {chapters.map((ch, idx) => (
             <ChapterCard
-              key={ch.key}
+              key={idx}
               index={idx}
               title={ch.title}
               content={ch.content || null}

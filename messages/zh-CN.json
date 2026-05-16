@@ -328,12 +328,7 @@
   "premiumReport": {
     "pageTitle": "完整大师报告 · 深度解读",
     "pageSubtitle": "Gemini Pro 驱动的万字八字深度分析",
-    "chapters": {
-      "core":     "命局灵魂",
-      "career":   "事业财运",
-      "love":     "婚恋情感",
-      "forecast": "24个月流月预测"
-    },
+    "introSectionTitle": "导读",
     "intro": {
       "title": "完整大师报告",
       "subtitle": "四大章节万字深度解读——命局灵魂、事业财运、婚恋情感，以及动态 24 个月流月预测。",
