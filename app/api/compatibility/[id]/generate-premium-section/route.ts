@@ -86,39 +86,45 @@ export async function POST(
   // after() keeps the invocation alive until the callback completes.
   // No self-fetch chain = no ECONNRESET risk.
   after(async () => {
+    // Declared outside loop so the catch block can record which section failed
+    let currentSec: CompatibilitySection | undefined
     try {
       for (let i = startIdx; i < SECTION_ORDER.length; i++) {
-        const sec = SECTION_ORDER[i]
-        const col = SECTION_COL[sec]
+        currentSec = SECTION_ORDER[i]
+        const col  = SECTION_COL[currentSec]
 
-        // Idempotency guard — skip sections already written (retry resilience)
+        // Idempotency guard — only fetch the 6 chapter columns (not the full ~20 kB row)
         const { data: row } = await admin
           .from('compatibility_reports')
-          .select('*')
+          .select('premium_overview, premium_compatibility, premium_communication, premium_wealth_career, premium_love_marriage, premium_forecast')
           .eq('id', reportId)
           .single()
 
         if (row && (row as Record<string, unknown>)[col]) {
-          console.log(`[compat-premium] Section "${sec}" already exists, skipping`)
+          console.log(`[compat-premium] Section "${currentSec}" already exists, skipping`)
           continue
         }
 
-        console.log(`[compat-premium] Generating section "${sec}" for ${reportId}`)
-        await generatePremiumSection(reportId, sec)
-        console.log(`[compat-premium] Section "${sec}" written for ${reportId}`)
+        console.log(`[compat-premium] Generating section "${currentSec}" for ${reportId}`)
+        await generatePremiumSection(reportId, currentSec)
+        console.log(`[compat-premium] Section "${currentSec}" written for ${reportId}`)
       }
 
+      // All done — clear any previous failed_section record
       await admin
         .from('compatibility_reports')
-        .update({ premium_status: 'completed' })
+        .update({ premium_status: 'completed', premium_failed_section: null })
         .eq('id', reportId)
       console.log(`[compat-premium] All sections complete for ${reportId}`)
     } catch (err) {
-      console.error('[compat-premium] Generation failed:', err)
+      console.error(`[compat-premium] Section "${currentSec}" failed:`, err)
       try {
         await admin
           .from('compatibility_reports')
-          .update({ premium_status: 'failed' })
+          .update({
+            premium_status:         'failed',
+            premium_failed_section: currentSec ?? null,
+          })
           .eq('id', reportId)
       } catch (e) {
         console.error('[compat-premium] Failed to set status=failed:', e)

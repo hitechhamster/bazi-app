@@ -91,6 +91,7 @@ async function runChapterStage(
   systemPrompt: string,
   userPrompt: string,
   maxTokens: number,
+  chapterName?: string,
 ): Promise<string> {
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -108,6 +109,7 @@ async function runChapterStage(
       return text
     } catch (err) {
       if (attempt === 1) throw err
+      console.warn(`[premium-report] Attempt ${attempt} failed for "${chapterName ?? 'unknown'}", retrying:`, err)
     }
   }
   throw new Error('Unreachable')
@@ -208,7 +210,7 @@ export async function generateAndSavePremiumReport(
     const { systemPrompt, userPrompt, maxTokens } = build(premiumCtx, locale)
 
     try {
-      const section = await runChapterStage(systemPrompt, userPrompt, maxTokens)
+      const section = await runChapterStage(systemPrompt, userPrompt, maxTokens, name)
       report += (i === 0 ? '' : '\n\n') + section
 
       // Persist partial report after every chapter — fault-tolerant

@@ -49,6 +49,7 @@ async function runChapterStage(
   systemPrompt: string,
   userPrompt: string,
   maxTokens: number,
+  section?: string,
 ): Promise<string> {
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -66,6 +67,7 @@ async function runChapterStage(
       return text
     } catch (err) {
       if (attempt === 1) throw err
+      console.warn(`[compat-premium] Attempt ${attempt} failed for "${section ?? 'unknown'}", retrying:`, err)
     }
   }
   throw new Error('Unreachable')
@@ -132,6 +134,7 @@ export async function generatePremiumSection(
     chapterPrompt.systemPrompt,
     chapterPrompt.userPrompt,
     chapterPrompt.maxTokens,
+    section,
   )
 
   const col = SECTION_COL[section]
