@@ -69,8 +69,8 @@ export default function Sidebar({
       <NavButton
         active={pathname.includes('/compatibility') && !pathname.includes('/compatibility-premium')}
         href={localePath(locale, `/profiles/${profileId}/compatibility`)}
-        label="Compatibility Analysis"
-        labelSub="合婚分析"
+        label={t('compatibilityAnalysis')}
+        labelSub={t('compatibilityAnalysisSub')}
       />
 
       {chatLocked ? (
@@ -105,16 +105,16 @@ export default function Sidebar({
 
       {compatPremiumLocked ? (
         <LockedNavButton
-          label={t('compatibility_premium')}
-          labelSub="付费合婚"
+          label={t('compatibilityPremium')}
+          labelSub={t('compatibilityPremiumSub')}
           onLockedClick={() => setShowCompatPremiumModal(true)}
         />
       ) : (
         <NavButton
           active={pathname.includes('/compatibility-premium')}
           href={localePath(locale, `/profiles/${profileId}/compatibility-premium`)}
-          label={t('compatibility_premium')}
-          labelSub="付费合婚"
+          label={t('compatibilityPremium')}
+          labelSub={t('compatibilityPremiumSub')}
         />
       )}
 

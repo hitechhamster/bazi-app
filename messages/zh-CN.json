@@ -116,9 +116,13 @@
       "askQuestionZh": "Ask a Question",
       "conversation": "多轮问答",
       "conversationZh": "Conversation",
-      "premiumReport": "Premium 报告",
+      "premiumReport": "完整大师报告",
       "premiumReportSub": "万字深度解读",
-      "compatibility_premium": "付费合婚"
+      "compatibility_premium": "完整大师合婚",
+      "compatibilityAnalysis": "合婚分析",
+      "compatibilityAnalysisSub": "Compatibility Analysis",
+      "compatibilityPremium": "完整大师合婚",
+      "compatibilityPremiumSub": "Master Compatibility Reading"
     },
     "status": {
       "done": "解读已就绪",
@@ -322,12 +326,12 @@
     }
   },
   "premiumReport": {
-    "pageTitle": "Premium 报告 · 深度解读",
+    "pageTitle": "完整大师报告 · 深度解读",
     "pageSubtitle": "Gemini Pro 驱动的万字八字深度分析",
     "intro": {
-      "title": "Premium 报告",
+      "title": "完整大师报告",
       "subtitle": "四大章节万字深度解读——命局灵魂、事业财运、婚恋情感，以及动态 24 个月流月预测。",
-      "cta": "生成 Premium 报告",
+      "cta": "生成完整大师报告",
       "note": "生成约需 5–8 分钟，可关闭此页稍后回来——报告每章完成后自动保存。",
       "features": [
         "第一章：命局灵魂（日主 · 格局 · 十神 · 五行）",
@@ -338,11 +342,11 @@
         "性别专属婚姻与感情解读"
       ]
     },
-    "generating": "正在生成 Premium 报告…",
+    "generating": "占问天机，大师报告生成中…",
     "generatingHint": "Gemini Pro 正在逐章生成报告，约需 5–8 分钟。您可以离开此页，每章完成后自动保存。",
-    "generated": "生成于 {date}",
-    "failed": "生成失败，请重试。",
-    "retry": "重试"
+    "generated": "推演于 {date}",
+    "failed": "天机暂阻，请稍后重试。",
+    "retry": "重新占问"
   },
   "pricing": {
     "title": "方案 · Plans",
@@ -376,13 +380,13 @@
     }
   },
   "upgrade": {
-    "title": "升级专业版",
+    "title": "升级 Master",
     "reasons": {
-      "profile_cap": "免费版最多只能创建 1 个命盘，升级专业版可创建最多 5 个。",
-      "ask_quota": "今日免费提问次数（5 次）已用尽，升级可无限提问。",
-      "chat_locked": "多轮问答是专业版功能。",
-      "premium_report": "深度 AI 解读是专业版功能。",
-      "compatibility_premium_required": "15000+ 字高级合婚报告（6 章节深度分析）是专业版功能，升级即可为任意一对解锁。"
+      "profile_cap": "已达本套餐命主上限。升级 Master，可记万千命途。",
+      "ask_quota": "今日天机已尽。明日再来 —— 或升级 Master 享更高每日问数。",
+      "chat_locked": "多轮问答为 Master 功能 —— 与命盘深谈，留存推演线索。",
+      "premium_report": "万字完整大师报告，揭示此命盘最深层的命途纹路。Master 功能。",
+      "compatibility_premium_required": "解锁完整大师合婚 —— 15000 字六章深度推演，洞察两人命途交织。Master 功能。"
     },
     "cta": "查看方案",
     "cancel": "暂不升级"
@@ -392,5 +396,35 @@
     "network": "网络出错,请重试。",
     "unauthorized": "请先登录。",
     "notFound": "没找到。"
+  },
+  "reading": {
+    "status": {
+      "pending": "等待开始",
+      "generating": "占问天机...",
+      "awaitingPrev": "等待前章演毕...",
+      "failed": "天机暂阻，请稍后重试",
+      "complete": "全部章节已成",
+      "progress": "占问中… {n}/{total}",
+      "retry": "重新占问"
+    }
+  },
+  "compatibility": {
+    "generating": "占问天机...",
+    "generatingHint": "通常需 30–60 秒。您可以离开此页，推演完成后自动保存。",
+    "failed": "天机暂阻，请稍后重试。",
+    "retry": "重新占问",
+    "upgradeCTA": {
+      "title": "解锁完整大师合婚",
+      "body": "15000 字六章深度推演 —— 日主合冲、沟通脉络、财禄相配、婚姻根基，并附 24 个月共同流年。专属于这对命主。",
+      "cta": "查看完整大师"
+    },
+    "chapters": {
+      "overview": "命主画像",
+      "compatibility": "合婚深析",
+      "communication": "沟通与冲突",
+      "wealth_career": "财运与事业",
+      "love_marriage": "婚恋深析",
+      "forecast": "24个月关系预测"
+    }
   }
 }

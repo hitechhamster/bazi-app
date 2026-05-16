@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 const POLL_INTERVAL_MS = 10_000
 
@@ -10,9 +11,10 @@ export default function CompatibilityReportPending({
   locale,
 }: {
   reportId: string
-  locale: string
+  locale:   string
 }) {
   const router = useRouter()
+  const t      = useTranslations('compatibility')
   const [dots, setDots] = useState('.')
 
   // Animate dots
@@ -49,7 +51,7 @@ export default function CompatibilityReportPending({
         letterSpacing: '0.03em',
         margin: '0 0 8px',
       }}>
-        Generating your compatibility report{dots}
+        {t('generating')}{dots}
       </p>
       <p style={{
         fontFamily: 'var(--font-ui)',
@@ -57,7 +59,7 @@ export default function CompatibilityReportPending({
         color: 'var(--zen-text-muted)',
         margin: 0,
       }}>
-        This usually takes 30–60 seconds. You can leave this page — the report will be saved automatically.
+        {t('generatingHint')}
       </p>
     </div>
   )

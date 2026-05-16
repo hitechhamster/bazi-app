@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import UpgradeModal from '@/components/UpgradeModal'
 
 export default function UpgradeCTA({
@@ -10,9 +11,10 @@ export default function UpgradeCTA({
   tier:   string
   locale: string
 }) {
+  const t = useTranslations('compatibility.upgradeCTA')
   const [showModal, setShowModal] = useState(false)
 
-  // Paid users already have the "付费合婚" sidebar entry — no CTA needed
+  // Paid users already have the "完整大师合婚" sidebar entry — no CTA needed
   if (tier !== 'free') return null
 
   return (
@@ -26,7 +28,7 @@ export default function UpgradeCTA({
           marginBottom: '8px',
           letterSpacing: '0.03em',
         }}>
-          Unlock the Full Picture
+          {t('title')}
         </div>
         <p style={{
           fontFamily: 'var(--font-ui)',
@@ -36,10 +38,7 @@ export default function UpgradeCTA({
           lineHeight: 1.6,
           maxWidth: '400px',
         }}>
-          Upgrade to Pro to generate a 15,000+ word Premium Compatibility Report
-          with 6 deep chapters — Partner Portraits, Compatibility Analysis,
-          Communication &amp; Conflict, Wealth &amp; Career, Love &amp; Marriage,
-          and a 24-Month Relationship Forecast.
+          {t('body')}
         </p>
         <button
           onClick={() => setShowModal(true)}
@@ -57,7 +56,7 @@ export default function UpgradeCTA({
             cursor: 'pointer',
           }}
         >
-          View Plans
+          {t('cta')}
         </button>
       </div>
 

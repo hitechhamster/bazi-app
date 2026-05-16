@@ -6,6 +6,15 @@ import type { BaziPartnerData, CompatibilityScores } from '@/lib/bazi/compatibil
 
 // ── Helpers (score display) ───────────────────────────────────────────────────
 
+const BAZI_LABELS: Record<string, Record<string, string>> = {
+  en:      { dayMaster: 'Day Master', element: 'Element', zodiac: 'Zodiac', naYin: 'Na Yin', year: 'Year', month: 'Month', day: 'Day', hour: 'Hour' },
+  'zh-CN': { dayMaster: '日主',      element: '五行',    zodiac: '生肖',   naYin: '纳音',   year: '年',   month: '月',    day: '日', hour: '时' },
+  'zh-TW': { dayMaster: '日主',      element: '五行',    zodiac: '生肖',   naYin: '納音',   year: '年',   month: '月',    day: '日', hour: '時' },
+}
+function baziLabel(locale: string): Record<string, string> {
+  return BAZI_LABELS[locale] ?? BAZI_LABELS['en']
+}
+
 const STAR_COLORS: Record<string, string> = {
   excellent: '#854F0B',
   good:      '#854F0B',
@@ -98,8 +107,9 @@ function ScoreBreakdown({ scores, locale }: { scores: CompatibilityScores; local
   )
 }
 
-function BaziCard({ bazi, name }: { bazi: BaziPartnerData; name: string }) {
+function BaziCard({ bazi, name, locale }: { bazi: BaziPartnerData; name: string; locale: string }) {
   const total = Object.values(bazi.elements).reduce((a, b) => a + (b as number), 0)
+  const lbl   = baziLabel(locale)
   return (
     <div style={{ border: '1px solid var(--zen-border)', padding: '20px', background: 'var(--zen-paper)', flex: 1, minWidth: '220px' }}>
       <div style={{ fontFamily: 'var(--font-main)', fontSize: '14px', fontWeight: 500, color: 'var(--zen-ink)', marginBottom: '14px', borderBottom: '1px solid var(--zen-border)', paddingBottom: '8px' }}>
@@ -107,10 +117,10 @@ function BaziCard({ bazi, name }: { bazi: BaziPartnerData; name: string }) {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '6px', marginBottom: '14px' }}>
         {[
-          { label: '年', ganzhi: bazi.yearPillar },
-          { label: '月', ganzhi: bazi.monthPillar },
-          { label: '日', ganzhi: bazi.dayPillar },
-          { label: '时', ganzhi: bazi.hourPillar ?? '？' },
+          { label: lbl.year,  ganzhi: bazi.yearPillar },
+          { label: lbl.month, ganzhi: bazi.monthPillar },
+          { label: lbl.day,   ganzhi: bazi.dayPillar },
+          { label: lbl.hour,  ganzhi: bazi.hourPillar ?? '？' },
         ].map(({ label, ganzhi }) => (
           <div key={label} style={{ textAlign: 'center', border: '1px solid var(--zen-border)', padding: '6px 4px' }}>
             <div style={{ fontFamily: 'var(--font-ui)', fontSize: '9px', color: 'var(--zen-text-muted)', marginBottom: '4px' }}>{label}</div>
@@ -122,10 +132,10 @@ function BaziCard({ bazi, name }: { bazi: BaziPartnerData; name: string }) {
       </div>
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
         {[
-          { label: '日主', val: bazi.dayMaster },
-          { label: '五行', val: bazi.dayMasterElement, color: EL_COLOR[bazi.dayMasterElement] },
-          { label: '生肖', val: bazi.zodiac },
-          { label: '纳音', val: bazi.naYin },
+          { label: lbl.dayMaster, val: bazi.dayMaster },
+          { label: lbl.element,   val: bazi.dayMasterElement, color: EL_COLOR[bazi.dayMasterElement] },
+          { label: lbl.zodiac,    val: bazi.zodiac },
+          { label: lbl.naYin,     val: bazi.naYin },
         ].map(({ label, val, color }) => (
           <div key={label} style={{ fontFamily: 'var(--font-ui)', fontSize: '11px' }}>
             <span style={{ color: 'var(--zen-text-muted)' }}>{label}·</span>
@@ -229,8 +239,8 @@ export default async function PremiumCompatibilityReportPage({
       <div className="zen-result-card">
         <span style={labelStyle}>Bazi Charts · 双人命盘</span>
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-          <BaziCard bazi={baziA} name={nameA} />
-          <BaziCard bazi={baziB} name={nameB} />
+          <BaziCard bazi={baziA} name={nameA} locale={locale} />
+          <BaziCard bazi={baziB} name={nameB} locale={locale} />
         </div>
       </div>
 

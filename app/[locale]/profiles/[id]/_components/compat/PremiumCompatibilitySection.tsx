@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { renderBaziMarkdown } from '@/lib/markdown/renderer'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -28,19 +29,6 @@ const CHAPTER_ORDER = [
   'forecast',
 ] as const
 
-const CHAPTER_LABELS: Record<string, Record<string, string>> = {
-  overview:      { en: 'Partner Portraits',            'zh-CN': '命主画像',       'zh-TW': '命主畫像'       },
-  compatibility: { en: 'Compatibility Deep Analysis',  'zh-CN': '合婚深析',       'zh-TW': '合婚深析'       },
-  communication: { en: 'Communication & Conflict',     'zh-CN': '沟通与冲突',     'zh-TW': '溝通與衝突'     },
-  wealth_career: { en: 'Wealth & Career',              'zh-CN': '财运与事业',     'zh-TW': '財運與事業'     },
-  love_marriage: { en: 'Love & Marriage',              'zh-CN': '婚恋深析',       'zh-TW': '婚戀深析'       },
-  forecast:      { en: '24-Month Forecast',            'zh-CN': '24个月关系预测', 'zh-TW': '24個月關係預測' },
-}
-
-function chapterLabel(key: string, locale: string): string {
-  return CHAPTER_LABELS[key]?.[locale] ?? CHAPTER_LABELS[key]?.en ?? key
-}
-
 const labelStyle: React.CSSProperties = {
   fontFamily: 'var(--font-ui)',
   fontSize: '11px',
@@ -58,14 +46,16 @@ function ChapterCard({
   chapterKey,
   index,
   text,
-  locale,
   isGenerating,
+  tChapters,
+  tStatus,
 }: {
   chapterKey:   string
   index:        number
   text:         string | null
-  locale:       string
   isGenerating: boolean
+  tChapters:    (key: string) => string
+  tStatus:      (key: string, values?: Record<string, string | number>) => string
 }) {
   const [open, setOpen] = useState(index === 0)
 
@@ -107,7 +97,7 @@ function ChapterCard({
               Chapter {index + 1}
             </div>
             <div style={{ fontFamily: 'var(--font-main)', fontSize: '14px', fontWeight: 500, color: 'var(--zen-ink)', letterSpacing: '0.03em' }}>
-              {chapterLabel(chapterKey, locale)}
+              {tChapters(chapterKey)}
             </div>
           </div>
         </div>
@@ -117,7 +107,7 @@ function ChapterCard({
             <span className="wizard-spinner" style={{ width: '14px', height: '14px' }} />
           )}
           {!text && !isGenerating && (
-            <span style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)' }}>Pending</span>
+            <span style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)' }}>{tStatus('pending')}</span>
           )}
           <span style={{ color: 'var(--zen-text-muted)', fontSize: '12px' }}>{open ? '▲' : '▼'}</span>
         </div>
@@ -135,12 +125,12 @@ function ChapterCard({
             <div style={{ textAlign: 'center', padding: '40px 0' }}>
               <span className="wizard-spinner" style={{ width: '20px', height: '20px', marginBottom: '12px' }} />
               <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', margin: 0 }}>
-                Generating this chapter…
+                {tStatus('generating')}
               </p>
             </div>
           ) : (
             <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', textAlign: 'center', padding: '24px 0' }}>
-              Awaiting previous chapters…
+              {tStatus('awaitingPrev')}
             </p>
           )}
         </div>
@@ -162,6 +152,9 @@ export default function PremiumCompatibilitySection({
   initialStatus:   string
   initialChapters: PremiumChapters
 }) {
+  const tStatus   = useTranslations('reading.status')
+  const tChapters = useTranslations('compatibility.chapters')
+
   const [premiumStatus, setPremiumStatus] = useState(initialStatus)
   const [chapters, setChapters]           = useState<PremiumChapters>(initialChapters)
   const [pollCount, setPollCount]         = useState(0)
@@ -197,20 +190,20 @@ export default function PremiumCompatibilitySection({
       <div className="zen-result-card" style={{ padding: '16px 20px', marginBottom: '0' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <span style={labelStyle}>Premium Compatibility Report · 高级合婚报告</span>
+            <span style={labelStyle}>Premium Compatibility Report · 完整大师合婚</span>
             <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)' }}>
               {premiumStatus === 'completed'
-                ? 'All 6 chapters complete'
+                ? tStatus('complete')
                 : premiumStatus === 'failed'
-                ? `Generation failed (${completedCount}/6 chapters saved)`
-                : `Generating… ${completedCount}/6 chapters complete`}
+                ? `${tStatus('failed')} (${completedCount}/6)`
+                : tStatus('progress', { n: completedCount, total: 6 })}
             </div>
           </div>
           {isActive && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span className="wizard-spinner" />
               <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
-                {pollCount > 0 ? 'Updating…' : 'Starting…'}
+                {pollCount > 0 ? tStatus('generating') : tStatus('pending')}
               </span>
             </div>
           )}
@@ -219,6 +212,7 @@ export default function PremiumCompatibilitySection({
               reportId={reportId}
               chapters={chapters}
               setPremiumStatus={setPremiumStatus}
+              tStatus={tStatus}
             />
           )}
         </div>
@@ -241,8 +235,9 @@ export default function PremiumCompatibilitySection({
             chapterKey={key}
             index={idx}
             text={chapters[key]}
-            locale={locale}
             isGenerating={isActive && idx === currentlyGeneratingIndex}
+            tChapters={(k) => tChapters(k as Parameters<typeof tChapters>[0])}
+            tStatus={(k, v) => tStatus(k as Parameters<typeof tStatus>[0], v)}
           />
         ))}
       </div>
@@ -254,16 +249,17 @@ function RetryButton({
   reportId,
   chapters,
   setPremiumStatus,
+  tStatus,
 }: {
   reportId:         string
   chapters:         PremiumChapters
   setPremiumStatus: (s: string) => void
+  tStatus:          (key: string) => string
 }) {
   const [loading, setLoading] = useState(false)
 
   async function handleRetry() {
     setLoading(true)
-    // Find the first section that is missing — resume from there
     const firstMissing = CHAPTER_ORDER.find(k => !chapters[k]) ?? 'overview'
     try {
       const res = await fetch(`/api/compatibility/${reportId}/generate-premium-section`, {
@@ -272,7 +268,6 @@ function RetryButton({
         body: JSON.stringify({ section: firstMissing }),
       })
       if (res.ok) {
-        // Switch status to 'generating' → restarts polling loop in parent
         setPremiumStatus('generating')
       } else {
         setLoading(false)
@@ -293,7 +288,7 @@ function RetryButton({
         background: '#854F0B', color: 'white', opacity: loading ? 0.6 : 1,
       }}
     >
-      {loading ? 'Retrying…' : 'Retry'}
+      {loading ? '…' : tStatus('retry')}
     </button>
   )
 }
