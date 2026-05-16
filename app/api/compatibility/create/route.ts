@@ -155,6 +155,7 @@ export async function POST(req: NextRequest) {
             'x-internal-secret': process.env.INTERNAL_GENERATE_SECRET ?? '',
           },
           body: JSON.stringify({ section: 'overview' }),
+          keepalive: true,
         }).catch(err => console.error('[compat/create] Premium chain trigger failed:', err))
       })
     } else {

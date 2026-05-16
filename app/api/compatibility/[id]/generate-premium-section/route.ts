@@ -1,6 +1,7 @@
 export const maxDuration = 800
 
 import { NextRequest, NextResponse } from 'next/server'
+import { after } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { getUserTier } from '@/lib/subscription/tier'
 import {
@@ -32,8 +33,6 @@ export async function POST(
     internalSecret &&
     internalSecret === process.env.INTERNAL_GENERATE_SECRET
 
-  let userId: string
-
   if (isInternal) {
     // Internal chained call — bypass user auth, just need report existence
     const { data: row, error } = await admin
@@ -44,7 +43,6 @@ export async function POST(
     if (error || !row) {
       return NextResponse.json({ error: 'Report not found' }, { status: 404 })
     }
-    userId = row.user_id as string
   } else {
     // Client call — verify user session + ownership + tier
     const userClient = await createClient()
@@ -71,7 +69,6 @@ export async function POST(
     if ((row.tier as string) !== 'premium') {
       return NextResponse.json({ error: 'This is not a premium report' }, { status: 400 })
     }
-    userId = user.id
   }
 
   // ── Parse body ───────────────────────────────────────────────────────────────
@@ -90,10 +87,11 @@ export async function POST(
     console.log(`[compat-premium] Section "${section}" already exists for ${reportId}, skipping`)
     const next = nextSection(section)
     if (next) {
-      // Chain to next section that may be missing
-      chainNextSection(reportId, next)
+      // Chain to next section via after() to avoid ECONNRESET
+      after(async () => {
+        await chainNextSection(reportId, next, admin)
+      })
     } else {
-      // All done — mark completed
       await admin
         .from('compatibility_reports')
         .update({ premium_status: 'completed' })
@@ -110,14 +108,16 @@ export async function POST(
       .eq('id', reportId)
   }
 
-  // Respond immediately so the client gets a fast 200
-  // Generation happens after response is sent (Vercel awaits the handler to finish,
-  // but the chain is fire-and-forget for the NEXT section)
-  const responsePromise = generateAndChain(admin, reportId, section)
+  // ── KEY: push heavy work into after() so response is sent first ──────────────
+  // The invocation stays alive until after() callback finishes (within maxDuration=800s).
+  // This prevents ECONNRESET: the invocation is not closed before the chain fetch
+  // completes its TLS handshake, because the chain fetch is awaited inside after().
+  after(async () => {
+    await generateAndChain(admin, reportId, section)
+  })
 
-  await responsePromise
-
-  return NextResponse.json({ ok: true, section })
+  // Respond immediately — invocation stays alive in background via after()
+  return NextResponse.json({ ok: true, section, status: 'started' })
 }
 
 // ── Core: generate one section, then chain next ───────────────────────────────
@@ -132,8 +132,7 @@ async function generateAndChain(
 
     const next = nextSection(section)
     if (next) {
-      // Fire-and-forget — creates a NEW Vercel invocation with its own 800s budget
-      chainNextSection(reportId, next)
+      await chainNextSection(reportId, next, admin)
     } else {
       // forecast completed — mark whole report done
       await admin
@@ -155,16 +154,43 @@ async function generateAndChain(
   }
 }
 
-// ── Fire-and-forget chain trigger ─────────────────────────────────────────────
+// ── Await chain fetch — next endpoint also uses after(), so ack is immediate ──
+// Awaiting here is safe: the round-trip is only a few hundred ms (TLS + quick 200).
+// Not awaiting was the source of ECONNRESET: the current invocation closed before
+// the OS finished the TLS handshake on the outgoing connection.
 
-function chainNextSection(reportId: string, section: CompatibilitySection) {
+async function chainNextSection(
+  reportId: string,
+  section: CompatibilitySection,
+  admin: ReturnType<typeof createAdminClient>,
+) {
   const url = `${getBaseUrl()}/api/compatibility/${reportId}/generate-premium-section`
-  fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-internal-secret': process.env.INTERNAL_GENERATE_SECRET ?? '',
-    },
-    body: JSON.stringify({ section }),
-  }).catch(err => console.error(`[compat-premium] Chain trigger for "${section}" failed:`, err))
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-internal-secret': process.env.INTERNAL_GENERATE_SECRET ?? '',
+      },
+      body: JSON.stringify({ section }),
+      // keepalive: defensive — lets OS complete the send even if invocation starts closing
+      keepalive: true,
+    })
+    if (!res.ok) {
+      const text = await res.text().catch(() => '')
+      throw new Error(`Chain HTTP ${res.status}: ${text}`)
+    }
+    console.log(`[compat-premium] Chained to "${section}" for ${reportId}`)
+  } catch (err) {
+    console.error(`[compat-premium] Chain trigger for "${section}" failed:`, err)
+    // Mark failed so UI shows retry button
+    try {
+      await admin
+        .from('compatibility_reports')
+        .update({ premium_status: 'failed' })
+        .eq('id', reportId)
+    } catch (e) {
+      console.error('[compat-premium] Failed to set status=failed after chain error:', e)
+    }
+  }
 }
