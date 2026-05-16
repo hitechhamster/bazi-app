@@ -142,21 +142,43 @@ export async function POST(req: NextRequest) {
     const reportId = newReport.id as string
 
     if (isPremium) {
-      // Kick off section-by-section chained generation via HTTP
-      // Each route invocation has maxDuration=800 and chains to the next independently
-      after(() => {
+      // Kick off section-by-section chained generation via HTTP.
+      // Each route invocation has maxDuration=800 and chains to the next independently.
+      // Use async after() + await fetch() to prevent ECONNRESET: the invocation stays
+      // alive until the after() callback finishes, so the TLS handshake completes.
+      // The generate-premium-section endpoint also uses after() and returns 200 fast,
+      // so the await here only waits for the quick ack (~1s).
+      const newReportId = reportId
+      after(async () => {
         const baseUrl = process.env.VERCEL_URL
           ? `https://${process.env.VERCEL_URL}`
           : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-        fetch(`${baseUrl}/api/compatibility/${reportId}/generate-premium-section`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-internal-secret': process.env.INTERNAL_GENERATE_SECRET ?? '',
-          },
-          body: JSON.stringify({ section: 'overview' }),
-          keepalive: true,
-        }).catch(err => console.error('[compat/create] Premium chain trigger failed:', err))
+        try {
+          const res = await fetch(`${baseUrl}/api/compatibility/${newReportId}/generate-premium-section`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-internal-secret': process.env.INTERNAL_GENERATE_SECRET ?? '',
+            },
+            body: JSON.stringify({ section: 'overview' }),
+            keepalive: true,
+          })
+          if (!res.ok) {
+            const text = await res.text().catch(() => '')
+            throw new Error(`Initial chain trigger HTTP ${res.status}: ${text}`)
+          }
+          console.log(`[compat-premium] Initial chain triggered for ${newReportId}`)
+        } catch (err) {
+          console.error('[compat-premium] Initial chain trigger failed:', err)
+          try {
+            await admin
+              .from('compatibility_reports')
+              .update({ premium_status: 'failed' })
+              .eq('id', newReportId)
+          } catch (e) {
+            console.error('[compat-premium] Failed to set status=failed:', e)
+          }
+        }
       })
     } else {
       // Fire-and-forget free report generation
