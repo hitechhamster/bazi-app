@@ -595,7 +595,3 @@ body {
   transition: width 0.4s ease;
 }
 
-/* Hide scrollbar on horizontally-scrollable mobile tab bar (WebKit) */
-.mobile-tab-bar::-webkit-scrollbar {
-  display: none;
-}
