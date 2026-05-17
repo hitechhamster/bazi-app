@@ -1,18 +1,12 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { localePath } from '@/lib/i18n/path'
 import { getCompatibilityQuotaStatus } from '@/lib/subscription/tier'
 import type { CompatibilityScores } from '@/lib/bazi/compatibility'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-const STATUS_LABEL: Record<string, string> = {
-  completed:  'Completed',
-  generating: 'Generating…',
-  pending:    'Pending',
-  failed:     'Failed',
-}
 
 const STATUS_COLOR: Record<string, string> = {
   completed:  '#3a7d44',
@@ -21,16 +15,10 @@ const STATUS_COLOR: Record<string, string> = {
   failed:     '#BC2D2D',
 }
 
-const LEVEL_LABEL: Record<string, string> = {
-  excellent: 'Excellent',
-  good:      'Good',
-  average:   'Moderate',
-  needWork:  'Needs Work',
-}
-
-function formatDate(iso: string): string {
-  const d = new Date(iso)
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+function formatDate(iso: string, locale: string): string {
+  const map: Record<string, string> = { 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW' }
+  const intlLocale = map[locale] ?? 'en-US'
+  return new Date(iso).toLocaleDateString(intlLocale, { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
@@ -41,6 +29,12 @@ export default async function CompatibilityListPage({
   params: Promise<{ locale: string; id: string }>
 }) {
   const { locale, id: profileId } = await params
+
+  const t       = await getTranslations({ locale, namespace: 'compatibilityList' })
+  const tStatus = await getTranslations({ locale, namespace: 'compatibility.status' })
+  const tLevel  = await getTranslations({ locale, namespace: 'compatibility.level' })
+  const tS = (s: string) => (tStatus as (k: string) => string)(s)
+  const tL = (k: string) => (tLevel  as (k: string) => string)(k)
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -80,10 +74,10 @@ export default async function CompatibilityListPage({
       }}>
         <div>
           <div style={{ fontFamily: 'var(--font-main)', fontSize: '18px', fontWeight: 500, color: 'var(--zen-ink)', letterSpacing: '0.05em', marginBottom: '4px' }}>
-            合婚分析 / Compatibility Analysis
+            {t('title')}
           </div>
           <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
-            今日免费版剩余 {quota.free.remaining} / {quota.free.cap}
+            {t('quotaFree', { used: quota.free.remaining, cap: quota.free.cap })}
           </div>
         </div>
         <Link
@@ -101,14 +95,14 @@ export default async function CompatibilityListPage({
             textDecoration: 'none',
           }}
         >
-          新建分析
+          {t('newAnalysis')}
         </Link>
       </div>
 
       {rows.length === 0 ? (
         <div className="zen-result-card" style={{ textAlign: 'center', padding: '64px 24px' }}>
           <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-text-muted)', marginBottom: '20px' }}>
-            尚无免费合婚记录
+            {t('emptyFree')}
           </p>
           <Link
             href={newHref}
@@ -125,7 +119,7 @@ export default async function CompatibilityListPage({
               textDecoration: 'none',
             }}
           >
-            新建分析
+            {t('newAnalysis')}
           </Link>
         </div>
       ) : (
@@ -158,7 +152,7 @@ export default async function CompatibilityListPage({
                       {nameA} ↔ {nameB}
                     </div>
                     <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)' }}>
-                      {formatDate(r.created_at as string)}
+                      {formatDate(r.created_at as string, locale)}
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
@@ -169,7 +163,7 @@ export default async function CompatibilityListPage({
                         </span>
                         <span style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)', marginLeft: '2px' }}>/99</span>
                         <div style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)', marginTop: '1px' }}>
-                          {LEVEL_LABEL[scores.level?.key] ?? scores.level?.key}
+                          {tL(scores.level?.key ?? 'average')}
                         </div>
                       </div>
                     )}
@@ -179,7 +173,7 @@ export default async function CompatibilityListPage({
                       letterSpacing: '0.08em',
                       color: STATUS_COLOR[status] ?? 'var(--zen-text-muted)',
                     }}>
-                      {STATUS_LABEL[status] ?? status}
+                      {tS(status)}
                     </span>
                   </div>
                 </div>

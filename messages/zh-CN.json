@@ -118,7 +118,6 @@
       "conversationZh": "Conversation",
       "premiumReport": "完整大师报告",
       "premiumReportSub": "万字深度解读",
-      "compatibility_premium": "完整大师合婚",
       "compatibilityAnalysis": "合婚分析",
       "compatibilityAnalysisSub": "Compatibility Analysis",
       "compatibilityPremium": "完整大师合婚",
@@ -186,6 +185,20 @@
       "remaining": "今日剩余 {remaining} / {limit} 次",
       "unlimited": "无限次提问",
       "exceeded": "今日提问次数已用尽，升级可无限提问。"
+    }
+  },
+  "compatibilityList": {
+    "title": "合婚分析",
+    "titlePremium": "完整大师合婚",
+    "quotaFree": "今日免费版剩余 {used} / {cap}",
+    "quotaPremium": "本月完整大师剩余 {used} / {cap}",
+    "newAnalysis": "新建分析",
+    "emptyFree": "尚无免费合婚记录",
+    "emptyPremium": "尚无完整大师合婚",
+    "masterBadge": "大师",
+    "newPremium": {
+      "title": "新建完整大师合婚",
+      "sub": "六大章 · 万五千字 · 24 个月共命流年"
     }
   },
   "mobileNav": {
@@ -429,6 +442,18 @@
       "wealth_career": "财运与事业",
       "love_marriage": "婚恋深析",
       "forecast": "24个月关系预测"
+    },
+    "status": {
+      "completed": "已成",
+      "generating": "占问中",
+      "pending": "等待中",
+      "failed": "天机受阻"
+    },
+    "level": {
+      "excellent": "极佳",
+      "good": "良好",
+      "average": "尚可",
+      "needWork": "需调"
     }
   }
 }

@@ -118,7 +118,6 @@
       "conversationZh": "多轮问答",
       "premiumReport": "Master Reading",
       "premiumReportSub": "万字深度解读",
-      "compatibility_premium": "Master Compatibility Reading",
       "compatibilityAnalysis": "Compatibility Analysis",
       "compatibilityAnalysisSub": "合婚分析",
       "compatibilityPremium": "Master Compatibility Reading",
@@ -186,6 +185,20 @@
       "remaining": "{remaining} of {limit} questions today",
       "unlimited": "Unlimited questions",
       "exceeded": "Daily limit reached. Upgrade for unlimited."
+    }
+  },
+  "compatibilityList": {
+    "title": "Compatibility Analysis",
+    "titlePremium": "Master Compatibility Reading",
+    "quotaFree": "Today's free readings: {used} / {cap}",
+    "quotaPremium": "This month's Master readings: {used} / {cap}",
+    "newAnalysis": "New Reading",
+    "emptyFree": "No free readings yet",
+    "emptyPremium": "No Master readings yet",
+    "masterBadge": "Master",
+    "newPremium": {
+      "title": "New Master Compatibility Reading",
+      "sub": "Six chapters · 15,000 words · 24-month forecast"
     }
   },
   "mobileNav": {
@@ -429,6 +442,18 @@
       "wealth_career": "Wealth & Career",
       "love_marriage": "Love & Marriage",
       "forecast": "24-Month Forecast"
+    },
+    "status": {
+      "completed": "Complete",
+      "generating": "Divining",
+      "pending": "Awaiting",
+      "failed": "Clouded"
+    },
+    "level": {
+      "excellent": "Aligned",
+      "good": "Compatible",
+      "average": "Mixed",
+      "needWork": "Conflicted"
     }
   }
 }
