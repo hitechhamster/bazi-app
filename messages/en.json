@@ -21,6 +21,7 @@
   "common": {
     "save": "Save",
     "cancel": "Cancel",
+    "close": "Close",
     "delete": "Delete",
     "edit": "Edit",
     "submit": "Submit",
@@ -343,24 +344,29 @@
   },
   "premiumReport": {
     "pageTitle": "Master Reading · 深度解读",
-    "pageSubtitle": "10,000+ word in-depth Bazi analysis powered by Gemini Pro",
+    "pageSubtitle": "10,000+ word in-depth Bazi analysis",
     "introSectionTitle": "Introduction",
     "intro": {
       "title": "Master Reading",
-      "subtitle": "A comprehensive 10,000+ word analysis in 4 deep chapters — Core Chart Soul, Career & Wealth, Love & Marriage, and a dynamic 24-month month-by-month forecast.",
-      "cta": "Generate Master Reading",
-      "note": "Generation takes 5–8 minutes. You can close this page and come back — the report will be saved automatically.",
-      "features": [
-        "Chapter 1: Core Chart Soul (Day Master · Pattern · Ten Gods · Five Elements)",
-        "Chapter 2: Career & Wealth (Wealth Stars · Useful God · Luck Cycle timeline)",
-        "Chapter 3: Love, Marriage & Health (gender-specific reading)",
-        "Chapter 4: Dynamic 24-month month-by-month forecast",
-        "Pre-computed clash and harmony months highlighted",
-        "Gender-specific relationship and marriage reading"
-      ]
+      "subtitle": "A comprehensive 10,000+ word analysis in 4 deep chapters.",
+      "body": "Your bazi chart holds patterns that a brief reading cannot reveal. The Master Reading opens the four sealed chapters — your soul, your fortune, your bonds, and the rhythm of the next two years.",
+      "cta": "Begin the Reading",
+      "note": "The heavens take 5–8 minutes to answer. You may step away — the reading awaits your return.",
+      "chapters": {
+        "core":     { "title": "Core Chart Soul",   "desc": "Day master, chart structure, the soul beneath your nature" },
+        "career":   { "title": "Career & Wealth",   "desc": "Wealth currents, career direction, allies and obstacles" },
+        "love":     { "title": "Love & Marriage",   "desc": "Marriage timing, spouse archetype, deep emotional patterns" },
+        "forecast": { "title": "24-Month Forecast", "desc": "24 months unfolded — every month's energy, every turning point" }
+      },
+      "valueProps": {
+        "words":     "10,000+ words",
+        "chapters":  "4 sealed chapters",
+        "forecast":  "24 months monthly forecast",
+        "permanent": "Yours to keep forever"
+      }
     },
     "generating": "Divining your Master Reading…",
-    "generatingHint": "Gemini Pro is writing your reading in 4 chapters. This takes 5–8 minutes. You can leave this page — the reading saves automatically after each chapter.",
+    "generatingHint": "Your reading is being written in 4 chapters. This takes 5–8 minutes. You can leave this page — the reading saves automatically after each chapter.",
     "generated": "Divined on {date}",
     "failed": "The heavens are clouded — please retry.",
     "retry": "Retry"
@@ -399,20 +405,20 @@
   "upgrade": {
     "title": "Upgrade to Master",
     "reasons": {
-      "profile_cap": "You've reached the limit of charts in this plan. Upgrade Master to chart unlimited fates.",
-      "ask_quota": "Today's questions are exhausted. Tomorrow the heavens speak again — or upgrade for higher daily counsel.",
-      "chat_locked": "Conversation with the chart is a Master feature — extended dialogue, follow-up readings, and saved threads.",
-      "premium_report": "The 10,000-word Master Reading reveals the deepest layers of this chart — fate's full text. A Master feature.",
-      "compatibility_premium_required": "Unlock the full reading of fate — a 15,000-word, six-chapter deep analysis of this pairing's destiny. A Master feature."
+      "profile_cap": "This plan holds only so many fates. Upgrade to Master and chart as many lives as the heavens allow.",
+      "ask_quota": "Today's counsel is given. The heavens rest until tomorrow — or unlock Master and let the chart speak freely, every day.",
+      "chat_locked": "The chart has more to tell you than a single question can reveal. Multi-turn Conversation is a Master feature — ask deeper, go further, pick up where you left off.",
+      "premium_report": "The 10,000-word Master Reading opens the sealed chapters of this chart — four deep dives into fate's full architecture. Reserved for Master.",
+      "compatibility_premium_required": "Two fates meet, and the intersection is written in the stars. The Master Compatibility Reading — 15,000 words, six chapters — deciphers every layer of this pairing's shared destiny."
     },
     "cta": "View plans",
     "cancel": "Not now"
   },
   "errors": {
-    "generic": "Something went wrong.",
-    "network": "Network error. Please try again.",
+    "generic": "The heavens are momentarily quiet. Please try again.",
+    "network": "The thread to the heavens was lost. Check your signal and try again.",
     "unauthorized": "Please log in to continue.",
-    "notFound": "Not found."
+    "notFound": "This page has returned to the void."
   },
   "reading": {
     "status": {
@@ -423,7 +429,8 @@
       "complete": "All chapters revealed",
       "progress": "Divining... {n}/{total}",
       "retry": "Retry"
-    }
+    },
+    "chapterLabel": "Chapter {n}"
   },
   "compatibility": {
     "generating": "Divining the heavens...",
@@ -431,9 +438,23 @@
     "failed": "The heavens are clouded — please retry.",
     "retry": "Retry",
     "upgradeCTA": {
-      "title": "Unlock the Full Reading",
-      "body": "15,000-word six-chapter deep analysis — day-master harmony, communication, finances, marriage stability, and a 24-month destiny forecast for this specific pairing.",
-      "cta": "View Plans"
+      "title": "The Heavens Have More to Say",
+      "body": "The free reading speaks to the surface. The deeper truths — how this connection truly unfolds, the years that bind, the seasons that test — remain in the heavens.\n\nThe Master Compatibility Reading: six chapters, 15,000 words, 24-month forecast. Yours to keep.",
+      "cta": "Open the Master Reading",
+      "chapters": {
+        "overview":      "Two charts side by side — fundamental natures, core elements, the meeting ground",
+        "compatibility":  "Six-dimension scoring: day master, zodiac, elements, na yin, pillars, spouse palace",
+        "communication":  "How you'll talk past each other, fight, and find your way back",
+        "wealth_career":  "Shared finances, collaboration patterns, how your careers align or diverge",
+        "love_marriage":  "The foundation of marriage, long-term stability, deep emotional currents",
+        "forecast":       "24 months of shared destiny — turning points, periods of harmony, seasons of test"
+      },
+      "valueProps": {
+        "words":     "15,000+ words",
+        "chapters":  "6 sealed chapters",
+        "forecast":  "24-month forecast",
+        "permanent": "Yours to keep forever"
+      }
     },
     "chapters": {
       "overview": "Both Partners Overview",

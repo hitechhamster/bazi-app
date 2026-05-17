@@ -18,7 +18,8 @@ export default function UpgradeModal({
   reason: UpgradeReason
   locale: string
 }) {
-  const t = useTranslations('upgrade')
+  const t       = useTranslations('upgrade')
+  const tCommon = useTranslations('common')
 
   // Close on Escape
   useEffect(() => {
@@ -71,7 +72,7 @@ export default function UpgradeModal({
         {/* Close button */}
         <button
           onClick={onClose}
-          aria-label="Close"
+          aria-label={tCommon('close')}
           style={{
             position: 'absolute',
             top: '14px',

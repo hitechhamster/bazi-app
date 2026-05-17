@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useTranslations } from 'next-intl'
 import { renderBaziMarkdown } from '@/lib/markdown/renderer'
 
 interface ChapterCardProps {
@@ -22,6 +23,7 @@ export default function ChapterCard({
   isGenerating,
   tStatus,
 }: ChapterCardProps) {
+  const tReading       = useTranslations('reading')
   const prevHadContent = useRef(content !== null)
   const [open, setOpen] = useState(index === 0)
 
@@ -81,7 +83,7 @@ export default function ChapterCard({
               letterSpacing: '0.12em',
               color: 'var(--zen-text-muted)',
             }}>
-              Chapter {index + 1}
+              {tReading('chapterLabel', { n: index + 1 })}
             </div>
             <div style={{
               fontFamily: 'var(--font-main)',

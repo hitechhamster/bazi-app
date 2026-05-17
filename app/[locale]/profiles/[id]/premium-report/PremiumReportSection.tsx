@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import ChapterCard from '../_components/reading/ChapterCard'
 import { triggerPremiumReport, getPremiumReportStatus } from './actions'
 import type { PremiumReportStatus } from './actions'
@@ -231,6 +231,11 @@ export default function PremiumReportSection({
 
 // ── Intro card ────────────────────────────────────────────────────────────────
 
+const CHAPTER_ORDER = ['core', 'career', 'love', 'forecast'] as const
+const VALUE_PROP_ORDER = ['words', 'chapters', 'forecast', 'permanent'] as const
+const ZH_ORDINALS = ['一', '二', '三', '四']
+const EN_ORDINALS  = ['I', 'II', 'III', 'IV']
+
 function IntroCard({
   onGenerate,
   triggering,
@@ -242,12 +247,16 @@ function IntroCard({
   error: string | null
   t: ReturnType<typeof useTranslations<'premiumReport'>>
 }) {
-  const features = t.raw('intro.features') as string[]
+  const locale   = useLocale()
+  const ordinals = locale === 'en' ? EN_ORDINALS : ZH_ORDINALS
+  const chapters   = t.raw('intro.chapters') as Record<string, { title: string; desc: string }>
+  const valueProps = t.raw('intro.valueProps') as Record<string, string>
 
   return (
-    <div className="zen-result-card" style={{ maxWidth: '560px', margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+    <div className="zen-result-card" style={{ maxWidth: '560px', margin: '0 auto', padding: 0, overflow: 'hidden' }}>
+
+      {/* ── Hero ── */}
+      <div style={{ textAlign: 'center', padding: '40px 32px 28px' }}>
         <h2 style={{
           fontFamily: 'var(--font-main)',
           fontSize: '18px',
@@ -262,25 +271,106 @@ function IntroCard({
           fontFamily: 'var(--font-ui)',
           fontSize: '12px',
           color: 'var(--zen-text-muted)',
-          margin: 0,
+          margin: '0 0 16px',
           lineHeight: 1.6,
         }}>
           {t('intro.subtitle')}
         </p>
+        <p style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: '13px',
+          color: 'var(--zen-ink)',
+          margin: 0,
+          lineHeight: 1.75,
+        }}>
+          {t('intro.body')}
+        </p>
       </div>
 
-      {/* Feature list */}
-      <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        {features.map((f, i) => (
-          <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--zen-ink)' }}>
-            <span style={{ color: 'var(--zen-gold)', flexShrink: 0, marginTop: '1px' }}>✓</span>
-            {f}
-          </li>
-        ))}
-      </ul>
+      {/* ── 4 Chapter Previews ── */}
+      <div style={{ borderTop: '1px solid var(--zen-border)', padding: '24px 32px' }}>
+        <div style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: '10px',
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          color: 'var(--zen-text-muted)',
+          marginBottom: '14px',
+        }}>
+          {locale === 'en' ? 'Four Chapters' : '四大章节'}
+        </div>
+        {CHAPTER_ORDER.map((key, i) => {
+          const ch = chapters[key]
+          return (
+            <div
+              key={key}
+              style={{
+                display: 'flex',
+                gap: '14px',
+                alignItems: 'flex-start',
+                padding: '10px 0',
+                borderBottom: i < CHAPTER_ORDER.length - 1 ? '1px solid var(--zen-border)' : 'none',
+              }}
+            >
+              <span style={{
+                fontFamily: 'var(--font-main)',
+                fontSize: '11px',
+                color: '#854F0B',
+                flexShrink: 0,
+                minWidth: '20px',
+                marginTop: '1px',
+              }}>
+                {ordinals[i]}
+              </span>
+              <div>
+                <div style={{
+                  fontFamily: 'var(--font-main)',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: 'var(--zen-ink)',
+                  marginBottom: '2px',
+                }}>
+                  {ch?.title ?? key}
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-ui)',
+                  fontSize: '12px',
+                  color: 'var(--zen-text-muted)',
+                  lineHeight: 1.5,
+                }}>
+                  {ch?.desc ?? ''}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
 
-      {/* CTA */}
-      <div style={{ textAlign: 'center' }}>
+      {/* ── Value Props ── */}
+      <div style={{
+        borderTop: '1px solid var(--zen-border)',
+        padding: '20px 32px',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '10px 24px',
+      }}>
+        {VALUE_PROP_ORDER.map(key => (
+          <div key={key} style={{
+            fontFamily: 'var(--font-ui)',
+            fontSize: '12px',
+            color: 'var(--zen-ink)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}>
+            <span style={{ color: '#854F0B', fontSize: '10px' }}>✦</span>
+            {valueProps[key] ?? ''}
+          </div>
+        ))}
+      </div>
+
+      {/* ── CTA + Note ── */}
+      <div style={{ borderTop: '1px solid var(--zen-border)', padding: '24px 32px', textAlign: 'center' }}>
         <button
           onClick={onGenerate}
           disabled={triggering}
@@ -290,7 +380,7 @@ function IntroCard({
             fontWeight: 500,
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
-            padding: '12px 28px',
+            padding: '14px 28px',
             border: 'none',
             borderRadius: '0',
             cursor: triggering ? 'default' : 'pointer',
@@ -307,6 +397,8 @@ function IntroCard({
           fontSize: '11px',
           color: 'var(--zen-text-muted)',
           marginTop: '10px',
+          marginBottom: 0,
+          lineHeight: 1.6,
         }}>
           {t('intro.note')}
         </p>
@@ -317,6 +409,7 @@ function IntroCard({
             fontSize: '11px',
             color: 'var(--zen-red)',
             marginTop: '8px',
+            marginBottom: 0,
           }}>
             {error}
           </p>
