@@ -102,15 +102,6 @@ export default function ChapterCard({
           {isGenerating && !content && (
             <span className="wizard-spinner" style={{ width: '14px', height: '14px' }} />
           )}
-          {!content && !isGenerating && (
-            <span style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: '10px',
-              color: 'var(--zen-text-muted)',
-            }}>
-              {tStatus('pending')}
-            </span>
-          )}
           <span style={{ color: 'var(--zen-text-muted)', fontSize: '12px' }}>
             {open ? '▲' : '▼'}
           </span>

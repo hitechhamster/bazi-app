@@ -91,7 +91,7 @@ export default async function CompatibilityListPage({
             textTransform: 'uppercase',
             color: 'white',
             background: '#854F0B',
-            padding: '9px 20px',
+            padding: '12px 20px',
             textDecoration: 'none',
           }}
         >
@@ -115,7 +115,7 @@ export default async function CompatibilityListPage({
               textTransform: 'uppercase',
               color: 'white',
               background: '#854F0B',
-              padding: '9px 20px',
+              padding: '12px 20px',
               textDecoration: 'none',
             }}
           >
@@ -161,15 +161,15 @@ export default async function CompatibilityListPage({
                         <span style={{ fontFamily: 'var(--font-main)', fontSize: '20px', fontWeight: 500, color: '#854F0B' }}>
                           {scores.total}
                         </span>
-                        <span style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)', marginLeft: '2px' }}>/99</span>
-                        <div style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)', marginTop: '1px' }}>
+                        <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', marginLeft: '2px' }}>/99</span>
+                        <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--zen-text-muted)', marginTop: '1px' }}>
                           {tL(scores.level?.key ?? 'average')}
                         </div>
                       </div>
                     )}
                     <span style={{
                       fontFamily: 'var(--font-ui)',
-                      fontSize: '10px',
+                      fontSize: '12px',
                       letterSpacing: '0.08em',
                       color: STATUS_COLOR[status] ?? 'var(--zen-text-muted)',
                     }}>

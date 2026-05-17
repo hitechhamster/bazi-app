@@ -430,7 +430,11 @@
       "progress": "Divining... {n}/{total}",
       "retry": "Retry"
     },
-    "chapterLabel": "Chapter {n}"
+    "chapterLabel": "Chapter {n}",
+    "sectionLabels": {
+      "chaptersPreview": "Inside the Reading",
+      "valueProps": "What's Inside"
+    }
   },
   "compatibility": {
     "generating": "Divining the heavens...",

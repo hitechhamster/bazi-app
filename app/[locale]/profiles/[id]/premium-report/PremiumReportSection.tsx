@@ -247,8 +247,9 @@ function IntroCard({
   error: string | null
   t: ReturnType<typeof useTranslations<'premiumReport'>>
 }) {
-  const locale   = useLocale()
-  const ordinals = locale === 'en' ? EN_ORDINALS : ZH_ORDINALS
+  const locale    = useLocale()
+  const tSection  = useTranslations('reading.sectionLabels')
+  const ordinals  = locale === 'en' ? EN_ORDINALS : ZH_ORDINALS
   const chapters   = t.raw('intro.chapters') as Record<string, { title: string; desc: string }>
   const valueProps = t.raw('intro.valueProps') as Record<string, string>
 
@@ -297,7 +298,7 @@ function IntroCard({
           color: 'var(--zen-text-muted)',
           marginBottom: '14px',
         }}>
-          {locale === 'en' ? 'Four Chapters' : '四大章节'}
+          {tSection('chaptersPreview')}
         </div>
         {CHAPTER_ORDER.map((key, i) => {
           const ch = chapters[key]
@@ -347,26 +348,32 @@ function IntroCard({
       </div>
 
       {/* ── Value Props ── */}
-      <div style={{
-        borderTop: '1px solid var(--zen-border)',
-        padding: '20px 32px',
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '10px 24px',
-      }}>
-        {VALUE_PROP_ORDER.map(key => (
-          <div key={key} style={{
-            fontFamily: 'var(--font-ui)',
-            fontSize: '12px',
-            color: 'var(--zen-ink)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-          }}>
-            <span style={{ color: '#854F0B', fontSize: '10px' }}>✦</span>
-            {valueProps[key] ?? ''}
-          </div>
-        ))}
+      <div style={{ borderTop: '1px solid var(--zen-border)', padding: '20px 32px' }}>
+        <div style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: '10px',
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          color: 'var(--zen-text-muted)',
+          marginBottom: '14px',
+        }}>
+          {tSection('valueProps')}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 24px' }}>
+          {VALUE_PROP_ORDER.map(key => (
+            <div key={key} style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '12px',
+              color: 'var(--zen-ink)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}>
+              <span style={{ color: '#854F0B', fontSize: '10px' }}>✦</span>
+              {valueProps[key] ?? ''}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* ── CTA + Note ── */}

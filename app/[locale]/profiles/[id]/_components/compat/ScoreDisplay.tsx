@@ -162,7 +162,7 @@ export function BaziCard({
           { label: lbl.hour,  ganzhi: bazi.hourPillar ?? '？' },
         ].map(({ label, ganzhi }) => (
           <div key={label} style={{ textAlign: 'center', border: '1px solid var(--zen-border)', padding: '6px 4px' }}>
-            <div style={{ fontFamily: 'var(--font-ui)', fontSize: '9px', color: 'var(--zen-text-muted)', marginBottom: '4px' }}>{label}</div>
+            <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--zen-text-muted)', marginBottom: '4px' }}>{label}</div>
             <div style={{ fontFamily: 'var(--font-main)', fontSize: '16px', color: 'var(--zen-ink)', lineHeight: 1.2 }}>
               {ganzhi.split('').map((c, i) => <div key={i}>{c}</div>)}
             </div>
@@ -191,7 +191,7 @@ export function BaziCard({
               <div style={{ flex: 1, height: '3px', background: 'var(--zen-border)' }}>
                 <div style={{ width: `${pct}%`, height: '3px', background: EL_COLOR[el] ?? '#854F0B' }} />
               </div>
-              <span style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)', width: '26px' }}>{cnt.toFixed(1)}</span>
+              <span style={{ fontFamily: 'var(--font-ui)', fontSize: '10px', color: 'var(--zen-text-muted)', width: '26px' }}>{cnt.toFixed(0)}</span>
             </div>
           )
         })}

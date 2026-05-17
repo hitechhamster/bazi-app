@@ -26,6 +26,7 @@ export default function UpgradeCTA({
 }) {
   const t         = useTranslations('compatibility.upgradeCTA')
   const tChapters = useTranslations('compatibility.chapters')
+  const tSection  = useTranslations('reading.sectionLabels')
   const ctaLocale = useLocale()
   const [showModal, setShowModal] = useState(false)
 
@@ -75,7 +76,7 @@ export default function UpgradeCTA({
             color: 'var(--zen-text-muted)',
             marginBottom: '14px',
           }}>
-            {ctaLocale === 'en' ? 'Six Chapters' : '六大章节'}
+            {tSection('chaptersPreview')}
           </div>
           {CHAPTER_KEYS.map((key, i) => (
             <div
@@ -122,26 +123,32 @@ export default function UpgradeCTA({
         </div>
 
         {/* ── Value Props ── */}
-        <div style={{
-          borderTop: '1px solid var(--zen-border)',
-          padding: '20px 32px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '10px 24px',
-        }}>
-          {VALUE_PROP_KEYS.map(key => (
-            <div key={key} style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: '12px',
-              color: 'var(--zen-ink)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}>
-              <span style={{ color: '#854F0B', fontSize: '10px' }}>✦</span>
-              {t(`valueProps.${key}` as Parameters<typeof t>[0])}
-            </div>
-          ))}
+        <div style={{ borderTop: '1px solid var(--zen-border)', padding: '20px 32px' }}>
+          <div style={{
+            fontFamily: 'var(--font-ui)',
+            fontSize: '10px',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: 'var(--zen-text-muted)',
+            marginBottom: '14px',
+          }}>
+            {tSection('valueProps')}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 24px' }}>
+            {VALUE_PROP_KEYS.map(key => (
+              <div key={key} style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: '12px',
+                color: 'var(--zen-ink)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}>
+                <span style={{ color: '#854F0B', fontSize: '10px' }}>✦</span>
+                {t(`valueProps.${key}` as Parameters<typeof t>[0])}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── CTA ── */}

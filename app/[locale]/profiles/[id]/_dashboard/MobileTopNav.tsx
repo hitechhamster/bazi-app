@@ -20,7 +20,8 @@ type NavTab =
 function TabCell({ tab, isLastInRow }: { tab: NavTab; isLastInRow: boolean }) {
   const cellStyle: React.CSSProperties = {
     textAlign: 'center',
-    padding: '10px 8px',
+    padding: '12px 8px',
+    minHeight: '44px',
     fontFamily: 'var(--font-ui)',
     fontSize: '12px',
     fontWeight: 500,
@@ -48,6 +49,7 @@ function TabCell({ tab, isLastInRow }: { tab: NavTab; isLastInRow: boolean }) {
           background: 'var(--zen-paper)',
           color: '#854F0B',
           opacity: 0.55,
+          minHeight: '44px',
         }}
       >
         {tab.label}

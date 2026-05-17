@@ -430,7 +430,11 @@
       "progress": "占问中… {n}/{total}",
       "retry": "重新占问"
     },
-    "chapterLabel": "第 {n} 章"
+    "chapterLabel": "第 {n} 章",
+    "sectionLabels": {
+      "chaptersPreview": "章节预览",
+      "valueProps": "你将获得"
+    }
   },
   "compatibility": {
     "generating": "占问天机...",

@@ -75,15 +75,20 @@ export default function UpgradeModal({
           aria-label={tCommon('close')}
           style={{
             position: 'absolute',
-            top: '14px',
-            right: '14px',
+            top: '8px',
+            right: '8px',
             background: 'none',
             border: 'none',
             cursor: 'pointer',
             color: 'var(--zen-text-muted, #78716c)',
             fontSize: '18px',
             lineHeight: 1,
-            padding: '4px',
+            padding: '10px',
+            minWidth: '44px',
+            minHeight: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           ×
@@ -116,7 +121,9 @@ export default function UpgradeModal({
           <Link
             href={localePath(locale, '/pricing')}
             style={{
-              display: 'block',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               textAlign: 'center',
               fontSize: '12px',
               fontWeight: 500,
@@ -125,6 +132,7 @@ export default function UpgradeModal({
               color: 'white',
               background: '#854F0B',
               padding: '11px 16px',
+              minHeight: '44px',
               textDecoration: 'none',
             }}
           >
@@ -139,6 +147,7 @@ export default function UpgradeModal({
               background: 'none',
               border: '1px solid var(--zen-border, #e5e0d8)',
               padding: '10px 16px',
+              minHeight: '44px',
               cursor: 'pointer',
               letterSpacing: '0.05em',
               fontFamily: 'var(--font-ui)',
