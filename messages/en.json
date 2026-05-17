@@ -192,7 +192,10 @@
     "report": "Report",
     "almanac": "Almanac",
     "ask": "Ask",
-    "chat": "Chat"
+    "compatibility": "Compat",
+    "chat": "Chat",
+    "premiumReport": "Master",
+    "compatPremium": "M.Compat"
   },
   "chat": {
     "title": "Conversation · 多轮问答",

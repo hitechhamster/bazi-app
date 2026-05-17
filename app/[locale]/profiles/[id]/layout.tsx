@@ -124,7 +124,7 @@ export default async function ProfileLayout({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
             {/* Mobile nav — hidden on desktop */}
             <div className="lg:hidden">
-              <MobileTopNav profileId={id} locale={locale} />
+              <MobileTopNav profileId={id} locale={locale} tier={tier} />
             </div>
             {children}
           </div>

@@ -192,7 +192,10 @@
     "report": "報告",
     "almanac": "黃曆",
     "ask": "問命",
-    "chat": "多輪"
+    "compatibility": "合婚",
+    "chat": "多輪",
+    "premiumReport": "大師",
+    "compatPremium": "大師合婚"
   },
   "chat": {
     "title": "多輪問答 · Conversation",

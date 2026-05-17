@@ -192,7 +192,10 @@
     "report": "报告",
     "almanac": "黄历",
     "ask": "问命",
-    "chat": "多轮"
+    "compatibility": "合婚",
+    "chat": "多轮",
+    "premiumReport": "大师",
+    "compatPremium": "大师合婚"
   },
   "chat": {
     "title": "多轮问答 · Conversation",
