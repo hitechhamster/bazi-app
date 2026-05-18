@@ -372,35 +372,90 @@
     "retry": "Retry"
   },
   "pricing": {
-    "title": "Plans · 方案",
-    "subtitle": "Simple, transparent pricing.",
-    "currentPlan": "Current plan",
-    "note": "Questions? Contact us at contact@bazi-master.com",
-    "free": {
-      "name": "Free",
-      "price": "Free",
-      "features": [
-        "1 destiny chart",
-        "5 questions per day",
-        "Basic AI reading",
-        "Daily Almanac"
-      ],
-      "cta": "Get started"
+    "hero": {
+      "title": "Choose Your Path",
+      "subtitle": "Begin free. Ascend when the stars align."
     },
-    "paid": {
-      "name": "Pro",
-      "price": "Contact us",
-      "badge": "Pro",
-      "features": [
-        "5 destiny charts",
-        "Unlimited questions",
-        "Premium AI reading",
-        "Daily Almanac",
-        "Multi-turn conversation"
-      ],
-      "cta": "Contact to upgrade",
-      "emailSubject": "Upgrade to Pro — Bazi Master"
-    }
+    "billingToggle": {
+      "monthly": "Monthly",
+      "yearly":  "Yearly",
+      "saving":  "Save 20%"
+    },
+    "currentPlan": "Current Plan",
+    "prices": {
+      "free":   { "monthly": "Free",      "yearly": "Free" },
+      "master": { "monthly": "$12 / mo",  "yearly": "$9 / mo" },
+      "sage":   { "monthly": "$29 / mo",  "yearly": "$23 / mo" }
+    },
+    "tiers": {
+      "free": {
+        "name":    "Seeker",
+        "tagline": "Step into your chart",
+        "features": [
+          "1 destiny chart",
+          "Basic AI reading",
+          "Daily Almanac"
+        ],
+        "cta": "Start Free"
+      },
+      "master": {
+        "name":    "Master",
+        "tagline": "Go deep into your destiny",
+        "badge":   "Most Popular",
+        "features": [
+          "5 destiny charts",
+          "Master Reading (10,000+ words)",
+          "4 deep chapters",
+          "24-month forecast",
+          "Compatibility analysis"
+        ],
+        "cta": "Coming Soon"
+      },
+      "sage": {
+        "name":    "Sage",
+        "tagline": "The full oracle, unlimited",
+        "features": [
+          "Unlimited charts",
+          "All Master features",
+          "Master Compatibility (6 chapters)",
+          "Priority generation",
+          "Early access to new features"
+        ],
+        "cta": "Coming Soon"
+      }
+    },
+    "trust": [
+      "No subscription until you're ready",
+      "Charts and readings saved permanently",
+      "Works across all your devices",
+      "Privacy-first — your data is yours"
+    ],
+    "faq": [
+      {
+        "q": "What is the Master Reading?",
+        "a": "A 10,000+ word AI-generated analysis of your Bazi chart, divided into four deep chapters: Core Chart Soul, Career & Wealth, Love & Marriage, and a 24-month monthly forecast."
+      },
+      {
+        "q": "When will paid plans be available?",
+        "a": "Master and Sage plans are in final preparation. Leave your email to be first in line when the gates open."
+      },
+      {
+        "q": "Is my data private?",
+        "a": "Yes. Your charts and readings are stored securely and never shared. You can delete your account at any time."
+      },
+      {
+        "q": "What is Bazi?",
+        "a": "Bazi (八字, Eight Characters) is a Chinese metaphysical system that maps the energies present at your birth across four pillars — Year, Month, Day, and Hour."
+      },
+      {
+        "q": "How accurate is the AI reading?",
+        "a": "The reading synthesizes classical Bazi principles with your specific chart. Many readers find deep resonance in the analysis, though we always encourage personal reflection alongside any reading."
+      },
+      {
+        "q": "Can I use Bazi Master for someone else's chart?",
+        "a": "Yes — you can create multiple profiles for family members, partners, or anyone whose birth data you have."
+      }
+    ]
   },
   "upgrade": {
     "title": "Upgrade to Master",
