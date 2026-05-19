@@ -1,9 +1,10 @@
 import 'server-only'
 import { ThinkingLevel } from '@google/genai'
 import gemini from './gemini-client'
+import { GEMINI_MODELS } from './models'
 import { createAdminClient } from '@/lib/supabase/server'
 
-const MODEL = 'gemini-3.1-flash-lite-preview'
+const MODEL = GEMINI_MODELS.FLASH_LITE
 const TIMEOUT_MS = 30_000
 
 const LANG_NAME: Record<string, string> = {

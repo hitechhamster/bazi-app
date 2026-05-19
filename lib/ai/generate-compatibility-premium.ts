@@ -1,6 +1,7 @@
 import 'server-only'
 import { ThinkingLevel } from '@google/genai'
 import gemini from './gemini-client'
+import { GEMINI_MODELS } from './models'
 import { buildChapterOverviewPrompt }      from './compatibility-prompts/chapter-overview'
 import { buildChapterCompatibilityPrompt } from './compatibility-prompts/chapter-compatibility'
 import { buildChapterCommunicationPrompt } from './compatibility-prompts/chapter-communication'
@@ -12,7 +13,7 @@ import type { BaziPartnerData, CompatibilityScores } from '@/lib/bazi/compatibil
 import { buildCompatibilityForecast }      from '@/lib/bazi/compatibility-forecast'
 import { createAdminClient }               from '@/lib/supabase/server'
 
-const PRO_MODEL = 'gemini-3.1-pro-preview'
+const PRO_MODEL = GEMINI_MODELS.PRO
 
 // ── Section definitions ───────────────────────────────────────────────────────
 

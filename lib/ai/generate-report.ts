@@ -1,13 +1,14 @@
 import 'server-only'
 import { ThinkingLevel } from '@google/genai'
 import gemini from './gemini-client'
+import { GEMINI_MODELS } from './models'
 import { buildStructuredPrompt, type PromptContext, type BaziLanguage } from './structured-prompt'
 import { buildReadingPrompt, type StructuredResult } from './reading-prompt'
 import { createAdminClient } from '@/lib/supabase/server'
 import { zodiacZhToEn, yearToStemBranch, computeTaiSuiStatus, approxAge } from '@/lib/bazi/chart-helpers'
 import type { StoredLuckCycle } from '@/lib/bazi/chart-helpers'
 
-const MODEL = 'gemini-3.1-flash-lite-preview'
+const MODEL = GEMINI_MODELS.FLASH_LITE
 const MAX_OUTPUT_TOKENS_STRUCTURED = 4096
 const MAX_OUTPUT_TOKENS_READING = 16384
 

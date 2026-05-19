@@ -1,11 +1,12 @@
 import 'server-only'
 import { ThinkingLevel } from '@google/genai'
 import gemini from './gemini-client'
+import { GEMINI_MODELS } from './models'
 import { buildFreeCompatibilityPrompt } from '@/lib/bazi/compatibility-prompt-free'
 import { createAdminClient } from '@/lib/supabase/server'
 import type { BaziPartnerData, CompatibilityScores } from '@/lib/bazi/compatibility'
 
-const MODEL = 'gemini-3.1-flash-lite-preview'
+const MODEL = GEMINI_MODELS.FLASH_LITE
 const MAX_TOKENS = 16384
 
 export async function generateAndSaveFreeCompatibilityReport(

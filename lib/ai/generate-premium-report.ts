@@ -1,6 +1,7 @@
 import 'server-only'
 import { ThinkingLevel } from '@google/genai'
 import gemini from './gemini-client'
+import { GEMINI_MODELS } from './models'
 import { buildChapter1Prompt } from './premium-prompts/chapter-1-core'
 import { buildChapter2Prompt } from './premium-prompts/chapter-2-career'
 import { buildChapter3Prompt } from './premium-prompts/chapter-3-love'
@@ -13,8 +14,8 @@ import type { BaziLanguage } from './structured-prompt'
 import { buildForecastForChart } from '@/lib/bazi/forecast-timeline'
 import { createAdminClient } from '@/lib/supabase/server'
 
-const PRO_MODEL   = 'gemini-3.1-pro-preview'
-const FLASH_MODEL = 'gemini-3.1-flash-lite-preview'
+const PRO_MODEL   = GEMINI_MODELS.PRO
+const FLASH_MODEL = GEMINI_MODELS.FLASH_LITE
 
 const MAX_OUTPUT_STRUCTURED = 4096
 

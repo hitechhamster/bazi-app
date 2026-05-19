@@ -1,11 +1,12 @@
 import 'server-only'
 import { ThinkingLevel } from '@google/genai'
 import gemini from './gemini-client'
+import { GEMINI_MODELS } from './models'
 import { buildPromptContext } from './generate-report'
 import { createAdminClient } from '@/lib/supabase/server'
 import type { PromptContext } from './structured-prompt'
 
-const MODEL = 'gemini-3.1-flash-lite-preview'
+const MODEL = GEMINI_MODELS.FLASH_LITE
 const MAX_OUTPUT_TOKENS = 4096
 const TIMEOUT_MS = 90_000
 const MAX_HISTORY_TOKENS = 80_000
